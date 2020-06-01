@@ -1,0 +1,7 @@
+\begin{align}
+∫_\S  ‖∇u(\x)‖² \;dA  
+&= ∫_\S  \left\|∇\left(∑_{i=1}^n u_i φ_i(\x)\right)\right\|^2 \;dA  \\
+&= ∫_\S  \left(∑_{i=1}^n u_i ∇φ_i(\x)\right)⋅\left(∑_{i=1}^n u_i ∇φ_i(\x)\right)  \;dA  \\
+&= ∫_\S ∑_{i=1}^n ∑_{j=1}^n ∇φ_i⋅∇φ_j u_i u_j \;dA \\
+&= \u^\transpose \L \u, \quad \text{where } L_{ij} =  ∫_\S  ∇φ_i⋅∇φ_j \;dA.
+\end{align}
