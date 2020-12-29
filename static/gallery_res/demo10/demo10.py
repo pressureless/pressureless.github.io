@@ -1,25 +1,11 @@
 """
-given
-p_i: ℝ^3: points on lines
-d_i: ℝ^3: unit directions along lines
+min_(x ∈ ℝ^n) sum_i ||A_i x + b_i ||_2 +(1/2)||x-`x_0`||^2_2
 
-k_i = (p_i - (p_i⋅d_i)d_i)
-a_i = [1,0,0]^T - d_i,0 d_i
-b_i = [0,1,0]^T - d_i,1 d_i
-c_i = [0,0,1]^T - d_i,2 d_i
+where
 
- 
-M = [ (∑_i( a_i,0 - d_i,0 (d_i⋅a_i) ))    (∑_i( a_i,1 - d_i,1 (d_i⋅a_i) ))    (∑_i( a_i,2 - d_i,2 (d_i⋅a_i) ))
-      (∑_i( b_i,0 - d_i,0 (d_i⋅b_i) ))    (∑_i( b_i,1 - d_i,1 (d_i⋅b_i) ))    (∑_i( b_i,2 - d_i,2 (d_i⋅b_i) ))
-      (∑_i( c_i,0 - d_i,0 (d_i⋅c_i) ))    (∑_i( c_i,1 - d_i,1 (d_i⋅c_i) ))    (∑_i( c_i,2 - d_i,2 (d_i⋅c_i) )) ]
-
-r = [ ∑_i( k_i⋅a_i )
-      ∑_i( k_i⋅b_i )
-      ∑_i( k_i⋅c_i ) ]
-
-q = M^(-1) r
-
-
+A_i: ℝ^(m × n)  
+`x_0`: ℝ^n  
+b_i: ℝ^m  
 """
 import numpy as np
 import scipy
@@ -29,103 +15,47 @@ from scipy.integrate import quad
 from scipy.optimize import minimize
 
 
-def myExpression(p, d):
+def demo10(A, x_0, b):
     """
-    :param :p : ℝ^3: points on lines
-    :param :d : ℝ^3: unit directions along lines
+    :param :A : ℝ^(m × n)
+    :param :x_0 : ℝ^n
+    :param :b : ℝ^m
     """
-    p = np.asarray(p, dtype=np.float64)
-    d = np.asarray(d, dtype=np.float64)
+    A = np.asarray(A, dtype=np.float64)
+    x_0 = np.asarray(x_0, dtype=np.float64)
+    b = np.asarray(b, dtype=np.float64)
 
-    _dim_0 = p.shape[0]
-    assert p.shape == (_dim_0, 3, 1)
-    assert d.shape == (_dim_0, 3, 1)
+    _dim_0 = A.shape[0]
+    m = b.shape[1]
+    n = x_0.shape[0]
+    assert A.shape == (_dim_0, m, n)
+    assert x_0.shape == (n, 1)
+    assert b.shape == (_dim_0, m, 1)
 
-    k = np.zeros((_dim_0, 3, 1))
-    for i in range(1, _dim_0+1):
-        k[i] = (p[i-1] - (np.dot((p[i-1]).ravel(), (d[i-1]).ravel())) * d[i-1])
-
-    _a_i_0 = np.zeros((1, 3))
-    _a_i_0[0] = [1, 0, 0]
-    a = np.zeros((_dim_0, 3, 1))
-    for i in range(1, _dim_0+1):
-        a[i] = _a_i_0.T - d[i-1][0-1] * d[i-1]
-
-    _b_i_0 = np.zeros((1, 3))
-    _b_i_0[0] = [0, 1, 0]
-    b = np.zeros((_dim_0, 3, 1))
-    for i in range(1, _dim_0+1):
-        b[i] = _b_i_0.T - d[i-1][1-1] * d[i-1]
-
-    _c_i_0 = np.zeros((1, 3))
-    _c_i_0[0] = [0, 0, 1]
-    c = np.zeros((_dim_0, 3, 1))
-    for i in range(1, _dim_0+1):
-        c[i] = _c_i_0.T - d[i-1][2-1] * d[i-1]
-
-    _sum_0 = 0
-    for i in range(1, len(a)+1):
-        _sum_0 += (a[i-1][0-1] - d[i-1][0-1] * (np.dot((d[i-1]).ravel(), (a[i-1]).ravel())))
-    _sum_1 = 0
-    for i in range(1, len(d)+1):
-        _sum_1 += (a[i-1][1-1] - d[i-1][1-1] * (np.dot((d[i-1]).ravel(), (a[i-1]).ravel())))
-    _sum_2 = 0
-    for i in range(1, len(a)+1):
-        _sum_2 += (a[i-1][2-1] - d[i-1][2-1] * (np.dot((d[i-1]).ravel(), (a[i-1]).ravel())))
-    _sum_3 = 0
-    for i in range(1, len(d)+1):
-        _sum_3 += (b[i-1][0-1] - d[i-1][0-1] * (np.dot((d[i-1]).ravel(), (b[i-1]).ravel())))
-    _sum_4 = 0
-    for i in range(1, len(d)+1):
-        _sum_4 += (b[i-1][1-1] - d[i-1][1-1] * (np.dot((d[i-1]).ravel(), (b[i-1]).ravel())))
-    _sum_5 = 0
-    for i in range(1, len(d)+1):
-        _sum_5 += (b[i-1][2-1] - d[i-1][2-1] * (np.dot((d[i-1]).ravel(), (b[i-1]).ravel())))
-    _sum_6 = 0
-    for i in range(1, len(d)+1):
-        _sum_6 += (c[i-1][0-1] - d[i-1][0-1] * (np.dot((d[i-1]).ravel(), (c[i-1]).ravel())))
-    _sum_7 = 0
-    for i in range(1, len(d)+1):
-        _sum_7 += (c[i-1][1-1] - d[i-1][1-1] * (np.dot((d[i-1]).ravel(), (c[i-1]).ravel())))
-    _sum_8 = 0
-    for i in range(1, len(d)+1):
-        _sum_8 += (c[i-1][2-1] - d[i-1][2-1] * (np.dot((d[i-1]).ravel(), (c[i-1]).ravel())))
-    _M_0 = np.zeros((3, 3))
-    _M_0[0] = [(_sum_0), (_sum_1), (_sum_2)]
-    _M_0[1] = [(_sum_3), (_sum_4), (_sum_5)]
-    _M_0[2] = [(_sum_6), (_sum_7), (_sum_8)]
-    M = _M_0
-
-    _sum_9 = 0
-    for i in range(1, len(a)+1):
-        _sum_9 += (np.dot((k[i-1]).ravel(), (a[i-1]).ravel()))
-    _sum_10 = 0
-    for i in range(1, len(b)+1):
-        _sum_10 += (np.dot((k[i-1]).ravel(), (b[i-1]).ravel()))
-    _sum_11 = 0
-    for i in range(1, len(c)+1):
-        _sum_11 += (np.dot((k[i-1]).ravel(), (c[i-1]).ravel()))
-    _r_0 = np.zeros((3, 1))
-    _r_0[0] = [_sum_9]
-    _r_0[1] = [_sum_10]
-    _r_0[2] = [_sum_11]
-    r = _r_0
-
-    q = np.linalg.inv(M) @ r
-
-    return q
+    def _target_0(x):
+        _sum_0 = 0
+        for i in range(1, len(b)+1):
+            _sum_0 += np.linalg.norm(A[i-1] @ x + b[i-1], 2)
+        return _sum_0 + (1 / 2) * np.power(np.linalg.norm(x - x_0, 2), 2)
+    ret = minimize(_target_0, np.zeros(n)).fun
+    return ret
 
 
 def generateRandomData():
     _dim_0 = np.random.randint(10)
-    p = np.random.randn(_dim_0, 3, 1)
-    d = np.random.randn(_dim_0, 3, 1)
-    return p, d
+    m = np.random.randint(10)
+    n = np.random.randint(10)
+    A = np.random.randn(_dim_0, m, n)
+    x_0 = np.random.randn(n)
+    x_0 = x_0.reshape((n, 1))
+    b = np.random.randn(_dim_0, m, 1)
+    return A, x_0, b
 
 
 if __name__ == '__main__':
-    p, d = generateRandomData()
-    print("p:", p)
-    print("d:", d)
-    func_value = myExpression(p, d)
+    A, x_0, b = generateRandomData()
+    print("A:", A)
+    print("x_0:", x_0)
+    print("b:", b)
+    func_value = demo10(A, x_0, b)
     print("func_value: ", func_value)

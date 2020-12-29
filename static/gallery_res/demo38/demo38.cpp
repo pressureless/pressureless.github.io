@@ -18,8 +18,6 @@ r = [ ∑_i( k_i⋅a_i )
       ∑_i( k_i⋅c_i ) ]
 
 q = M^(-1) r
-
-
 */
 #include <Eigen/Core>
 #include <Eigen/Dense>
@@ -28,13 +26,13 @@ q = M^(-1) r
 #include <set>
 
 /**
- * myExpression
+ * demo38
  *
  * @param p  ℝ^3: points on lines
  * @param d  ℝ^3: unit directions along lines
  * @return q
  */
-Eigen::Matrix<double, 3, 1> myExpression(
+Eigen::Matrix<double, 3, 1> demo38(
     const std::vector<Eigen::Matrix<double, 3, 1>> & p,
     const std::vector<Eigen::Matrix<double, 3, 1>> & d)
 {
@@ -72,11 +70,11 @@ Eigen::Matrix<double, 3, 1> myExpression(
 
 
     double _sum_0 = 0;
-    for(int i=1; i<=a.size(); i++){
+    for(int i=1; i<=d.size(); i++){
         _sum_0 += (a.at(i-1)(0-1) - d.at(i-1)(0-1) * ((d.at(i-1)).dot(a.at(i-1))));
     }
     double _sum_1 = 0;
-    for(int i=1; i<=d.size(); i++){
+    for(int i=1; i<=a.size(); i++){
         _sum_1 += (a.at(i-1)(1-1) - d.at(i-1)(1-1) * ((d.at(i-1)).dot(a.at(i-1))));
     }
     double _sum_2 = 0;
@@ -157,7 +155,7 @@ int main(int argc, char *argv[])
     std::vector<Eigen::Matrix<double, 3, 1>> p;
     std::vector<Eigen::Matrix<double, 3, 1>> d;
     generateRandomData(p, d);
-    Eigen::Matrix<double, 3, 1> func_value = myExpression(p, d);
+    Eigen::Matrix<double, 3, 1> func_value = demo38(p, d);
     std::cout<<"func_value:\n"<<func_value<<std::endl;
     return 0;
 }

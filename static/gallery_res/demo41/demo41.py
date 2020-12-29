@@ -18,8 +18,6 @@ r = [ ∑_i( k_i⋅a_i )
       ∑_i( k_i⋅c_i ) ]
 
 q = M^(-1) r
-
-
 """
 import numpy as np
 import scipy
@@ -29,7 +27,7 @@ from scipy.integrate import quad
 from scipy.optimize import minimize
 
 
-def myExpression(p, d):
+def demo41(p, d):
     """
     :param :p : ℝ^3: points on lines
     :param :d : ℝ^3: unit directions along lines
@@ -64,19 +62,19 @@ def myExpression(p, d):
         c[i] = _c_i_0.T - d[i-1][2-1] * d[i-1]
 
     _sum_0 = 0
-    for i in range(1, len(a)+1):
+    for i in range(1, len(d)+1):
         _sum_0 += (a[i-1][0-1] - d[i-1][0-1] * (np.dot((d[i-1]).ravel(), (a[i-1]).ravel())))
     _sum_1 = 0
     for i in range(1, len(d)+1):
         _sum_1 += (a[i-1][1-1] - d[i-1][1-1] * (np.dot((d[i-1]).ravel(), (a[i-1]).ravel())))
     _sum_2 = 0
-    for i in range(1, len(a)+1):
+    for i in range(1, len(d)+1):
         _sum_2 += (a[i-1][2-1] - d[i-1][2-1] * (np.dot((d[i-1]).ravel(), (a[i-1]).ravel())))
     _sum_3 = 0
     for i in range(1, len(d)+1):
         _sum_3 += (b[i-1][0-1] - d[i-1][0-1] * (np.dot((d[i-1]).ravel(), (b[i-1]).ravel())))
     _sum_4 = 0
-    for i in range(1, len(d)+1):
+    for i in range(1, len(b)+1):
         _sum_4 += (b[i-1][1-1] - d[i-1][1-1] * (np.dot((d[i-1]).ravel(), (b[i-1]).ravel())))
     _sum_5 = 0
     for i in range(1, len(d)+1):
@@ -127,5 +125,5 @@ if __name__ == '__main__':
     p, d = generateRandomData()
     print("p:", p)
     print("d:", d)
-    func_value = myExpression(p, d)
+    func_value = demo41(p, d)
     print("func_value: ", func_value)

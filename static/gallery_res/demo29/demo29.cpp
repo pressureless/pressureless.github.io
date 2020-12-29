@@ -18,8 +18,6 @@ r = [ ∑_i( k_i⋅a_i )
       ∑_i( k_i⋅c_i ) ]
 
 q = M^(-1) r
-
-
 */
 #include <Eigen/Core>
 #include <Eigen/Dense>
@@ -28,13 +26,13 @@ q = M^(-1) r
 #include <set>
 
 /**
- * myExpression
+ * demo29
  *
  * @param p  ℝ^3: points on lines
  * @param d  ℝ^3: unit directions along lines
  * @return q
  */
-Eigen::Matrix<double, 3, 1> myExpression(
+Eigen::Matrix<double, 3, 1> demo29(
     const std::vector<Eigen::Matrix<double, 3, 1>> & p,
     const std::vector<Eigen::Matrix<double, 3, 1>> & d)
 {
@@ -72,7 +70,7 @@ Eigen::Matrix<double, 3, 1> myExpression(
 
 
     double _sum_0 = 0;
-    for(int i=1; i<=a.size(); i++){
+    for(int i=1; i<=d.size(); i++){
         _sum_0 += (a.at(i-1)(0-1) - d.at(i-1)(0-1) * ((d.at(i-1)).dot(a.at(i-1))));
     }
     double _sum_1 = 0;
@@ -80,7 +78,7 @@ Eigen::Matrix<double, 3, 1> myExpression(
         _sum_1 += (a.at(i-1)(1-1) - d.at(i-1)(1-1) * ((d.at(i-1)).dot(a.at(i-1))));
     }
     double _sum_2 = 0;
-    for(int i=1; i<=a.size(); i++){
+    for(int i=1; i<=d.size(); i++){
         _sum_2 += (a.at(i-1)(2-1) - d.at(i-1)(2-1) * ((d.at(i-1)).dot(a.at(i-1))));
     }
     double _sum_3 = 0;
@@ -88,7 +86,7 @@ Eigen::Matrix<double, 3, 1> myExpression(
         _sum_3 += (b.at(i-1)(0-1) - d.at(i-1)(0-1) * ((d.at(i-1)).dot(b.at(i-1))));
     }
     double _sum_4 = 0;
-    for(int i=1; i<=d.size(); i++){
+    for(int i=1; i<=b.size(); i++){
         _sum_4 += (b.at(i-1)(1-1) - d.at(i-1)(1-1) * ((d.at(i-1)).dot(b.at(i-1))));
     }
     double _sum_5 = 0;
@@ -96,7 +94,7 @@ Eigen::Matrix<double, 3, 1> myExpression(
         _sum_5 += (b.at(i-1)(2-1) - d.at(i-1)(2-1) * ((d.at(i-1)).dot(b.at(i-1))));
     }
     double _sum_6 = 0;
-    for(int i=1; i<=d.size(); i++){
+    for(int i=1; i<=c.size(); i++){
         _sum_6 += (c.at(i-1)(0-1) - d.at(i-1)(0-1) * ((d.at(i-1)).dot(c.at(i-1))));
     }
     double _sum_7 = 0;
@@ -114,7 +112,7 @@ Eigen::Matrix<double, 3, 1> myExpression(
     Eigen::Matrix<double, 3, 3> M = _M_0;
 
     double _sum_9 = 0;
-    for(int i=1; i<=a.size(); i++){
+    for(int i=1; i<=k.size(); i++){
         _sum_9 += ((k.at(i-1)).dot(a.at(i-1)));
     }
     double _sum_10 = 0;
@@ -122,7 +120,7 @@ Eigen::Matrix<double, 3, 1> myExpression(
         _sum_10 += ((k.at(i-1)).dot(b.at(i-1)));
     }
     double _sum_11 = 0;
-    for(int i=1; i<=c.size(); i++){
+    for(int i=1; i<=k.size(); i++){
         _sum_11 += ((k.at(i-1)).dot(c.at(i-1)));
     }
     Eigen::Matrix<double, 3, 1> _r_0;
@@ -157,7 +155,7 @@ int main(int argc, char *argv[])
     std::vector<Eigen::Matrix<double, 3, 1>> p;
     std::vector<Eigen::Matrix<double, 3, 1>> d;
     generateRandomData(p, d);
-    Eigen::Matrix<double, 3, 1> func_value = myExpression(p, d);
+    Eigen::Matrix<double, 3, 1> func_value = demo29(p, d);
     std::cout<<"func_value:\n"<<func_value<<std::endl;
     return 0;
 }

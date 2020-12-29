@@ -3,50 +3,24 @@
 \usepackage[bb=boondox]{mathalfa}
 \usepackage{mathtools}
 \usepackage{amssymb}
+\usepackage{ctex}
+\setmainfont{Linux Libertine O}
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
 \begin{document}
+\[
+\textit{y}_{ \textit{i} } = (\textit{a}_{ \textit{i} })^T \cdot \textit{x} + \textit{w}_{ \textit{i} }
+\]
+\[
+\textit{x\_bar} = (\sum_\textit{i} \textit{a}_{ \textit{i} } \cdot (\textit{a}_{ \textit{i} })^T)^{-1} \cdot \sum_\textit{i} \textit{y}_{ \textit{i} } \cdot \textit{a}_{ \textit{i} }
+\]
 
-given
+where
 \begin{itemize}
-\item $p_{i} \in \mathbb{R}^{ 3}:$points on lines
-\item $d_{i} \in \mathbb{R}^{ 3}:$unit directions along lines
+\item $\textit{a}_{\textit{i}} \in \mathbb{R}^{ \textit{n}}:$the measurement vectors  
+\item $\textit{w}_{\textit{i}} \in \mathbb{{R}}:$measurement noise 
+\item $\textit{x} \in \mathbb{R}^{ \textit{n}}:$measurement noise 
 \end{itemize}
 
-\[
-k_{i} = (p_{ i } - (p_{ i } \cdot d_{ i }) \cdot d_{ i })
-\]
-\[
-a_{i} = \begin{bmatrix}
-1 & 0 & 0\\
-\end{bmatrix}^T - d_{ i, 0 } \cdot d_{ i }
-\]
-\[
-b_{i} = \begin{bmatrix}
-0 & 1 & 0\\
-\end{bmatrix}^T - d_{ i, 1 } \cdot d_{ i }
-\]
-\[
-c_{i} = \begin{bmatrix}
-0 & 0 & 1\\
-\end{bmatrix}^T - d_{ i, 2 } \cdot d_{ i }
-\]
-\[
-M = \begin{bmatrix}
-(\sum_i (a_{ i, 0 } - d_{ i, 0 } \cdot (d_{ i } \cdot a_{ i }))) & (\sum_i (a_{ i, 1 } - d_{ i, 1 } \cdot (d_{ i } \cdot a_{ i }))) & (\sum_i (a_{ i, 2 } - d_{ i, 2 } \cdot (d_{ i } \cdot a_{ i })))\\
-(\sum_i (b_{ i, 0 } - d_{ i, 0 } \cdot (d_{ i } \cdot b_{ i }))) & (\sum_i (b_{ i, 1 } - d_{ i, 1 } \cdot (d_{ i } \cdot b_{ i }))) & (\sum_i (b_{ i, 2 } - d_{ i, 2 } \cdot (d_{ i } \cdot b_{ i })))\\
-(\sum_i (c_{ i, 0 } - d_{ i, 0 } \cdot (d_{ i } \cdot c_{ i }))) & (\sum_i (c_{ i, 1 } - d_{ i, 1 } \cdot (d_{ i } \cdot c_{ i }))) & (\sum_i (c_{ i, 2 } - d_{ i, 2 } \cdot (d_{ i } \cdot c_{ i })))\\
-\end{bmatrix}
-\]
-\[
-r = \begin{bmatrix}
-\sum_i (k_{ i } \cdot a_{ i })\\
-\sum_i (k_{ i } \cdot b_{ i })\\
-\sum_i (k_{ i } \cdot c_{ i })\\
-\end{bmatrix}
-\]
-\[
-q = M^{-1} \cdot r
-\]
 
 \end{document}

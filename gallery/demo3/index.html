@@ -24,11 +24,7 @@
     
     
     Here is the description: <br>
-    <!-- <img src=../../static/gallery_res/demo3/demo3.png alt="placeholder" width="800" height="270"><br> -->
-    <img src=../../static/gallery_res/demo3/demo3.png alt="placeholder" width="700" style='object-fit: scale-down;'><br>
-
-
-
+      <img src=../../static/gallery_res/demo3/demo3.png alt="placeholder" width="700" style='object-fit: scale-down;'><br>
     
 
     
@@ -76,8 +72,6 @@ r = [ ∑_i( k_i⋅a_i )
       ∑_i( k_i⋅c_i ) ]
 
 q = M^(-1) r
-
-
 */
 #include &lt;Eigen/Core&gt;
 #include &lt;Eigen/Dense&gt;
@@ -86,13 +80,13 @@ q = M^(-1) r
 #include &lt;set&gt;
 
 /**
- * myExpression
+ * demo3
  *
  * @param p  ℝ^3: points on lines
  * @param d  ℝ^3: unit directions along lines
  * @return q
  */
-Eigen::Matrix&lt;double, 3, 1&gt; myExpression(
+Eigen::Matrix&lt;double, 3, 1&gt; demo3(
     const std::vector&lt;Eigen::Matrix&lt;double, 3, 1&gt;&gt; &amp; p,
     const std::vector&lt;Eigen::Matrix&lt;double, 3, 1&gt;&gt; &amp; d)
 {
@@ -130,7 +124,7 @@ Eigen::Matrix&lt;double, 3, 1&gt; myExpression(
 
 
     double _sum_0 = 0;
-    for(int i=1; i&lt;=a.size(); i++){
+    for(int i=1; i&lt;=d.size(); i++){
         _sum_0 += (a.at(i-1)(0-1) - d.at(i-1)(0-1) * ((d.at(i-1)).dot(a.at(i-1))));
     }
     double _sum_1 = 0;
@@ -138,7 +132,7 @@ Eigen::Matrix&lt;double, 3, 1&gt; myExpression(
         _sum_1 += (a.at(i-1)(1-1) - d.at(i-1)(1-1) * ((d.at(i-1)).dot(a.at(i-1))));
     }
     double _sum_2 = 0;
-    for(int i=1; i&lt;=a.size(); i++){
+    for(int i=1; i&lt;=d.size(); i++){
         _sum_2 += (a.at(i-1)(2-1) - d.at(i-1)(2-1) * ((d.at(i-1)).dot(a.at(i-1))));
     }
     double _sum_3 = 0;
@@ -176,11 +170,11 @@ Eigen::Matrix&lt;double, 3, 1&gt; myExpression(
         _sum_9 += ((k.at(i-1)).dot(a.at(i-1)));
     }
     double _sum_10 = 0;
-    for(int i=1; i&lt;=b.size(); i++){
+    for(int i=1; i&lt;=k.size(); i++){
         _sum_10 += ((k.at(i-1)).dot(b.at(i-1)));
     }
     double _sum_11 = 0;
-    for(int i=1; i&lt;=c.size(); i++){
+    for(int i=1; i&lt;=k.size(); i++){
         _sum_11 += ((k.at(i-1)).dot(c.at(i-1)));
     }
     Eigen::Matrix&lt;double, 3, 1&gt; _r_0;
@@ -215,7 +209,7 @@ int main(int argc, char *argv[])
     std::vector&lt;Eigen::Matrix&lt;double, 3, 1&gt;&gt; p;
     std::vector&lt;Eigen::Matrix&lt;double, 3, 1&gt;&gt; d;
     generateRandomData(p, d);
-    Eigen::Matrix&lt;double, 3, 1&gt; func_value = myExpression(p, d);
+    Eigen::Matrix&lt;double, 3, 1&gt; func_value = demo3(p, d);
     std::cout&lt;&lt;&#34;func_value:\n&#34;&lt;&lt;func_value&lt;&lt;std::endl;
     return 0;
 }</code></pre></div>
@@ -243,8 +237,6 @@ r = [ ∑_i( k_i⋅a_i )
       ∑_i( k_i⋅c_i ) ]
 
 q = M^(-1) r
-
-
 &#34;&#34;&#34;
 import numpy as np
 import scipy
@@ -254,7 +246,7 @@ from scipy.integrate import quad
 from scipy.optimize import minimize
 
 
-def myExpression(p, d):
+def demo3(p, d):
     &#34;&#34;&#34;
     :param :p : ℝ^3: points on lines
     :param :d : ℝ^3: unit directions along lines
@@ -289,13 +281,13 @@ def myExpression(p, d):
         c[i] = _c_i_0.T - d[i-1][2-1] * d[i-1]
 
     _sum_0 = 0
-    for i in range(1, len(a)+1):
+    for i in range(1, len(d)+1):
         _sum_0 += (a[i-1][0-1] - d[i-1][0-1] * (np.dot((d[i-1]).ravel(), (a[i-1]).ravel())))
     _sum_1 = 0
     for i in range(1, len(d)+1):
         _sum_1 += (a[i-1][1-1] - d[i-1][1-1] * (np.dot((d[i-1]).ravel(), (a[i-1]).ravel())))
     _sum_2 = 0
-    for i in range(1, len(a)+1):
+    for i in range(1, len(d)+1):
         _sum_2 += (a[i-1][2-1] - d[i-1][2-1] * (np.dot((d[i-1]).ravel(), (a[i-1]).ravel())))
     _sum_3 = 0
     for i in range(1, len(d)+1):
@@ -325,10 +317,10 @@ def myExpression(p, d):
     for i in range(1, len(a)+1):
         _sum_9 += (np.dot((k[i-1]).ravel(), (a[i-1]).ravel()))
     _sum_10 = 0
-    for i in range(1, len(b)+1):
+    for i in range(1, len(k)+1):
         _sum_10 += (np.dot((k[i-1]).ravel(), (b[i-1]).ravel()))
     _sum_11 = 0
-    for i in range(1, len(c)+1):
+    for i in range(1, len(k)+1):
         _sum_11 += (np.dot((k[i-1]).ravel(), (c[i-1]).ravel()))
     _r_0 = np.zeros((3, 1))
     _r_0[0] = [_sum_9]
@@ -352,7 +344,7 @@ if __name__ == &#39;__main__&#39;:
     p, d = generateRandomData()
     print(&#34;p:&#34;, p)
     print(&#34;d:&#34;, d)
-    func_value = myExpression(p, d)
+    func_value = demo3(p, d)
     print(&#34;func_value: &#34;, func_value)</code></pre></div>
     
 
@@ -413,16 +405,14 @@ q = M^{-1} \cdot r
     
 
     
-   <br> Below is the pdf: <br>
-    <img src=../../static/gallery_res/demo3/demo3.pdf alt="placeholder" width="700" style='object-fit: scale-down;'><br>
-    <!-- <img src=../../static/gallery_res/demo3/demo3.pdf alt="placeholder" width="612" height="792"><br> -->
+      <br> Below is the pdf: <br>
+      <img src=../../static/gallery_res/demo3/demo3.pdf alt="placeholder" width="700" style='object-fit: scale-down;'><br>
     
-     </div>
+    </div>
   
 
 
  
-
 
 
 
