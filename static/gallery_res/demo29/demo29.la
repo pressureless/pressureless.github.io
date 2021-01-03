@@ -1,19 +1,11 @@
-given
-p_i: ℝ^3: points on lines
-d_i: ℝ^3: unit directions along lines
+sum_i α_i + 1/M sum_i sum_j (f(X_i,j)/`p_c`(X_i,j) - (sum_k α_k p_k X_i,j)/`p_c`(X_i,j))
 
-k_i = (p_i - (p_i⋅d_i)d_i)
-a_i = [1,0,0]^T - d_i,0 d_i
-b_i = [0,1,0]^T - d_i,1 d_i
-c_i = [0,0,1]^T - d_i,2 d_i
+where
 
- 
-M = [ (∑_i( a_i,0 - d_i,0 (d_i⋅a_i) ))    (∑_i( a_i,1 - d_i,1 (d_i⋅a_i) ))    (∑_i( a_i,2 - d_i,2 (d_i⋅a_i) ))
-      (∑_i( b_i,0 - d_i,0 (d_i⋅b_i) ))    (∑_i( b_i,1 - d_i,1 (d_i⋅b_i) ))    (∑_i( b_i,2 - d_i,2 (d_i⋅b_i) ))
-      (∑_i( c_i,0 - d_i,0 (d_i⋅c_i) ))    (∑_i( c_i,1 - d_i,1 (d_i⋅c_i) ))    (∑_i( c_i,2 - d_i,2 (d_i⋅c_i) )) ]
 
-r = [ ∑_i( k_i⋅a_i )
-      ∑_i( k_i⋅b_i )
-      ∑_i( k_i⋅c_i ) ]
-
-q = M^(-1) r
+α: ℝ^m
+p: ℝ^m
+X: ℝ^(m×n)
+M: ℝ  
+f: ℝ -> ℝ 
+`p_c`: ℝ -> ℝ 

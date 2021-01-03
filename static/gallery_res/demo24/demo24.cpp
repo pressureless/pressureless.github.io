@@ -1,23 +1,19 @@
 /*
-given
-p_i: ℝ^3: points on lines
-d_i: ℝ^3: unit directions along lines
 
-k_i = (p_i - (p_i⋅d_i)d_i)
-a_i = [1,0,0]^T - d_i,0 d_i
-b_i = [0,1,0]^T - d_i,1 d_i
-c_i = [0,0,1]^T - d_i,2 d_i
+E = 1/`σ_N`^2`E_I` + sum_(j for j>1) α_j²/`σ_S`_j^2  + sum_(j for j>1) β_j²/`σ_T`_j^2   + sum_j (ρ_j-`ρ_bar`_j)²/`σ_ρ`_j^2 
 
- 
-M = [ (∑_i( a_i,0 - d_i,0 (d_i⋅a_i) ))    (∑_i( a_i,1 - d_i,1 (d_i⋅a_i) ))    (∑_i( a_i,2 - d_i,2 (d_i⋅a_i) ))
-      (∑_i( b_i,0 - d_i,0 (d_i⋅b_i) ))    (∑_i( b_i,1 - d_i,1 (d_i⋅b_i) ))    (∑_i( b_i,2 - d_i,2 (d_i⋅b_i) ))
-      (∑_i( c_i,0 - d_i,0 (d_i⋅c_i) ))    (∑_i( c_i,1 - d_i,1 (d_i⋅c_i) ))    (∑_i( c_i,2 - d_i,2 (d_i⋅c_i) )) ]
+where
 
-r = [ ∑_i( k_i⋅a_i )
-      ∑_i( k_i⋅b_i )
-      ∑_i( k_i⋅c_i ) ]
-
-q = M^(-1) r
+`σ_N`: ℝ 
+`E_I`: ℝ
+α_i : ℝ
+β_i : ℝ
+`σ_S`_i: ℝ 
+`σ_T`_i: ℝ 
+ρ_i: ℝ 
+`ρ_bar`_i: ℝ 
+`σ_ρ`_i: ℝ 
+ā_i: ℝ 
 */
 #include <Eigen/Core>
 #include <Eigen/Dense>
@@ -28,134 +24,125 @@ q = M^(-1) r
 /**
  * demo24
  *
- * @param p  ℝ^3: points on lines
- * @param d  ℝ^3: unit directions along lines
- * @return q
+ * @param σ_N  ℝ
+ * @param E_I  ℝ
+ * @param α  ℝ
+ * @param β  ℝ
+ * @param σ_S  ℝ
+ * @param σ_T  ℝ
+ * @param ρ  ℝ
+ * @param ρ_bar  ℝ
+ * @param σ_ρ  ℝ
+ * @param ā  ℝ
+ * @return E
  */
-Eigen::Matrix<double, 3, 1> demo24(
-    const std::vector<Eigen::Matrix<double, 3, 1>> & p,
-    const std::vector<Eigen::Matrix<double, 3, 1>> & d)
+double demo24(
+    const double & σ_N,
+    const double & E_I,
+    const std::vector<double> & α,
+    const std::vector<double> & β,
+    const std::vector<double> & σ_S,
+    const std::vector<double> & σ_T,
+    const std::vector<double> & ρ,
+    const std::vector<double> & ρ_bar,
+    const std::vector<double> & σ_ρ,
+    const std::vector<double> & ā)
 {
-    const long _dim_0 = p.size();
-
-
-    std::vector<Eigen::Matrix<double, 3, 1>> k(_dim_0);
-    for( int i=1; i<=_dim_0; i++){
-        k.at(i) = (p.at(i-1) - ((p.at(i-1)).dot(d.at(i-1))) * d.at(i-1));
-    }
-
-
-    Eigen::Matrix<double, 1, 3> _a_i_0;
-    _a_i_0 << 1, 0, 0;
-    std::vector<Eigen::Matrix<double, 3, 1>> a(_dim_0);
-    for( int i=1; i<=_dim_0; i++){
-        a.at(i) = _a_i_0.transpose() - d.at(i-1)(0-1) * d.at(i-1);
-    }
-
-
-    Eigen::Matrix<double, 1, 3> _b_i_0;
-    _b_i_0 << 0, 1, 0;
-    std::vector<Eigen::Matrix<double, 3, 1>> b(_dim_0);
-    for( int i=1; i<=_dim_0; i++){
-        b.at(i) = _b_i_0.transpose() - d.at(i-1)(1-1) * d.at(i-1);
-    }
-
-
-    Eigen::Matrix<double, 1, 3> _c_i_0;
-    _c_i_0 << 0, 0, 1;
-    std::vector<Eigen::Matrix<double, 3, 1>> c(_dim_0);
-    for( int i=1; i<=_dim_0; i++){
-        c.at(i) = _c_i_0.transpose() - d.at(i-1)(2-1) * d.at(i-1);
-    }
-
+    const long _dim_0 = α.size();
+    assert( α.size() == _dim_0 );
+    assert( β.size() == _dim_0 );
+    assert( σ_S.size() == _dim_0 );
+    assert( σ_T.size() == _dim_0 );
+    assert( ρ.size() == _dim_0 );
+    assert( ρ_bar.size() == _dim_0 );
+    assert( σ_ρ.size() == _dim_0 );
+    assert( ā.size() == _dim_0 );
 
     double _sum_0 = 0;
-    for(int i=1; i<=a.size(); i++){
-        _sum_0 += (a.at(i-1)(0-1) - d.at(i-1)(0-1) * ((d.at(i-1)).dot(a.at(i-1))));
+    for(int j=1; j<=α.size(); j++){
+        if(j > 1){
+            _sum_0 += pow(α.at(j-1), 2) / pow(σ_S.at(j-1), 2);
+        }
     }
     double _sum_1 = 0;
-    for(int i=1; i<=a.size(); i++){
-        _sum_1 += (a.at(i-1)(1-1) - d.at(i-1)(1-1) * ((d.at(i-1)).dot(a.at(i-1))));
+    for(int j=1; j<=β.size(); j++){
+        if(j > 1){
+            _sum_1 += pow(β.at(j-1), 2) / pow(σ_T.at(j-1), 2);
+        }
     }
     double _sum_2 = 0;
-    for(int i=1; i<=a.size(); i++){
-        _sum_2 += (a.at(i-1)(2-1) - d.at(i-1)(2-1) * ((d.at(i-1)).dot(a.at(i-1))));
+    for(int j=1; j<=ρ.size(); j++){
+        _sum_2 += pow((ρ.at(j-1) - ρ_bar.at(j-1)), 2) / pow(σ_ρ.at(j-1), 2);
     }
-    double _sum_3 = 0;
-    for(int i=1; i<=d.size(); i++){
-        _sum_3 += (b.at(i-1)(0-1) - d.at(i-1)(0-1) * ((d.at(i-1)).dot(b.at(i-1))));
-    }
-    double _sum_4 = 0;
-    for(int i=1; i<=d.size(); i++){
-        _sum_4 += (b.at(i-1)(1-1) - d.at(i-1)(1-1) * ((d.at(i-1)).dot(b.at(i-1))));
-    }
-    double _sum_5 = 0;
-    for(int i=1; i<=b.size(); i++){
-        _sum_5 += (b.at(i-1)(2-1) - d.at(i-1)(2-1) * ((d.at(i-1)).dot(b.at(i-1))));
-    }
-    double _sum_6 = 0;
-    for(int i=1; i<=d.size(); i++){
-        _sum_6 += (c.at(i-1)(0-1) - d.at(i-1)(0-1) * ((d.at(i-1)).dot(c.at(i-1))));
-    }
-    double _sum_7 = 0;
-    for(int i=1; i<=c.size(); i++){
-        _sum_7 += (c.at(i-1)(1-1) - d.at(i-1)(1-1) * ((d.at(i-1)).dot(c.at(i-1))));
-    }
-    double _sum_8 = 0;
-    for(int i=1; i<=c.size(); i++){
-        _sum_8 += (c.at(i-1)(2-1) - d.at(i-1)(2-1) * ((d.at(i-1)).dot(c.at(i-1))));
-    }
-    Eigen::Matrix<double, 3, 3> _M_0;
-    _M_0 << (_sum_0), (_sum_1), (_sum_2),
-    (_sum_3), (_sum_4), (_sum_5),
-    (_sum_6), (_sum_7), (_sum_8);
-    Eigen::Matrix<double, 3, 3> M = _M_0;
+    double E = 1 / pow(σ_N, 2) * E_I + _sum_0 + _sum_1 + _sum_2;
 
-    double _sum_9 = 0;
-    for(int i=1; i<=k.size(); i++){
-        _sum_9 += ((k.at(i-1)).dot(a.at(i-1)));
-    }
-    double _sum_10 = 0;
-    for(int i=1; i<=k.size(); i++){
-        _sum_10 += ((k.at(i-1)).dot(b.at(i-1)));
-    }
-    double _sum_11 = 0;
-    for(int i=1; i<=k.size(); i++){
-        _sum_11 += ((k.at(i-1)).dot(c.at(i-1)));
-    }
-    Eigen::Matrix<double, 3, 1> _r_0;
-    _r_0 << _sum_9,
-    _sum_10,
-    _sum_11;
-    Eigen::Matrix<double, 3, 1> r = _r_0;
-
-    Eigen::Matrix<double, 3, 1> q = M.inverse() * r;
-
-    return q;
+    return E;
 }
 
 
-void generateRandomData(std::vector<Eigen::Matrix<double, 3, 1>> & p,
-    std::vector<Eigen::Matrix<double, 3, 1>> & d)
+void generateRandomData(double & σ_N,
+    double & E_I,
+    std::vector<double> & α,
+    std::vector<double> & β,
+    std::vector<double> & σ_S,
+    std::vector<double> & σ_T,
+    std::vector<double> & ρ,
+    std::vector<double> & ρ_bar,
+    std::vector<double> & σ_ρ,
+    std::vector<double> & ā)
 {
+    σ_N = rand() % 10;
+    E_I = rand() % 10;
     const int _dim_0 = rand()%10;
-    p.resize(_dim_0);
+    α.resize(_dim_0);
     for(int i=0; i<_dim_0; i++){
-        p[i] = Eigen::VectorXd::Random(3);
+        α[i] = rand() % 10;
     }
-    d.resize(_dim_0);
+    β.resize(_dim_0);
     for(int i=0; i<_dim_0; i++){
-        d[i] = Eigen::VectorXd::Random(3);
+        β[i] = rand() % 10;
+    }
+    σ_S.resize(_dim_0);
+    for(int i=0; i<_dim_0; i++){
+        σ_S[i] = rand() % 10;
+    }
+    σ_T.resize(_dim_0);
+    for(int i=0; i<_dim_0; i++){
+        σ_T[i] = rand() % 10;
+    }
+    ρ.resize(_dim_0);
+    for(int i=0; i<_dim_0; i++){
+        ρ[i] = rand() % 10;
+    }
+    ρ_bar.resize(_dim_0);
+    for(int i=0; i<_dim_0; i++){
+        ρ_bar[i] = rand() % 10;
+    }
+    σ_ρ.resize(_dim_0);
+    for(int i=0; i<_dim_0; i++){
+        σ_ρ[i] = rand() % 10;
+    }
+    ā.resize(_dim_0);
+    for(int i=0; i<_dim_0; i++){
+        ā[i] = rand() % 10;
     }
 }
 
 
 int main(int argc, char *argv[])
 {
-    std::vector<Eigen::Matrix<double, 3, 1>> p;
-    std::vector<Eigen::Matrix<double, 3, 1>> d;
-    generateRandomData(p, d);
-    Eigen::Matrix<double, 3, 1> func_value = demo24(p, d);
+    double σ_N;
+    double E_I;
+    std::vector<double> α;
+    std::vector<double> β;
+    std::vector<double> σ_S;
+    std::vector<double> σ_T;
+    std::vector<double> ρ;
+    std::vector<double> ρ_bar;
+    std::vector<double> σ_ρ;
+    std::vector<double> ā;
+    generateRandomData(σ_N, E_I, α, β, σ_S, σ_T, ρ, ρ_bar, σ_ρ, ā);
+    double func_value = demo24(σ_N, E_I, α, β, σ_S, σ_T, ρ, ρ_bar, σ_ρ, ā);
     std::cout<<"func_value:\n"<<func_value<<std::endl;
     return 0;
 }

@@ -1,5 +1,7 @@
 """
-`k_angle(D_m)` = 3(sqrt(2)v)^(2/3)(7/4||`D_m`||_F^2 -1/4||J_3 `D_m`^T`D_m`||_F)^(-1)
+from linearalgebra: tr
+
+`k_angle(D_m)` = 3(sqrt(2)v)^(2/3)(7/4||`D_m`||_F^2 -1/4tr(J_3 `D_m`^T`D_m`))^(-1)
 
 where
 
@@ -30,7 +32,7 @@ def demo19(D_m, J, v):
     assert J.shape == (_dim_0, n, n)
     assert np.ndim(v) == 0
 
-    k_angle_left_parenthesis_D_m_right_parenthesis = 3 * np.power((np.sqrt(2) * v), (2 / 3)) * np.linalg.inv((7 / 4 * np.power(np.linalg.norm(D_m, 'fro'), 2) - 1 / 4 * np.linalg.norm(J[3-1] @ D_m.T @ D_m, 'fro')))
+    k_angle_left_parenthesis_D_m_right_parenthesis = 3 * np.power((np.sqrt(2) * v), (2 / 3)) * 1 / ((7 / 4 * np.power(np.linalg.norm(D_m, 'fro'), 2) - 1 / 4 * np.trace(J[3-1] @ D_m.T @ D_m)))
 
     return k_angle_left_parenthesis_D_m_right_parenthesis
 

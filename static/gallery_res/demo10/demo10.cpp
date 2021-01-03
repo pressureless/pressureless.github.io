@@ -27,7 +27,7 @@ double demo10(
     const std::vector<Eigen::VectorXd> & b)
 {
     const long _dim_0 = A.size();
-    const long m = b.size();
+    const long m = b[0].rows();
     const long n = x_0.size();
     assert( A.size() == _dim_0 );
     for( const auto& el : A ) {

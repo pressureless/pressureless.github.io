@@ -68,6 +68,7 @@ void generateRandomData(std::vector<Eigen::VectorXd> & a,
     }
     w.resize(_dim_0);
     for(int i=0; i<_dim_0; i++){
+        w[i] = rand() % 10;
     }
     x = Eigen::VectorXd::Random(n);
 }

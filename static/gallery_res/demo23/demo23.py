@@ -1,23 +1,19 @@
 """
-given
-p_i: ℝ^3: points on lines
-d_i: ℝ^3: unit directions along lines
+`x(θ,v)` =  (`r bar`⋅`D_A`(`θ`, v)+`k_r``δ`(`θ`, v))/(`n bar`⋅`D_A`(`θ`, v)+`k_n``δ`(`θ`, v))
+`y(θ,v)` =  (`s bar`⋅`D_A`(`θ`, v)+`k_s``δ`(`θ`, v))/(`n bar`⋅`D_A`(`θ`, v)+`k_n``δ`(`θ`, v))
 
-k_i = (p_i - (p_i⋅d_i)d_i)
-a_i = [1,0,0]^T - d_i,0 d_i
-b_i = [0,1,0]^T - d_i,1 d_i
-c_i = [0,0,1]^T - d_i,2 d_i
+where
 
- 
-M = [ (∑_i( a_i,0 - d_i,0 (d_i⋅a_i) ))    (∑_i( a_i,1 - d_i,1 (d_i⋅a_i) ))    (∑_i( a_i,2 - d_i,2 (d_i⋅a_i) ))
-      (∑_i( b_i,0 - d_i,0 (d_i⋅b_i) ))    (∑_i( b_i,1 - d_i,1 (d_i⋅b_i) ))    (∑_i( b_i,2 - d_i,2 (d_i⋅b_i) ))
-      (∑_i( c_i,0 - d_i,0 (d_i⋅c_i) ))    (∑_i( c_i,1 - d_i,1 (d_i⋅c_i) ))    (∑_i( c_i,2 - d_i,2 (d_i⋅c_i) )) ]
-
-r = [ ∑_i( k_i⋅a_i )
-      ∑_i( k_i⋅b_i )
-      ∑_i( k_i⋅c_i ) ]
-
-q = M^(-1) r
+`r bar`: ℝ^3
+`s bar`: ℝ^3
+`n bar`: ℝ^3
+`θ`: ℝ 
+v: ℝ 
+`k_r`: ℝ 
+`k_s`: ℝ 
+`k_n`: ℝ 
+`D_A`: ℝ,ℝ->ℝ^3
+`δ`: ℝ,ℝ->ℝ  
 """
 import numpy as np
 import scipy
@@ -27,103 +23,66 @@ from scipy.integrate import quad
 from scipy.optimize import minimize
 
 
-def demo23(p, d):
+def demo23(r_bar, s_bar, n_bar, θ, v, k_r, k_s, k_n, D_A, δ):
     """
-    :param :p : ℝ^3: points on lines
-    :param :d : ℝ^3: unit directions along lines
+    :param :r_bar : ℝ^3
+    :param :s_bar : ℝ^3
+    :param :n_bar : ℝ^3
+    :param :θ : ℝ
+    :param :v : ℝ
+    :param :k_r : ℝ
+    :param :k_s : ℝ
+    :param :k_n : ℝ
+    :param :D_A : ℝ,ℝ->ℝ^3
+    :param :δ : ℝ,ℝ->ℝ
     """
-    p = np.asarray(p, dtype=np.float64)
-    d = np.asarray(d, dtype=np.float64)
+    r_bar = np.asarray(r_bar, dtype=np.float64)
+    s_bar = np.asarray(s_bar, dtype=np.float64)
+    n_bar = np.asarray(n_bar, dtype=np.float64)
 
-    _dim_0 = p.shape[0]
-    assert p.shape == (_dim_0, 3, 1)
-    assert d.shape == (_dim_0, 3, 1)
+    assert r_bar.shape == (3,)
+    assert s_bar.shape == (3,)
+    assert n_bar.shape == (3,)
+    assert np.ndim(θ) == 0
+    assert np.ndim(v) == 0
+    assert np.ndim(k_r) == 0
+    assert np.ndim(k_s) == 0
+    assert np.ndim(k_n) == 0
 
-    k = np.zeros((_dim_0, 3, 1))
-    for i in range(1, _dim_0+1):
-        k[i] = (p[i-1] - (np.dot((p[i-1]).ravel(), (d[i-1]).ravel())) * d[i-1])
+    x_left_parenthesis_θ_comma_v_right_parenthesis = (np.dot((r_bar).ravel(), (D_A(θ, v)).ravel()) + k_r * δ(θ, v)) / (np.dot((n_bar).ravel(), (D_A(θ, v)).ravel()) + k_n * δ(θ, v))
 
-    _a_i_0 = np.zeros((1, 3))
-    _a_i_0[0] = [1, 0, 0]
-    a = np.zeros((_dim_0, 3, 1))
-    for i in range(1, _dim_0+1):
-        a[i] = _a_i_0.T - d[i-1][0-1] * d[i-1]
+    y_left_parenthesis_θ_comma_v_right_parenthesis = (np.dot((s_bar).ravel(), (D_A(θ, v)).ravel()) + k_s * δ(θ, v)) / (np.dot((n_bar).ravel(), (D_A(θ, v)).ravel()) + k_n * δ(θ, v))
 
-    _b_i_0 = np.zeros((1, 3))
-    _b_i_0[0] = [0, 1, 0]
-    b = np.zeros((_dim_0, 3, 1))
-    for i in range(1, _dim_0+1):
-        b[i] = _b_i_0.T - d[i-1][1-1] * d[i-1]
-
-    _c_i_0 = np.zeros((1, 3))
-    _c_i_0[0] = [0, 0, 1]
-    c = np.zeros((_dim_0, 3, 1))
-    for i in range(1, _dim_0+1):
-        c[i] = _c_i_0.T - d[i-1][2-1] * d[i-1]
-
-    _sum_0 = 0
-    for i in range(1, len(d)+1):
-        _sum_0 += (a[i-1][0-1] - d[i-1][0-1] * (np.dot((d[i-1]).ravel(), (a[i-1]).ravel())))
-    _sum_1 = 0
-    for i in range(1, len(d)+1):
-        _sum_1 += (a[i-1][1-1] - d[i-1][1-1] * (np.dot((d[i-1]).ravel(), (a[i-1]).ravel())))
-    _sum_2 = 0
-    for i in range(1, len(d)+1):
-        _sum_2 += (a[i-1][2-1] - d[i-1][2-1] * (np.dot((d[i-1]).ravel(), (a[i-1]).ravel())))
-    _sum_3 = 0
-    for i in range(1, len(d)+1):
-        _sum_3 += (b[i-1][0-1] - d[i-1][0-1] * (np.dot((d[i-1]).ravel(), (b[i-1]).ravel())))
-    _sum_4 = 0
-    for i in range(1, len(d)+1):
-        _sum_4 += (b[i-1][1-1] - d[i-1][1-1] * (np.dot((d[i-1]).ravel(), (b[i-1]).ravel())))
-    _sum_5 = 0
-    for i in range(1, len(d)+1):
-        _sum_5 += (b[i-1][2-1] - d[i-1][2-1] * (np.dot((d[i-1]).ravel(), (b[i-1]).ravel())))
-    _sum_6 = 0
-    for i in range(1, len(d)+1):
-        _sum_6 += (c[i-1][0-1] - d[i-1][0-1] * (np.dot((d[i-1]).ravel(), (c[i-1]).ravel())))
-    _sum_7 = 0
-    for i in range(1, len(d)+1):
-        _sum_7 += (c[i-1][1-1] - d[i-1][1-1] * (np.dot((d[i-1]).ravel(), (c[i-1]).ravel())))
-    _sum_8 = 0
-    for i in range(1, len(d)+1):
-        _sum_8 += (c[i-1][2-1] - d[i-1][2-1] * (np.dot((d[i-1]).ravel(), (c[i-1]).ravel())))
-    _M_0 = np.zeros((3, 3))
-    _M_0[0] = [(_sum_0), (_sum_1), (_sum_2)]
-    _M_0[1] = [(_sum_3), (_sum_4), (_sum_5)]
-    _M_0[2] = [(_sum_6), (_sum_7), (_sum_8)]
-    M = _M_0
-
-    _sum_9 = 0
-    for i in range(1, len(k)+1):
-        _sum_9 += (np.dot((k[i-1]).ravel(), (a[i-1]).ravel()))
-    _sum_10 = 0
-    for i in range(1, len(k)+1):
-        _sum_10 += (np.dot((k[i-1]).ravel(), (b[i-1]).ravel()))
-    _sum_11 = 0
-    for i in range(1, len(k)+1):
-        _sum_11 += (np.dot((k[i-1]).ravel(), (c[i-1]).ravel()))
-    _r_0 = np.zeros((3, 1))
-    _r_0[0] = [_sum_9]
-    _r_0[1] = [_sum_10]
-    _r_0[2] = [_sum_11]
-    r = _r_0
-
-    q = np.linalg.inv(M) @ r
-
-    return q
+    return y_left_parenthesis_θ_comma_v_right_parenthesis
 
 
 def generateRandomData():
-    _dim_0 = np.random.randint(10)
-    p = np.random.randn(_dim_0, 3, 1)
-    d = np.random.randn(_dim_0, 3, 1)
-    return p, d
+    θ = np.random.randn()
+    v = np.random.randn()
+    k_r = np.random.randn()
+    k_s = np.random.randn()
+    k_n = np.random.randn()
+    r_bar = np.random.randn(3)
+    s_bar = np.random.randn(3)
+    n_bar = np.random.randn(3)
+    def D_A(p0, p1):
+        return np.random.randn(3)
+    def δ(p0, p1):
+        return np.random.randn()
+    return r_bar, s_bar, n_bar, θ, v, k_r, k_s, k_n, D_A, δ
 
 
 if __name__ == '__main__':
-    p, d = generateRandomData()
-    print("p:", p)
-    print("d:", d)
-    func_value = demo23(p, d)
+    r_bar, s_bar, n_bar, θ, v, k_r, k_s, k_n, D_A, δ = generateRandomData()
+    print("r_bar:", r_bar)
+    print("s_bar:", s_bar)
+    print("n_bar:", n_bar)
+    print("θ:", θ)
+    print("v:", v)
+    print("k_r:", k_r)
+    print("k_s:", k_s)
+    print("k_n:", k_n)
+    print("D_A:", D_A)
+    print("δ:", δ)
+    func_value = demo23(r_bar, s_bar, n_bar, θ, v, k_r, k_s, k_n, D_A, δ)
     print("func_value: ", func_value)

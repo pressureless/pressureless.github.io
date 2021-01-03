@@ -3,50 +3,28 @@
 \usepackage[bb=boondox]{mathalfa}
 \usepackage{mathtools}
 \usepackage{amssymb}
+\usepackage{ctex}
+\setmainfont{Linux Libertine O}
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
 \begin{document}
+\[
+\textit{E} = \frac{1}{\textit{σ\_N}^{2}}\textit{E\_I} + \sum_{\textit{j} > 1} \frac{\textit{α}_{ \textit{j} }^{2}}{\textit{σ\_S}_{ \textit{j} }^{2}} + \sum_{\textit{j} > 1} \frac{\textit{β}_{ \textit{j} }^{2}}{\textit{σ\_T}_{ \textit{j} }^{2}} + \sum_\textit{j} \frac{(\textit{ρ}_{ \textit{j} } - \textit{ρ\_bar}_{ \textit{j} })^{2}}{\textit{σ\_ρ}_{ \textit{j} }^{2}}
+\]
 
-given
+where
 \begin{itemize}
-\item $p_{i} \in \mathbb{R}^{ 3}:$points on lines
-\item $d_{i} \in \mathbb{R}^{ 3}:$unit directions along lines
+\item $\textit{σ\_N} \in \mathbb{{R}}$
+\item $\textit{E\_I} \in \mathbb{{R}}$
+\item $\textit{α}_{\textit{i}} \in \mathbb{{R}}$
+\item $\textit{β}_{\textit{i}} \in \mathbb{{R}}$
+\item $\textit{σ\_S}_{\textit{i}} \in \mathbb{{R}}$
+\item $\textit{σ\_T}_{\textit{i}} \in \mathbb{{R}}$
+\item $\textit{ρ}_{\textit{i}} \in \mathbb{{R}}$
+\item $\textit{ρ\_bar}_{\textit{i}} \in \mathbb{{R}}$
+\item $\textit{σ\_ρ}_{\textit{i}} \in \mathbb{{R}}$
+\item $\textit{ā}_{\textit{i}} \in \mathbb{{R}}$
 \end{itemize}
 
-\[
-k_{i} = (p_{ i } - (p_{ i } \cdot d_{ i }) \cdot d_{ i })
-\]
-\[
-a_{i} = \begin{bmatrix}
-1 & 0 & 0\\
-\end{bmatrix}^T - d_{ i, 0 } \cdot d_{ i }
-\]
-\[
-b_{i} = \begin{bmatrix}
-0 & 1 & 0\\
-\end{bmatrix}^T - d_{ i, 1 } \cdot d_{ i }
-\]
-\[
-c_{i} = \begin{bmatrix}
-0 & 0 & 1\\
-\end{bmatrix}^T - d_{ i, 2 } \cdot d_{ i }
-\]
-\[
-M = \begin{bmatrix}
-(\sum_i (a_{ i, 0 } - d_{ i, 0 } \cdot (d_{ i } \cdot a_{ i }))) & (\sum_i (a_{ i, 1 } - d_{ i, 1 } \cdot (d_{ i } \cdot a_{ i }))) & (\sum_i (a_{ i, 2 } - d_{ i, 2 } \cdot (d_{ i } \cdot a_{ i })))\\
-(\sum_i (b_{ i, 0 } - d_{ i, 0 } \cdot (d_{ i } \cdot b_{ i }))) & (\sum_i (b_{ i, 1 } - d_{ i, 1 } \cdot (d_{ i } \cdot b_{ i }))) & (\sum_i (b_{ i, 2 } - d_{ i, 2 } \cdot (d_{ i } \cdot b_{ i })))\\
-(\sum_i (c_{ i, 0 } - d_{ i, 0 } \cdot (d_{ i } \cdot c_{ i }))) & (\sum_i (c_{ i, 1 } - d_{ i, 1 } \cdot (d_{ i } \cdot c_{ i }))) & (\sum_i (c_{ i, 2 } - d_{ i, 2 } \cdot (d_{ i } \cdot c_{ i })))\\
-\end{bmatrix}
-\]
-\[
-r = \begin{bmatrix}
-\sum_i (k_{ i } \cdot a_{ i })\\
-\sum_i (k_{ i } \cdot b_{ i })\\
-\sum_i (k_{ i } \cdot c_{ i })\\
-\end{bmatrix}
-\]
-\[
-q = M^{-1} \cdot r
-\]
 
 \end{document}

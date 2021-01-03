@@ -1,23 +1,15 @@
 /*
-given
-p_i: ℝ^3: points on lines
-d_i: ℝ^3: unit directions along lines
+`G_σ(s_i^k)` = sum_j l_j exp(-`dist`(`b_i`, b_j)/(2`σ`^2))(s_j)^k
 
-k_i = (p_i - (p_i⋅d_i)d_i)
-a_i = [1,0,0]^T - d_i,0 d_i
-b_i = [0,1,0]^T - d_i,1 d_i
-c_i = [0,0,1]^T - d_i,2 d_i
+where
 
- 
-M = [ (∑_i( a_i,0 - d_i,0 (d_i⋅a_i) ))    (∑_i( a_i,1 - d_i,1 (d_i⋅a_i) ))    (∑_i( a_i,2 - d_i,2 (d_i⋅a_i) ))
-      (∑_i( b_i,0 - d_i,0 (d_i⋅b_i) ))    (∑_i( b_i,1 - d_i,1 (d_i⋅b_i) ))    (∑_i( b_i,2 - d_i,2 (d_i⋅b_i) ))
-      (∑_i( c_i,0 - d_i,0 (d_i⋅c_i) ))    (∑_i( c_i,1 - d_i,1 (d_i⋅c_i) ))    (∑_i( c_i,2 - d_i,2 (d_i⋅c_i) )) ]
-
-r = [ ∑_i( k_i⋅a_i )
-      ∑_i( k_i⋅b_i )
-      ∑_i( k_i⋅c_i ) ]
-
-q = M^(-1) r
+l_j: ℝ : the length of b_j
+`dist`: ℝ, ℝ -> ℝ : measures the geodesic distance between the centers of b_i and b_j along the boundary
+`σ`: ℝ
+`b_i`: ℝ
+b_j: ℝ
+s_j: ℝ : unit direction vector of b_i
+k: ℝ : iteration number
 */
 #include <Eigen/Core>
 #include <Eigen/Dense>
@@ -28,134 +20,80 @@ q = M^(-1) r
 /**
  * demo28
  *
- * @param p  ℝ^3: points on lines
- * @param d  ℝ^3: unit directions along lines
- * @return q
+ * @param l  ℝ : the length of b_j
+ * @param dist  ℝ, ℝ -> ℝ : measures the geodesic distance between the centers of b_i and b_j along the boundary
+ * @param σ  ℝ
+ * @param b_i  ℝ
+ * @param b  ℝ
+ * @param s  ℝ : unit direction vector of b_i
+ * @param k  ℝ : iteration number
+ * @return G_σ_left_parenthesis_s_i_circumflex_accent_k_right_parenthesis
  */
-Eigen::Matrix<double, 3, 1> demo28(
-    const std::vector<Eigen::Matrix<double, 3, 1>> & p,
-    const std::vector<Eigen::Matrix<double, 3, 1>> & d)
+double demo28(
+    const std::vector<double> & l,
+    const std::function<double(double, double)> & dist,
+    const double & σ,
+    const double & b_i,
+    const std::vector<double> & b,
+    const std::vector<double> & s,
+    const double & k)
 {
-    const long _dim_0 = p.size();
-
-
-    std::vector<Eigen::Matrix<double, 3, 1>> k(_dim_0);
-    for( int i=1; i<=_dim_0; i++){
-        k.at(i) = (p.at(i-1) - ((p.at(i-1)).dot(d.at(i-1))) * d.at(i-1));
-    }
-
-
-    Eigen::Matrix<double, 1, 3> _a_i_0;
-    _a_i_0 << 1, 0, 0;
-    std::vector<Eigen::Matrix<double, 3, 1>> a(_dim_0);
-    for( int i=1; i<=_dim_0; i++){
-        a.at(i) = _a_i_0.transpose() - d.at(i-1)(0-1) * d.at(i-1);
-    }
-
-
-    Eigen::Matrix<double, 1, 3> _b_i_0;
-    _b_i_0 << 0, 1, 0;
-    std::vector<Eigen::Matrix<double, 3, 1>> b(_dim_0);
-    for( int i=1; i<=_dim_0; i++){
-        b.at(i) = _b_i_0.transpose() - d.at(i-1)(1-1) * d.at(i-1);
-    }
-
-
-    Eigen::Matrix<double, 1, 3> _c_i_0;
-    _c_i_0 << 0, 0, 1;
-    std::vector<Eigen::Matrix<double, 3, 1>> c(_dim_0);
-    for( int i=1; i<=_dim_0; i++){
-        c.at(i) = _c_i_0.transpose() - d.at(i-1)(2-1) * d.at(i-1);
-    }
-
+    const long _dim_0 = l.size();
+    assert( l.size() == _dim_0 );
+    assert( b.size() == _dim_0 );
+    assert( s.size() == _dim_0 );
 
     double _sum_0 = 0;
-    for(int i=1; i<=a.size(); i++){
-        _sum_0 += (a.at(i-1)(0-1) - d.at(i-1)(0-1) * ((d.at(i-1)).dot(a.at(i-1))));
+    for(int j=1; j<=b.size(); j++){
+        _sum_0 += l.at(j-1) * exp(-dist(b_i, b.at(j-1)) / (2 * pow(σ, 2))) * pow((s.at(j-1)), k);
     }
-    double _sum_1 = 0;
-    for(int i=1; i<=d.size(); i++){
-        _sum_1 += (a.at(i-1)(1-1) - d.at(i-1)(1-1) * ((d.at(i-1)).dot(a.at(i-1))));
-    }
-    double _sum_2 = 0;
-    for(int i=1; i<=d.size(); i++){
-        _sum_2 += (a.at(i-1)(2-1) - d.at(i-1)(2-1) * ((d.at(i-1)).dot(a.at(i-1))));
-    }
-    double _sum_3 = 0;
-    for(int i=1; i<=b.size(); i++){
-        _sum_3 += (b.at(i-1)(0-1) - d.at(i-1)(0-1) * ((d.at(i-1)).dot(b.at(i-1))));
-    }
-    double _sum_4 = 0;
-    for(int i=1; i<=d.size(); i++){
-        _sum_4 += (b.at(i-1)(1-1) - d.at(i-1)(1-1) * ((d.at(i-1)).dot(b.at(i-1))));
-    }
-    double _sum_5 = 0;
-    for(int i=1; i<=b.size(); i++){
-        _sum_5 += (b.at(i-1)(2-1) - d.at(i-1)(2-1) * ((d.at(i-1)).dot(b.at(i-1))));
-    }
-    double _sum_6 = 0;
-    for(int i=1; i<=c.size(); i++){
-        _sum_6 += (c.at(i-1)(0-1) - d.at(i-1)(0-1) * ((d.at(i-1)).dot(c.at(i-1))));
-    }
-    double _sum_7 = 0;
-    for(int i=1; i<=d.size(); i++){
-        _sum_7 += (c.at(i-1)(1-1) - d.at(i-1)(1-1) * ((d.at(i-1)).dot(c.at(i-1))));
-    }
-    double _sum_8 = 0;
-    for(int i=1; i<=d.size(); i++){
-        _sum_8 += (c.at(i-1)(2-1) - d.at(i-1)(2-1) * ((d.at(i-1)).dot(c.at(i-1))));
-    }
-    Eigen::Matrix<double, 3, 3> _M_0;
-    _M_0 << (_sum_0), (_sum_1), (_sum_2),
-    (_sum_3), (_sum_4), (_sum_5),
-    (_sum_6), (_sum_7), (_sum_8);
-    Eigen::Matrix<double, 3, 3> M = _M_0;
+    double G_σ_left_parenthesis_s_i_circumflex_accent_k_right_parenthesis = _sum_0;
 
-    double _sum_9 = 0;
-    for(int i=1; i<=k.size(); i++){
-        _sum_9 += ((k.at(i-1)).dot(a.at(i-1)));
-    }
-    double _sum_10 = 0;
-    for(int i=1; i<=k.size(); i++){
-        _sum_10 += ((k.at(i-1)).dot(b.at(i-1)));
-    }
-    double _sum_11 = 0;
-    for(int i=1; i<=k.size(); i++){
-        _sum_11 += ((k.at(i-1)).dot(c.at(i-1)));
-    }
-    Eigen::Matrix<double, 3, 1> _r_0;
-    _r_0 << _sum_9,
-    _sum_10,
-    _sum_11;
-    Eigen::Matrix<double, 3, 1> r = _r_0;
-
-    Eigen::Matrix<double, 3, 1> q = M.inverse() * r;
-
-    return q;
+    return G_σ_left_parenthesis_s_i_circumflex_accent_k_right_parenthesis;
 }
 
 
-void generateRandomData(std::vector<Eigen::Matrix<double, 3, 1>> & p,
-    std::vector<Eigen::Matrix<double, 3, 1>> & d)
+void generateRandomData(std::vector<double> & l,
+    std::function<double(double, double)> & dist,
+    double & σ,
+    double & b_i,
+    std::vector<double> & b,
+    std::vector<double> & s,
+    double & k)
 {
+    σ = rand() % 10;
+    b_i = rand() % 10;
+    k = rand() % 10;
     const int _dim_0 = rand()%10;
-    p.resize(_dim_0);
+    l.resize(_dim_0);
     for(int i=0; i<_dim_0; i++){
-        p[i] = Eigen::VectorXd::Random(3);
+        l[i] = rand() % 10;
     }
-    d.resize(_dim_0);
+    dist = [](double, double)->double{
+        return rand() % 10;
+    };
+    b.resize(_dim_0);
     for(int i=0; i<_dim_0; i++){
-        d[i] = Eigen::VectorXd::Random(3);
+        b[i] = rand() % 10;
+    }
+    s.resize(_dim_0);
+    for(int i=0; i<_dim_0; i++){
+        s[i] = rand() % 10;
     }
 }
 
 
 int main(int argc, char *argv[])
 {
-    std::vector<Eigen::Matrix<double, 3, 1>> p;
-    std::vector<Eigen::Matrix<double, 3, 1>> d;
-    generateRandomData(p, d);
-    Eigen::Matrix<double, 3, 1> func_value = demo28(p, d);
+    std::vector<double> l;
+    std::function<double(double, double)> dist;
+    double σ;
+    double b_i;
+    std::vector<double> b;
+    std::vector<double> s;
+    double k;
+    generateRandomData(l, dist, σ, b_i, b, s, k);
+    double func_value = demo28(l, dist, σ, b_i, b, s, k);
     std::cout<<"func_value:\n"<<func_value<<std::endl;
     return 0;
 }

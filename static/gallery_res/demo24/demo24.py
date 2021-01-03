@@ -1,23 +1,19 @@
 """
-given
-p_i: ℝ^3: points on lines
-d_i: ℝ^3: unit directions along lines
 
-k_i = (p_i - (p_i⋅d_i)d_i)
-a_i = [1,0,0]^T - d_i,0 d_i
-b_i = [0,1,0]^T - d_i,1 d_i
-c_i = [0,0,1]^T - d_i,2 d_i
+E = 1/`σ_N`^2`E_I` + sum_(j for j>1) α_j²/`σ_S`_j^2  + sum_(j for j>1) β_j²/`σ_T`_j^2   + sum_j (ρ_j-`ρ_bar`_j)²/`σ_ρ`_j^2 
 
- 
-M = [ (∑_i( a_i,0 - d_i,0 (d_i⋅a_i) ))    (∑_i( a_i,1 - d_i,1 (d_i⋅a_i) ))    (∑_i( a_i,2 - d_i,2 (d_i⋅a_i) ))
-      (∑_i( b_i,0 - d_i,0 (d_i⋅b_i) ))    (∑_i( b_i,1 - d_i,1 (d_i⋅b_i) ))    (∑_i( b_i,2 - d_i,2 (d_i⋅b_i) ))
-      (∑_i( c_i,0 - d_i,0 (d_i⋅c_i) ))    (∑_i( c_i,1 - d_i,1 (d_i⋅c_i) ))    (∑_i( c_i,2 - d_i,2 (d_i⋅c_i) )) ]
+where
 
-r = [ ∑_i( k_i⋅a_i )
-      ∑_i( k_i⋅b_i )
-      ∑_i( k_i⋅c_i ) ]
-
-q = M^(-1) r
+`σ_N`: ℝ 
+`E_I`: ℝ
+α_i : ℝ
+β_i : ℝ
+`σ_S`_i: ℝ 
+`σ_T`_i: ℝ 
+ρ_i: ℝ 
+`ρ_bar`_i: ℝ 
+`σ_ρ`_i: ℝ 
+ā_i: ℝ 
 """
 import numpy as np
 import scipy
@@ -27,103 +23,82 @@ from scipy.integrate import quad
 from scipy.optimize import minimize
 
 
-def demo24(p, d):
+def demo24(σ_N, E_I, α, β, σ_S, σ_T, ρ, ρ_bar, σ_ρ, ā):
     """
-    :param :p : ℝ^3: points on lines
-    :param :d : ℝ^3: unit directions along lines
+    :param :σ_N : ℝ
+    :param :E_I : ℝ
+    :param :α : ℝ
+    :param :β : ℝ
+    :param :σ_S : ℝ
+    :param :σ_T : ℝ
+    :param :ρ : ℝ
+    :param :ρ_bar : ℝ
+    :param :σ_ρ : ℝ
+    :param :ā : ℝ
     """
-    p = np.asarray(p, dtype=np.float64)
-    d = np.asarray(d, dtype=np.float64)
+    α = np.asarray(α)
+    β = np.asarray(β)
+    σ_S = np.asarray(σ_S)
+    σ_T = np.asarray(σ_T)
+    ρ = np.asarray(ρ)
+    ρ_bar = np.asarray(ρ_bar)
+    σ_ρ = np.asarray(σ_ρ)
+    ā = np.asarray(ā)
 
-    _dim_0 = p.shape[0]
-    assert p.shape == (_dim_0, 3, 1)
-    assert d.shape == (_dim_0, 3, 1)
-
-    k = np.zeros((_dim_0, 3, 1))
-    for i in range(1, _dim_0+1):
-        k[i] = (p[i-1] - (np.dot((p[i-1]).ravel(), (d[i-1]).ravel())) * d[i-1])
-
-    _a_i_0 = np.zeros((1, 3))
-    _a_i_0[0] = [1, 0, 0]
-    a = np.zeros((_dim_0, 3, 1))
-    for i in range(1, _dim_0+1):
-        a[i] = _a_i_0.T - d[i-1][0-1] * d[i-1]
-
-    _b_i_0 = np.zeros((1, 3))
-    _b_i_0[0] = [0, 1, 0]
-    b = np.zeros((_dim_0, 3, 1))
-    for i in range(1, _dim_0+1):
-        b[i] = _b_i_0.T - d[i-1][1-1] * d[i-1]
-
-    _c_i_0 = np.zeros((1, 3))
-    _c_i_0[0] = [0, 0, 1]
-    c = np.zeros((_dim_0, 3, 1))
-    for i in range(1, _dim_0+1):
-        c[i] = _c_i_0.T - d[i-1][2-1] * d[i-1]
+    _dim_0 = α.shape[0]
+    assert np.ndim(σ_N) == 0
+    assert np.ndim(E_I) == 0
+    assert α.shape == (_dim_0,)
+    assert β.shape == (_dim_0,)
+    assert σ_S.shape == (_dim_0,)
+    assert σ_T.shape == (_dim_0,)
+    assert ρ.shape == (_dim_0,)
+    assert ρ_bar.shape == (_dim_0,)
+    assert σ_ρ.shape == (_dim_0,)
+    assert ā.shape == (_dim_0,)
 
     _sum_0 = 0
-    for i in range(1, len(a)+1):
-        _sum_0 += (a[i-1][0-1] - d[i-1][0-1] * (np.dot((d[i-1]).ravel(), (a[i-1]).ravel())))
+    for j in range(1, len(α)+1):
+        if(j > 1):
+            _sum_0 += np.power(α[j-1], 2) / np.power(σ_S[j-1], 2)
     _sum_1 = 0
-    for i in range(1, len(a)+1):
-        _sum_1 += (a[i-1][1-1] - d[i-1][1-1] * (np.dot((d[i-1]).ravel(), (a[i-1]).ravel())))
+    for j in range(1, len(β)+1):
+        if(j > 1):
+            _sum_1 += np.power(β[j-1], 2) / np.power(σ_T[j-1], 2)
     _sum_2 = 0
-    for i in range(1, len(a)+1):
-        _sum_2 += (a[i-1][2-1] - d[i-1][2-1] * (np.dot((d[i-1]).ravel(), (a[i-1]).ravel())))
-    _sum_3 = 0
-    for i in range(1, len(d)+1):
-        _sum_3 += (b[i-1][0-1] - d[i-1][0-1] * (np.dot((d[i-1]).ravel(), (b[i-1]).ravel())))
-    _sum_4 = 0
-    for i in range(1, len(d)+1):
-        _sum_4 += (b[i-1][1-1] - d[i-1][1-1] * (np.dot((d[i-1]).ravel(), (b[i-1]).ravel())))
-    _sum_5 = 0
-    for i in range(1, len(b)+1):
-        _sum_5 += (b[i-1][2-1] - d[i-1][2-1] * (np.dot((d[i-1]).ravel(), (b[i-1]).ravel())))
-    _sum_6 = 0
-    for i in range(1, len(d)+1):
-        _sum_6 += (c[i-1][0-1] - d[i-1][0-1] * (np.dot((d[i-1]).ravel(), (c[i-1]).ravel())))
-    _sum_7 = 0
-    for i in range(1, len(c)+1):
-        _sum_7 += (c[i-1][1-1] - d[i-1][1-1] * (np.dot((d[i-1]).ravel(), (c[i-1]).ravel())))
-    _sum_8 = 0
-    for i in range(1, len(c)+1):
-        _sum_8 += (c[i-1][2-1] - d[i-1][2-1] * (np.dot((d[i-1]).ravel(), (c[i-1]).ravel())))
-    _M_0 = np.zeros((3, 3))
-    _M_0[0] = [(_sum_0), (_sum_1), (_sum_2)]
-    _M_0[1] = [(_sum_3), (_sum_4), (_sum_5)]
-    _M_0[2] = [(_sum_6), (_sum_7), (_sum_8)]
-    M = _M_0
+    for j in range(1, len(ρ)+1):
+        _sum_2 += np.power((ρ[j-1] - ρ_bar[j-1]), 2) / np.power(σ_ρ[j-1], 2)
+    E = 1 / np.power(σ_N, 2) * E_I + _sum_0 + _sum_1 + _sum_2
 
-    _sum_9 = 0
-    for i in range(1, len(k)+1):
-        _sum_9 += (np.dot((k[i-1]).ravel(), (a[i-1]).ravel()))
-    _sum_10 = 0
-    for i in range(1, len(k)+1):
-        _sum_10 += (np.dot((k[i-1]).ravel(), (b[i-1]).ravel()))
-    _sum_11 = 0
-    for i in range(1, len(k)+1):
-        _sum_11 += (np.dot((k[i-1]).ravel(), (c[i-1]).ravel()))
-    _r_0 = np.zeros((3, 1))
-    _r_0[0] = [_sum_9]
-    _r_0[1] = [_sum_10]
-    _r_0[2] = [_sum_11]
-    r = _r_0
-
-    q = np.linalg.inv(M) @ r
-
-    return q
+    return E
 
 
 def generateRandomData():
+    σ_N = np.random.randn()
+    E_I = np.random.randn()
     _dim_0 = np.random.randint(10)
-    p = np.random.randn(_dim_0, 3, 1)
-    d = np.random.randn(_dim_0, 3, 1)
-    return p, d
+    α = np.random.randn(_dim_0)
+    β = np.random.randn(_dim_0)
+    σ_S = np.random.randn(_dim_0)
+    σ_T = np.random.randn(_dim_0)
+    ρ = np.random.randn(_dim_0)
+    ρ_bar = np.random.randn(_dim_0)
+    σ_ρ = np.random.randn(_dim_0)
+    ā = np.random.randn(_dim_0)
+    return σ_N, E_I, α, β, σ_S, σ_T, ρ, ρ_bar, σ_ρ, ā
 
 
 if __name__ == '__main__':
-    p, d = generateRandomData()
-    print("p:", p)
-    print("d:", d)
-    func_value = demo24(p, d)
+    σ_N, E_I, α, β, σ_S, σ_T, ρ, ρ_bar, σ_ρ, ā = generateRandomData()
+    print("σ_N:", σ_N)
+    print("E_I:", E_I)
+    print("α:", α)
+    print("β:", β)
+    print("σ_S:", σ_S)
+    print("σ_T:", σ_T)
+    print("ρ:", ρ)
+    print("ρ_bar:", ρ_bar)
+    print("σ_ρ:", σ_ρ)
+    print("ā:", ā)
+    func_value = demo24(σ_N, E_I, α, β, σ_S, σ_T, ρ, ρ_bar, σ_ρ, ā)
     print("func_value: ", func_value)

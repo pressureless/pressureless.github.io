@@ -28,9 +28,9 @@ def demo11(a, w, x):
 
     _dim_0 = w.shape[0]
     n = x.shape[0]
-    assert a.shape == (_dim_0, n, 1)
+    assert a.shape == (_dim_0, n, )
     assert w.shape == (_dim_0,)
-    assert x.shape == (n, 1)
+    assert x.shape == (n,)
 
     y = np.zeros(_dim_0)
     for i in range(1, _dim_0+1):
@@ -39,7 +39,7 @@ def demo11(a, w, x):
     _sum_0 = np.zeros((n, n))
     for i in range(1, len(a)+1):
         _sum_0 += a[i-1] @ (a[i-1]).T
-    _sum_1 = np.zeros((n, 1))
+    _sum_1 = np.zeros((n, ))
     for i in range(1, len(a)+1):
         _sum_1 += y[i-1] * a[i-1]
     x_bar = np.linalg.inv((_sum_0)) @ _sum_1
@@ -50,10 +50,9 @@ def demo11(a, w, x):
 def generateRandomData():
     _dim_0 = np.random.randint(10)
     n = np.random.randint(10)
-    a = np.random.randn(_dim_0, n, 1)
+    a = np.random.randn(_dim_0, n, )
     w = np.random.randn(_dim_0)
     x = np.random.randn(n)
-    x = x.reshape((n, 1))
     return a, w, x
 
 

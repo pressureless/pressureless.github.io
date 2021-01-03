@@ -1,23 +1,14 @@
 """
-given
-p_i: ℝ^3: points on lines
-d_i: ℝ^3: unit directions along lines
+`Ω` = [`e_1` `e_2`][`k_1` 0
+		     0    `k_2`] [`e_1`^T
+				  `e_2`^T]
 
-k_i = (p_i - (p_i⋅d_i)d_i)
-a_i = [1,0,0]^T - d_i,0 d_i
-b_i = [0,1,0]^T - d_i,1 d_i
-c_i = [0,0,1]^T - d_i,2 d_i
+where
 
- 
-M = [ (∑_i( a_i,0 - d_i,0 (d_i⋅a_i) ))    (∑_i( a_i,1 - d_i,1 (d_i⋅a_i) ))    (∑_i( a_i,2 - d_i,2 (d_i⋅a_i) ))
-      (∑_i( b_i,0 - d_i,0 (d_i⋅b_i) ))    (∑_i( b_i,1 - d_i,1 (d_i⋅b_i) ))    (∑_i( b_i,2 - d_i,2 (d_i⋅b_i) ))
-      (∑_i( c_i,0 - d_i,0 (d_i⋅c_i) ))    (∑_i( c_i,1 - d_i,1 (d_i⋅c_i) ))    (∑_i( c_i,2 - d_i,2 (d_i⋅c_i) )) ]
-
-r = [ ∑_i( k_i⋅a_i )
-      ∑_i( k_i⋅b_i )
-      ∑_i( k_i⋅c_i ) ]
-
-q = M^(-1) r
+`k_1`: ℝ  : control the desired kernel variance in either edge or orthogonal direction
+`k_2`: ℝ  : control the desired kernel variance in either edge or orthogonal direction
+`e_1`: ℝ ^ 3: orthogonal direction vectors
+`e_2`: ℝ ^ 3: orthogonal direction vectors
 """
 import numpy as np
 import scipy
@@ -27,103 +18,44 @@ from scipy.integrate import quad
 from scipy.optimize import minimize
 
 
-def demo27(p, d):
+def demo27(k_1, k_2, e_1, e_2):
     """
-    :param :p : ℝ^3: points on lines
-    :param :d : ℝ^3: unit directions along lines
+    :param :k_1 : ℝ  : control the desired kernel variance in either edge or orthogonal direction
+    :param :k_2 : ℝ  : control the desired kernel variance in either edge or orthogonal direction
+    :param :e_1 : ℝ ^ 3: orthogonal direction vectors
+    :param :e_2 : ℝ ^ 3: orthogonal direction vectors
     """
-    p = np.asarray(p, dtype=np.float64)
-    d = np.asarray(d, dtype=np.float64)
+    e_1 = np.asarray(e_1, dtype=np.float64)
+    e_2 = np.asarray(e_2, dtype=np.float64)
 
-    _dim_0 = p.shape[0]
-    assert p.shape == (_dim_0, 3, 1)
-    assert d.shape == (_dim_0, 3, 1)
+    assert np.ndim(k_1) == 0
+    assert np.ndim(k_2) == 0
+    assert e_1.shape == (3,)
+    assert e_2.shape == (3,)
 
-    k = np.zeros((_dim_0, 3, 1))
-    for i in range(1, _dim_0+1):
-        k[i] = (p[i-1] - (np.dot((p[i-1]).ravel(), (d[i-1]).ravel())) * d[i-1])
+    _Ω_0 = np.hstack((e_1, e_2))
+    _Ω_1 = np.zeros((2, 2))
+    _Ω_1[0] = [k_1, 0]
+    _Ω_1[1] = [0, k_2]
+    _Ω_2 = np.vstack((e_1.T, e_2.T))
+    Ω = _Ω_0 @ _Ω_1 @ _Ω_2
 
-    _a_i_0 = np.zeros((1, 3))
-    _a_i_0[0] = [1, 0, 0]
-    a = np.zeros((_dim_0, 3, 1))
-    for i in range(1, _dim_0+1):
-        a[i] = _a_i_0.T - d[i-1][0-1] * d[i-1]
-
-    _b_i_0 = np.zeros((1, 3))
-    _b_i_0[0] = [0, 1, 0]
-    b = np.zeros((_dim_0, 3, 1))
-    for i in range(1, _dim_0+1):
-        b[i] = _b_i_0.T - d[i-1][1-1] * d[i-1]
-
-    _c_i_0 = np.zeros((1, 3))
-    _c_i_0[0] = [0, 0, 1]
-    c = np.zeros((_dim_0, 3, 1))
-    for i in range(1, _dim_0+1):
-        c[i] = _c_i_0.T - d[i-1][2-1] * d[i-1]
-
-    _sum_0 = 0
-    for i in range(1, len(a)+1):
-        _sum_0 += (a[i-1][0-1] - d[i-1][0-1] * (np.dot((d[i-1]).ravel(), (a[i-1]).ravel())))
-    _sum_1 = 0
-    for i in range(1, len(a)+1):
-        _sum_1 += (a[i-1][1-1] - d[i-1][1-1] * (np.dot((d[i-1]).ravel(), (a[i-1]).ravel())))
-    _sum_2 = 0
-    for i in range(1, len(a)+1):
-        _sum_2 += (a[i-1][2-1] - d[i-1][2-1] * (np.dot((d[i-1]).ravel(), (a[i-1]).ravel())))
-    _sum_3 = 0
-    for i in range(1, len(b)+1):
-        _sum_3 += (b[i-1][0-1] - d[i-1][0-1] * (np.dot((d[i-1]).ravel(), (b[i-1]).ravel())))
-    _sum_4 = 0
-    for i in range(1, len(d)+1):
-        _sum_4 += (b[i-1][1-1] - d[i-1][1-1] * (np.dot((d[i-1]).ravel(), (b[i-1]).ravel())))
-    _sum_5 = 0
-    for i in range(1, len(d)+1):
-        _sum_5 += (b[i-1][2-1] - d[i-1][2-1] * (np.dot((d[i-1]).ravel(), (b[i-1]).ravel())))
-    _sum_6 = 0
-    for i in range(1, len(c)+1):
-        _sum_6 += (c[i-1][0-1] - d[i-1][0-1] * (np.dot((d[i-1]).ravel(), (c[i-1]).ravel())))
-    _sum_7 = 0
-    for i in range(1, len(c)+1):
-        _sum_7 += (c[i-1][1-1] - d[i-1][1-1] * (np.dot((d[i-1]).ravel(), (c[i-1]).ravel())))
-    _sum_8 = 0
-    for i in range(1, len(c)+1):
-        _sum_8 += (c[i-1][2-1] - d[i-1][2-1] * (np.dot((d[i-1]).ravel(), (c[i-1]).ravel())))
-    _M_0 = np.zeros((3, 3))
-    _M_0[0] = [(_sum_0), (_sum_1), (_sum_2)]
-    _M_0[1] = [(_sum_3), (_sum_4), (_sum_5)]
-    _M_0[2] = [(_sum_6), (_sum_7), (_sum_8)]
-    M = _M_0
-
-    _sum_9 = 0
-    for i in range(1, len(a)+1):
-        _sum_9 += (np.dot((k[i-1]).ravel(), (a[i-1]).ravel()))
-    _sum_10 = 0
-    for i in range(1, len(k)+1):
-        _sum_10 += (np.dot((k[i-1]).ravel(), (b[i-1]).ravel()))
-    _sum_11 = 0
-    for i in range(1, len(c)+1):
-        _sum_11 += (np.dot((k[i-1]).ravel(), (c[i-1]).ravel()))
-    _r_0 = np.zeros((3, 1))
-    _r_0[0] = [_sum_9]
-    _r_0[1] = [_sum_10]
-    _r_0[2] = [_sum_11]
-    r = _r_0
-
-    q = np.linalg.inv(M) @ r
-
-    return q
+    return Ω
 
 
 def generateRandomData():
-    _dim_0 = np.random.randint(10)
-    p = np.random.randn(_dim_0, 3, 1)
-    d = np.random.randn(_dim_0, 3, 1)
-    return p, d
+    k_1 = np.random.randn()
+    k_2 = np.random.randn()
+    e_1 = np.random.randn(3)
+    e_2 = np.random.randn(3)
+    return k_1, k_2, e_1, e_2
 
 
 if __name__ == '__main__':
-    p, d = generateRandomData()
-    print("p:", p)
-    print("d:", d)
-    func_value = demo27(p, d)
+    k_1, k_2, e_1, e_2 = generateRandomData()
+    print("k_1:", k_1)
+    print("k_2:", k_2)
+    print("e_1:", e_1)
+    print("e_2:", e_2)
+    func_value = demo27(k_1, k_2, e_1, e_2)
     print("func_value: ", func_value)

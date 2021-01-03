@@ -1,5 +1,7 @@
 /*
-`k_angle(D_m)` = 3(sqrt(2)v)^(2/3)(7/4||`D_m`||_F^2 -1/4||J_3 `D_m`^T`D_m`||_F)^(-1)
+from linearalgebra: tr
+
+`k_angle(D_m)` = 3(sqrt(2)v)^(2/3)(7/4||`D_m`||_F^2 -1/4tr(J_3 `D_m`^T`D_m`))^(-1)
 
 where
 
@@ -26,7 +28,7 @@ double demo19(
     const std::vector<Eigen::MatrixXd> & J,
     const double & v)
 {
-    const long n = J.size();
+    const long n = J[0].cols();
     const long _dim_0 = J.size();
     assert( D_m.rows() == n );
     assert( D_m.cols() == n );
@@ -36,7 +38,7 @@ double demo19(
         assert( el.cols() == n );
     }
 
-    double k_angle_left_parenthesis_D_m_right_parenthesis = 3 * pow((sqrt(2) * v), (2 / 3)) * (7 / 4 * pow((D_m).norm(), 2) - 1 / 4 * (J.at(3-1) * D_m.transpose() * D_m).norm()).inverse();
+    double k_angle_left_parenthesis_D_m_right_parenthesis = 3 * pow((sqrt(2) * v), (2 / 3)) * 1 / ((7 / 4 * pow((D_m).norm(), 2) - 1 / 4 * (J.at(3-1) * D_m.transpose() * D_m).trace()));
 
     return k_angle_left_parenthesis_D_m_right_parenthesis;
 }

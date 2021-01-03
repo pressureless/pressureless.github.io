@@ -29,12 +29,12 @@ def demo10(A, x_0, b):
     m = b.shape[1]
     n = x_0.shape[0]
     assert A.shape == (_dim_0, m, n)
-    assert x_0.shape == (n, 1)
-    assert b.shape == (_dim_0, m, 1)
+    assert x_0.shape == (n,)
+    assert b.shape == (_dim_0, m, )
 
     def _target_0(x):
         _sum_0 = 0
-        for i in range(1, len(b)+1):
+        for i in range(1, len(A)+1):
             _sum_0 += np.linalg.norm(A[i-1] @ x + b[i-1], 2)
         return _sum_0 + (1 / 2) * np.power(np.linalg.norm(x - x_0, 2), 2)
     ret = minimize(_target_0, np.zeros(n)).fun
@@ -47,8 +47,7 @@ def generateRandomData():
     n = np.random.randint(10)
     A = np.random.randn(_dim_0, m, n)
     x_0 = np.random.randn(n)
-    x_0 = x_0.reshape((n, 1))
-    b = np.random.randn(_dim_0, m, 1)
+    b = np.random.randn(_dim_0, m, )
     return A, x_0, b
 
 
