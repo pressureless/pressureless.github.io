@@ -1,7 +1,0 @@
-min_D tr( D^T L D )
-
-## subject to
-D_handles = g_handles - \hat{V}_handles
-
-## where
-g_handles ∈ R^(k×3)
