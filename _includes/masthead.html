@@ -20,6 +20,11 @@
         </a>
       </div>
     {% endif %}
+    <div class="{{ metadata_styles }}"> 
+      <a href="assets/docs/YongLi_CV.pdf" {% if site.style == 'dark' %}class="text-white"{% endif %}>
+        CV
+      </a>
+    </div>
     {% if user.email %}
       <div class="{{ metadata_styles }}">
         {% octicon mail height:20 class:"mr-2 v-align-middle" fill:{{ icon_color }} aria-label:email %}
