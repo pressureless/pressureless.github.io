@@ -1,0 +1,201 @@
+body
+{
+  position:static;
+  top: 0;
+  left: 0;
+  font-size: 12pt;
+  font-family: "Linux Libertine", serif;
+  padding-left:  10px;
+  padding-right: 10px;
+  width: 585px;
+  min-height: none;
+  min-height: 0%;
+  border-radius: 8px;
+  margin: auto;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphens: auto;
+  text-align: justify;
+}
+.title{
+    margin: 13.4px 0 13.4px;
+    padding: 15px 0 3px;
+    border-top: none;
+    clear: both;
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 120%;
+    text-align: center;
+}
+.author{
+    border-top: none;
+    clear: both;
+    font-size: 16px;
+    line-height: 120%;
+    text-align: center;
+}
+a:link, a:visited {
+    color: #38A;
+    text-decoration: none;
+}
+/*mjx-container mjx-utext {
+  font-family: "Linux Libertine", serif;
+}
+mjx-container svg text {
+  font-family: "Linux Libertine", serif;
+}*/
+figcaption {
+  font-family: "Linux Biolinum", sans;
+  font-weight: normal;
+}
+h1,h2,h3,h4,h5 {
+  font-family: "Linux Biolinum", sans;
+  page-break-after: avoid;
+  break-after: avoid;
+  margin: 13.4px 0 13.4px;
+  padding: 15px 0 3px;
+  border-top: none;
+  clear: both;
+}
+h1{
+    border-bottom: 3px solid;
+    font-size: 20px;
+    font-weight: bold;
+}
+h2{
+    counter-reset: h3 h4 h5 h6;
+    border-bottom: 2px solid #999;
+    color: #555;
+    font-weight: bold;
+    font-size: 18px;
+}
+a.detail{
+  color: red; 
+}
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+.paperSymbol{
+  /*color: red; */
+  border-bottom: 1px dotted #000;
+  text-decoration: none;
+}
+/*https://htmlcolorcodes.com/color-names/*/
+.highlight_red {
+ color: red; 
+}
+.highlight_DarkRed {
+ color: #8B0000; 
+}
+.highlight_LightCoral {
+ color: #F08080; 
+}
+.highlight {
+ color: red; 
+}
+.highlight_blue {
+ color: blue; 
+}
+.highlight_DeepSkyBlue {
+ color: #00BFFF; 
+}
+.highlight_green {
+ color: green; 
+}
+.highlight_YellowGreen {
+ color: #9ACD32; 
+}
+.highlight_yellow {
+ color: yellow; 
+}
+.highlight_Khaki {
+ color: #F0E68C; 
+}
+.highlight_HotPink {
+ color: #FF69B4; 
+}
+.highlight_Tomato {
+ color: #FF6347; 
+}
+.highlight_Orange {
+ color: #FFA500; 
+}
+.highlight_Gold {
+ color: #FFD700; 
+}
+.normal {
+ color: black; 
+}
+.clickable_sym{
+ color: red; 
+}
+.arrow{
+  position:absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+span
+{
+  width: 100%;
+}
+
+@font-face {
+    font-family: 'Linux Libertine'; /* normal */
+    src: url('./fonts/linux-libertine/LinLibertine_R.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Linux Libertine'; /* italic */
+    src: url('./fonts/linux-libertine/LinLibertine_RI.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Linux Libertine'; /* bold */
+    src: url('./fonts/linux-libertine/LinLibertine_RB.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Linux Libertine'; /* bold */
+    src: url('./fonts/linux-libertine/LinLibertine_RBI.woff') format('woff');
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Linux Biolinum'; /* normal */
+    src: url('./fonts/linux-biolinum/LinBiolinum_R.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Linux Biolinum'; /* italic */
+    src: url('./fonts/linux-biolinum/LinBiolinum_RI.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Linux Biolinum'; /* bold */
+    src: url('./fonts/linux-biolinum/LinBiolinum_RB.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Linux Biolinum'; /* bold */
+    src: url('./fonts/linux-biolinum/LinBiolinum_RBI.woff') format('woff');
+    font-weight: bold;
+    font-style: italic;
+}
