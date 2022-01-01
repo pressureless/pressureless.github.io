@@ -1,0 +1,108 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+    <script>
+MathJax = {
+  loader: {
+    load: ["[attrLabel]/attr-label.js"],
+    paths: { attrLabel: "../resource" },
+  },
+  tex: { packages: { "[+]": ["attr-label"] },
+   inlineMath: [['$', '$']]
+   },
+   options: {
+    enableAssistiveMml: false
+  },
+};
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <script src="../resource/d3.min.js"></script>
+    <script src="../resource/svg.min.js"></script>
+    <script type="text/javascript" src='../resource/paper.js'></script>
+    <link rel="stylesheet" href="../resource/paper.css">
+</head>
+<script>
+const iheartla_data = JSON.parse('{"equations":[{"name":"first", "parameters":[{"sym":"CSF", "type_info":{"type": "function", "params":[{"type": "scalar"}], "ret":{"type": "scalar"}}},{"sym":"ω", "type_info":{"type": "sequence", "element":{"type": "scalar"}, "size":"dim_0"}},{"sym":"$m̃_{t,b}$", "type_info":{"type": "scalar"}},{"sym":"$β_b$", "type_info":{"type": "scalar"}},{"sym":"$σ_P^A$", "type_info":{"type": "scalar"}},{"sym":"$σ_P^B$", "type_info":{"type": "scalar"}},{"sym":"$σ_O^A$", "type_info":{"type": "scalar"}},{"sym":"$σ_O^B$", "type_info":{"type": "scalar"}}], "definition":[{"sym":"$∆Q_P$", "type_info":{"type": "scalar"}},{"sym":"$∆Q_O$", "type_info":{"type": "scalar"}},{"sym":"m", "type_info":{"type": "function", "params":[{"type": "scalar"},{"type": "scalar"}], "ret":{"type": "scalar"}}},{"sym":"m̃", "type_info":{"type": "function", "params":[{"type": "scalar"},{"type": "scalar"}], "ret":{"type": "scalar"}}},{"sym":"$E_b$", "type_info":{"type": "function", "params":[{"type": "scalar"}], "ret":{"type": "scalar"}}}], "local_func":[{"name":"m", "parameters":[{"sym":"ω", "type_info":{"type": "scalar"}},{"sym":"σ", "type_info":{"type": "scalar"}}]},{"name":"m̃", "parameters":[{"sym":"ω", "type_info":{"type": "scalar"}},{"sym":"σ", "type_info":{"type": "scalar"}}]},{"name":"$E_b$", "parameters":[{"sym":"σ", "type_info":{"type": "scalar"}}]}], "source":"m(ω;σ) = exp(-2π^2 ω^2 σ^2) where ω ∈ ℝ, σ∈ ℝ\\n\\n\\nm̃(ω;σ) = CSF(ω) m(ω;σ) where ω ∈ ℝ, σ∈ ℝ\\nwhere\\nCSF ∈ ℝ->ℝ\\n\\n\\n$E_b$(σ) = sum_i ( m̃(ω_i , σ)/$m̃_{t,b}$)^$β_b$  where σ ∈ ℝ\\nwhere\\nω_i ∈ ℝ\\n$m̃_{t,b}$ ∈ ℝ\\n$β_b$ ∈ ℝ\\n\\n$∆Q_P$ = $E_b$($σ_P^A$) - $E_b$($σ_P^B$)\\n$∆Q_O$ = $E_b$($σ_O^A$) - $E_b$($σ_O^B$)\\nwhere\\n$σ_P^A$ ∈ ℝ\\n$σ_P^B$ ∈ ℝ\\n$σ_O^A$ ∈ ℝ\\n$σ_O^B$ ∈ ℝ\\n" }] }');
+const sym_data = JSON.parse('{"CSF":[{"desc":"None", "type_info":{"type": "function", "params":[{"type": "scalar"}], "ret":{"type": "scalar"}}, "def_module":"first", "is_defined":false, "used_equations":[]}],"ω":[{"desc":"None", "type_info":{"type": "sequence", "element":{"type": "scalar"}, "size":"dim_0"}, "def_module":"first", "is_defined":false, "used_equations":[]}],"$m̃_{t,b}$":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"first", "is_defined":false, "used_equations":[]}],"$β_b$":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"first", "is_defined":false, "used_equations":[]}],"$σ_P^A$":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"first", "is_defined":false, "used_equations":[]}],"$σ_P^B$":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"first", "is_defined":false, "used_equations":[]}],"$σ_O^A$":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"first", "is_defined":false, "used_equations":[]}],"$σ_O^B$":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"first", "is_defined":false, "used_equations":[]}],"$∆Q_P$":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"first", "is_defined":true, "used_equations":[]}],"$∆Q_O$":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"first", "is_defined":true, "used_equations":[]}]}');
+window.onload = parseAllSyms;
+function reportWindowSize() {
+  var arrows = document.querySelectorAll(".arrow");
+  if (arrows) {
+    for (var i = arrows.length - 1; i >= 0; i--) {
+      var arrow = arrows[i];
+      var body = document.querySelector("body");
+      var style = window.getComputedStyle(body);
+      var curOffset = parseInt(style.marginLeft, 10)
+      var oldOffset = arrow.getAttribute('offset');
+      arrow.setAttribute('offset', curOffset);
+      // console.log(`oldOffset:${oldOffset}, curOffset:${curOffset}`);
+      var arrowStyle = window.getComputedStyle(arrow); 
+      var arrowOffset = parseInt(document.querySelector(".arrow").style.marginLeft, 10)
+      arrow.style.marginLeft = `${arrowOffset+curOffset-oldOffset}px`;
+      var newWidth = parseInt(style.width, 10) + parseInt(style.marginLeft, 10) + parseInt(style.marginRight, 10);
+      arrow.style.width = `${newWidth}px`;
+      arrow.style.height = style.height; 
+      // console.log(`arrow.style.width:${arrow.style.width}, arrow.style.height:${arrow.style.height}`)
+    }
+  }
+}
+window.onresize = reportWindowSize;
+document.addEventListener("click", function(evt){
+    resetState();
+});
+
+</script>
+<body>
+<img src="../resource/glossary.png" id="glossary" alt="glossary" width="22" height="28"><br>
+<ul><li><a href='#from-to-quality'>1&nbsp;From σ to quality</a></li></ul>
+<h1 id='from-to-quality'>1&nbsp;From σ to quality</h1><p>Blur introduced by eye motion, hold-type blur, and spatial resolution will result in the loss of sharpness. To quantify this in terms of loss of perceived quality, we map the physical amount of blur to the perceived quality difference in JND units. Our blur quality function is inspired by the energy models of blur detection [Watson and Ahumada 2011]. Such mapping is applied to the orthogonal (σO ) and parallel (σP ) components of the anisotropic blur separately, resulting in two independent quality values (QO and QP ).</p>
+<p>As we are interested in content-independent predictions, we assume the worst-case scenario: an infinitely thin line (Dirac delta function δ(x)), which contains uniform energy across all spatial frequencies. When convolved with a Gaussian blur kernel σ in the spatial domain, the resulting image is a Gaussian function with standard deviation σ . The Fourier transform of this signal is also a Gaussian, given by:</p>
+<p>
+<div class='equation' code_block="first">
+$$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'm', 'first', 'def', false, '')", "id":"first-m", "sym":"m", "func":"first",  "localFunc":"", "type":"def", "case":"equation"} }{ {\mathit{m}} }\left( \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'ω', 'first', 'use', true, 'm')", "id":"first-ω", "sym":"ω", "func":"first",  "localFunc":"m", "type":"use", "case":"equation"} }{ {\mathit{ω}} };\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'σ', 'first', 'use', true, 'm')", "id":"first-σ", "sym":"σ", "func":"first",  "localFunc":"m", "type":"use", "case":"equation"} }{ {\mathit{σ}} } \right) & = exp\left( -2{\pi}^{2}{\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'ω', 'first', 'use', true, 'm')", "id":"first-ω", "sym":"ω", "func":"first",  "localFunc":"m", "type":"use", "case":"equation"} }{ {\mathit{ω}} }}^{2}{\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'σ', 'first', 'use', true, 'm')", "id":"first-σ", "sym":"σ", "func":"first",  "localFunc":"m", "type":"use", "case":"equation"} }{ {\mathit{σ}} }}^{2} \right)\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'first', ['σ', 'ω', 'm'], true, 'm', ['ω', 'σ']);"} }{}
+\end{align*}
+\tag{1}\label{1}$$</div>
+</p>
+<p>where ω is in cpd. To account for the spatial contrast sensitivity of visual system, we modulate the Fourier coefficients with the CSF</p>
+<p>
+<div class='equation' code_block="first">
+$$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'm̃', 'first', 'def', false, 'm')", "id":"first-m̃", "sym":"m̃", "func":"first",  "localFunc":"m", "type":"def", "case":"equation"} }{ {\textit{m̃}} }\left( \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'ω', 'first', 'use', true, 'm̃')", "id":"first-ω", "sym":"ω", "func":"first",  "localFunc":"m̃", "type":"use", "case":"equation"} }{ {\mathit{ω}} };\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'σ', 'first', 'use', true, 'm̃')", "id":"first-σ", "sym":"σ", "func":"first",  "localFunc":"m̃", "type":"use", "case":"equation"} }{ {\mathit{σ}} } \right) & = \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'CSF', 'first', 'use', false, 'm̃')", "id":"first-CSF", "sym":"CSF", "func":"first",  "localFunc":"m̃", "type":"use", "case":"equation"} }{ {\mathit{CSF}} }\left( \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'ω', 'first', 'use', true, 'm̃')", "id":"first-ω", "sym":"ω", "func":"first",  "localFunc":"m̃", "type":"use", "case":"equation"} }{ {\mathit{ω}} } \right)\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'm', 'first', 'use', false, 'm̃')", "id":"first-m", "sym":"m", "func":"first",  "localFunc":"m̃", "type":"use", "case":"equation"} }{ {\mathit{m}} }\left( \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'ω', 'first', 'use', true, 'm̃')", "id":"first-ω", "sym":"ω", "func":"first",  "localFunc":"m̃", "type":"use", "case":"equation"} }{ {\mathit{ω}} };\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'σ', 'first', 'use', true, 'm̃')", "id":"first-σ", "sym":"σ", "func":"first",  "localFunc":"m̃", "type":"use", "case":"equation"} }{ {\mathit{σ}} } \right)\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'first', ['σ', 'CSF', 'ω', 'm', 'm̃'], true, 'm̃', ['ω', 'σ']);"} }{}
+\end{align*}
+\tag{2}\label{2}$$</div>
+<br />
+where CSF is Barten’s CSF model with the recommended standard observer parameters and the background luminance of 100 cd/m2 [Barten 2003].</p>
+<p>To compute the overall energy in a distorted signal, we sample a range of frequencies ωi={1,2,&hellip;,64}[cpd],andcomputethe blur energy as:</p>
+<p>
+<div class='equation' code_block="first">
+$$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$E_b$', 'first', 'def', false, 'm̃')", "id":"first-$E_b$", "sym":"$E_b$", "func":"first",  "localFunc":"m̃", "type":"def", "case":"equation"} }{ {E_b} }\left( \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'σ', 'first', 'use', true, '$E_b$')", "id":"first-σ", "sym":"σ", "func":"first",  "localFunc":"$E_b$", "type":"use", "case":"equation"} }{ {\mathit{σ}} } \right) & = \sum_{\mathit{i}} {\left( \frac{\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'm̃', 'first', 'use', false, '$E_b$')", "id":"first-m̃", "sym":"m̃", "func":"first",  "localFunc":"$E_b$", "type":"use", "case":"equation"} }{ {\textit{̃}} }\left( \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'ω', 'first', 'use', true, '$E_b$')", "id":"first-ω", "sym":"ω", "func":"first",  "localFunc":"$E_b$", "type":"use", "case":"equation"} }{ {\mathit{ω}} }_{ \mathit{i} },\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'σ', 'first', 'use', true, '$E_b$')", "id":"first-σ", "sym":"σ", "func":"first",  "localFunc":"$E_b$", "type":"use", "case":"equation"} }{ {\mathit{σ}} } \right)}{\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$m̃_{t,b}$', 'first', 'use', false, '$E_b$')", "id":"first-$m̃_{t,b}$", "sym":"$m̃_{t,b}$", "func":"first",  "localFunc":"$E_b$", "type":"use", "case":"equation"} }{ {m̃_{t,b}} }} \right)}^{\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$β_b$', 'first', 'use', false, '$E_b$')", "id":"first-$β_b$", "sym":"$β_b$", "func":"first",  "localFunc":"$E_b$", "type":"use", "case":"equation"} }{ {β_b} }}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'first', ['$β_b$', 'σ', 'm̃', 'ω', '$m̃_{t,b}$', '$E_b$'], true, '$E_b$', ['σ']);"} }{}
+\end{align*}
+\tag{3}\label{3}$$</div>
+</p>
+<p>where m ̃ t ,b is the threshold parameter and βb is the power parame- ter of the model. Both of these are fitted to psychophysical data in Section 6.3.</p>
+<p>Energy differences can be interpreted as quality differences, yield- ing:</p>
+<p>
+<div class='equation' code_block="first">
+$$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$∆Q_P$', 'first', 'def', false, '$E_b$')", "id":"first-$∆Q_P$", "sym":"$∆Q_P$", "func":"first",  "localFunc":"$E_b$", "type":"def", "case":"equation"} }{ {∆Q_P} } & = \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$E_b$', 'first', 'use', false, '$E_b$')", "id":"first-$E_b$", "sym":"$E_b$", "func":"first",  "localFunc":"$E_b$", "type":"use", "case":"equation"} }{ {E_b} }\left( \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$σ_P^A$', 'first', 'use', false, '$E_b$')", "id":"first-$σ_P^A$", "sym":"$σ_P^A$", "func":"first",  "localFunc":"$E_b$", "type":"use", "case":"equation"} }{ {σ_P^A} } \right) - \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$E_b$', 'first', 'use', false, '$E_b$')", "id":"first-$E_b$", "sym":"$E_b$", "func":"first",  "localFunc":"$E_b$", "type":"use", "case":"equation"} }{ {E_b} }\left( \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$σ_P^B$', 'first', 'use', false, '$E_b$')", "id":"first-$σ_P^B$", "sym":"$σ_P^B$", "func":"first",  "localFunc":"$E_b$", "type":"use", "case":"equation"} }{ {σ_P^B} } \right)\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'first', ['$σ_P^A$', '$E_b$', '$σ_P^B$', '$∆Q_P$'], false, []);"} }{}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$∆Q_O$', 'first', 'def', false, '$E_b$')", "id":"first-$∆Q_O$", "sym":"$∆Q_O$", "func":"first",  "localFunc":"$E_b$", "type":"def", "case":"equation"} }{ {∆Q_O} } & = \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$E_b$', 'first', 'use', false, '$E_b$')", "id":"first-$E_b$", "sym":"$E_b$", "func":"first",  "localFunc":"$E_b$", "type":"use", "case":"equation"} }{ {E_b} }\left( \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$σ_O^A$', 'first', 'use', false, '$E_b$')", "id":"first-$σ_O^A$", "sym":"$σ_O^A$", "func":"first",  "localFunc":"$E_b$", "type":"use", "case":"equation"} }{ {σ_O^A} } \right) - \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$E_b$', 'first', 'use', false, '$E_b$')", "id":"first-$E_b$", "sym":"$E_b$", "func":"first",  "localFunc":"$E_b$", "type":"use", "case":"equation"} }{ {E_b} }\left( \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$σ_O^B$', 'first', 'use', false, '$E_b$')", "id":"first-$σ_O^B$", "sym":"$σ_O^B$", "func":"first",  "localFunc":"$E_b$", "type":"use", "case":"equation"} }{ {σ_O^B} } \right)\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'first', ['$σ_O^B$', '$E_b$', '$σ_O^A$', '$∆Q_O$'], false, []);"} }{}
+\end{align*}
+\tag{4}\label{4}$$</div>
+<br />
+substituting in the standard deviations of the blur components for A and B, in the directions parallel (P) and orthogonal (O) to SPEM. We further explain why an energy model is suitable to predict<br />
+JND differences in the supplemental material (Section S.1).</p>
+</body>
+</html>

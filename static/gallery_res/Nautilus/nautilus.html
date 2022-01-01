@@ -1,0 +1,116 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+    <script>
+MathJax = {
+  loader: {
+    load: ["[attrLabel]/attr-label.js"],
+    paths: { attrLabel: "./resource" },
+  },
+  tex: { packages: { "[+]": ["attr-label"] },
+   inlineMath: [['$', '$']]
+   },
+   options: {
+    enableAssistiveMml: false
+  },
+};
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <script src="./resource/d3.min.js"></script>
+    <script src="./resource/svg.min.js"></script>
+    <script type="text/javascript" src='./resource/paper.js'></script>
+    <link rel="stylesheet" href="./resource/paper.css">
+</head>
+<script>
+const iheartla_data = JSON.parse('{"equations":[{"name":"nautilus", "parameters":[{"sym":"x", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"n"}},{"sym":"λ", "type_info":{"type": "scalar"}},{"sym":"v", "type_info":{"type": "sequence", "element":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}, "size":"dim_0"}}], "definition":[{"sym":"H", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}},{"sym":"P", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}},{"sym":"S", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}},{"sym":"E", "type_info":{"type": "function", "params":[{"type": "vector", "element":{"type": "scalar"}, "rows":"n"}], "ret":{"type": "scalar"}}}], "local_func":[{"name":"E", "parameters":[{"sym":"x", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"n"}}]}], "source":"H = PSP⁻¹\\n\\nP = [1 x₁ 0\\n     0 x₂ 0\\n     x₃ x₄ 1]\\n\\nS = [x₅ x₆ x₇\\n     x₈ x₉ x₁₀\\n     0 0 1]\\nwhere\\nx ∈ ℝ^n\\n\\nE(x) = λ||(x₅, x₈) - (x₉, x₆)||^2 + sum_i ||H v_i - PSP⁻¹ v_i||^2 where x ∈ ℝ^n\\n\\nwhere\\nλ ∈ ℝ\\nv_i ∈ ℝ^(3 × 3)\\n" }] }');
+const sym_data = JSON.parse('{"x":[{"desc":"None", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"n"}, "def_module":"nautilus", "is_defined":false, "used_equations":[]}],"λ":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"nautilus", "is_defined":false, "used_equations":[]}],"v":[{"desc":"None", "type_info":{"type": "sequence", "element":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}, "size":"dim_0"}, "def_module":"nautilus", "is_defined":false, "used_equations":[]}],"H":[{"desc":"None", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}, "def_module":"nautilus", "is_defined":true, "used_equations":[]}],"P":[{"desc":"None", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}, "def_module":"nautilus", "is_defined":true, "used_equations":[]}],"S":[{"desc":"None", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}, "def_module":"nautilus", "is_defined":true, "used_equations":[]}]}');
+window.onload = parseAllSyms;
+function reportWindowSize() {
+  var arrows = document.querySelectorAll(".arrow");
+  if (arrows) {
+    for (var i = arrows.length - 1; i >= 0; i--) {
+      var arrow = arrows[i];
+      var body = document.querySelector("body");
+      var style = window.getComputedStyle(body);
+      var curOffset = parseInt(style.marginLeft, 10)
+      var oldOffset = arrow.getAttribute('offset');
+      arrow.setAttribute('offset', curOffset);
+      // console.log(`oldOffset:${oldOffset}, curOffset:${curOffset}`);
+      var arrowStyle = window.getComputedStyle(arrow); 
+      var arrowOffset = parseInt(document.querySelector(".arrow").style.marginLeft, 10)
+      arrow.style.marginLeft = `${arrowOffset+curOffset-oldOffset}px`;
+      var newWidth = parseInt(style.width, 10) + parseInt(style.marginLeft, 10) + parseInt(style.marginRight, 10);
+      arrow.style.width = `${newWidth}px`;
+      arrow.style.height = style.height; 
+      // console.log(`arrow.style.width:${arrow.style.width}, arrow.style.height:${arrow.style.height}`)
+    }
+  }
+}
+window.onresize = reportWindowSize;
+document.addEventListener("click", function(evt){
+    resetState();
+});
+
+</script>
+<body>
+<img src="./resource/glossary.png" id="glossary" alt="glossary" width="22" height="28"><br>
+<ul><li><a href='#applications'>1&nbsp;APPLICATIONS</a><ul><li><a href='#image-rectification'>1.1&nbsp;Image Rectification</a></li></ul></li></ul>
+<h1 id='applications'>1&nbsp;APPLICATIONS</h1><p>To demonstrate the practical utility and versatility of our method, we have implemented several image editing applications where the knowledge of the symmetric transformation and its spatial support simplifies the task or removes the need for manual input. We compare our results on each of these applications to their current state-of-the-art methods, and demonstrate that our general framework is able to replicate and improve upon their quality.</p>
+<h2 id='image-rectification'>1.1&nbsp;Image Rectification</h2><p>Previous techniques for removing perspective distortion and shear from a photograph require the manual specification or detection of corresponding points, right angles, vanishing lines [Liebowitz and Zisserman 1998], congruent line segments [Aiger et al. 2012], global measurements such as the rank of the image matrix [Zhang et al. 2012] or change of scale [Pritts et al. 2014].</p>
+<p>In our solution we rectify the image using one of our <span sym='H' context='nautilus'>  detected global symmetry homographies, $\proselabel{nautilus}{H}$  </span>. The key is to assume that $\proselabel{nautilus}{H}$ has the following structure:</p>
+<p>
+<div class='equation' code_block="nautilus">
+$$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'H', 'nautilus', 'def', false, '')", "id":"nautilus-H", "sym":"H", "func":"nautilus",  "localFunc":"", "type":"def", "case":"equation"} }{ {\mathit{H}} } & = \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'P', 'nautilus', 'use', false, '')", "id":"nautilus-P", "sym":"P", "func":"nautilus",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{P}} }\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'S', 'nautilus', 'use', false, '')", "id":"nautilus-S", "sym":"S", "func":"nautilus",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{S}} }\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'P', 'nautilus', 'use', false, '')", "id":"nautilus-P", "sym":"P", "func":"nautilus",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{P}} }^{-1}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'nautilus', ['P', 'S', 'H'], false, []);"} }{}
+\end{align*}
+\tag{1}\label{1}$$</div>
+<br />
+where<br />
+
+<div class='equation' code_block="nautilus">
+$$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'P', 'nautilus', 'def', false, '')", "id":"nautilus-P", "sym":"P", "func":"nautilus",  "localFunc":"", "type":"def", "case":"equation"} }{ {\mathit{P}} } & = \begin{bmatrix}
+1 & \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'x', 'nautilus', 'use', false, '')", "id":"nautilus-x", "sym":"x", "func":"nautilus",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{x}} }_{ 1 } & 0\\
+0 & \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'x', 'nautilus', 'use', false, '')", "id":"nautilus-x", "sym":"x", "func":"nautilus",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{x}} }_{ 2 } & 0\\
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'x', 'nautilus', 'use', false, '')", "id":"nautilus-x", "sym":"x", "func":"nautilus",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{x}} }_{ 3 } & \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'x', 'nautilus', 'use', false, '')", "id":"nautilus-x", "sym":"x", "func":"nautilus",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{x}} }_{ 4 } & 1\\
+\end{bmatrix}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'nautilus', ['x₂', 'x₄', 'x₁', 'x₃', 'P'], false, []);"} }{}
+\end{align*}
+\tag{2}\label{2}$$</div>
+<br />
+
+<div class='equation' code_block="nautilus">
+$$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'S', 'nautilus', 'def', false, '')", "id":"nautilus-S", "sym":"S", "func":"nautilus",  "localFunc":"", "type":"def", "case":"equation"} }{ {\mathit{S}} } & = \begin{bmatrix}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'x', 'nautilus', 'use', false, '')", "id":"nautilus-x", "sym":"x", "func":"nautilus",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{x}} }_{ 5 } & \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'x', 'nautilus', 'use', false, '')", "id":"nautilus-x", "sym":"x", "func":"nautilus",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{x}} }_{ 6 } & \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'x', 'nautilus', 'use', false, '')", "id":"nautilus-x", "sym":"x", "func":"nautilus",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{x}} }_{ 7 }\\
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'x', 'nautilus', 'use', false, '')", "id":"nautilus-x", "sym":"x", "func":"nautilus",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{x}} }_{ 8 } & \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'x', 'nautilus', 'use', false, '')", "id":"nautilus-x", "sym":"x", "func":"nautilus",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{x}} }_{ 9 } & \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'x', 'nautilus', 'use', false, '')", "id":"nautilus-x", "sym":"x", "func":"nautilus",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{x}} }_{ 10 }\\
+0 & 0 & 1\\
+\end{bmatrix}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'nautilus', ['x₆', 'x₅', 'x₉', 'x₇', 'x₈', 'x₁₀', 'S'], false, []);"} }{}
+\end{align*}
+\tag{3}\label{3}$$</div>
+<br />
+<span sym='P' context='nautilus'>  $\proselabel{nautilus}{P}$ is the pure perspective part of $\proselabel{nautilus}{H}$   </span> and <span sym='S' context='nautilus'>  $\proselabel{nautilus}{S}$ is an in-plane symmetry  </span> which we assume to be a general similarity transform, i.e., uniform scale, rotation, and translation. In addition, we assume that this similarity transformation has a non-zero rotational component, failing which the decomposition can become under-constrained.</p>
+<p>To obtain the rectified image we need to estimate $\proselabel{nautilus}{P}$ and then apply its inverse. To do that we formulate the task as a non-linear optimization problem, with the following objective function:<br />
+
+<div class='equation' code_block="nautilus">
+$$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'E', 'nautilus', 'def', false, '')", "id":"nautilus-E", "sym":"E", "func":"nautilus",  "localFunc":"", "type":"def", "case":"equation"} }{ {\mathit{E}} }\left( \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'x', 'nautilus', 'use', true, 'E')", "id":"nautilus-x", "sym":"x", "func":"nautilus",  "localFunc":"E", "type":"use", "case":"equation"} }{ {\mathit{x}} } \right) & = \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'λ', 'nautilus', 'use', false, 'E')", "id":"nautilus-λ", "sym":"λ", "func":"nautilus",  "localFunc":"E", "type":"use", "case":"equation"} }{ {\mathit{λ}} }\left\|\begin{pmatrix}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'x', 'nautilus', 'use', true, 'E')", "id":"nautilus-x", "sym":"x", "func":"nautilus",  "localFunc":"E", "type":"use", "case":"equation"} }{ {\mathit{x}} }_{ 5 }\\\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'x', 'nautilus', 'use', true, 'E')", "id":"nautilus-x", "sym":"x", "func":"nautilus",  "localFunc":"E", "type":"use", "case":"equation"} }{ {\mathit{x}} }_{ 8 }\end{pmatrix} - \begin{pmatrix}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'x', 'nautilus', 'use', true, 'E')", "id":"nautilus-x", "sym":"x", "func":"nautilus",  "localFunc":"E", "type":"use", "case":"equation"} }{ {\mathit{x}} }_{ 9 }\\\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'x', 'nautilus', 'use', true, 'E')", "id":"nautilus-x", "sym":"x", "func":"nautilus",  "localFunc":"E", "type":"use", "case":"equation"} }{ {\mathit{x}} }_{ 6 }\end{pmatrix}\right\|_2^{2} + \sum_{\mathit{i}} \left\|\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'H', 'nautilus', 'use', false, 'E')", "id":"nautilus-H", "sym":"H", "func":"nautilus",  "localFunc":"E", "type":"use", "case":"equation"} }{ {\mathit{H}} }\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'v', 'nautilus', 'use', false, 'E')", "id":"nautilus-v", "sym":"v", "func":"nautilus",  "localFunc":"E", "type":"use", "case":"equation"} }{ {\mathit{v}} }_{ \mathit{i} } - \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'P', 'nautilus', 'use', false, 'E')", "id":"nautilus-P", "sym":"P", "func":"nautilus",  "localFunc":"E", "type":"use", "case":"equation"} }{ {\mathit{P}} }\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'S', 'nautilus', 'use', false, 'E')", "id":"nautilus-S", "sym":"S", "func":"nautilus",  "localFunc":"E", "type":"use", "case":"equation"} }{ {\mathit{S}} }\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'P', 'nautilus', 'use', false, 'E')", "id":"nautilus-P", "sym":"P", "func":"nautilus",  "localFunc":"E", "type":"use", "case":"equation"} }{ {\mathit{P}} }^{-1}\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'v', 'nautilus', 'use', false, 'E')", "id":"nautilus-v", "sym":"v", "func":"nautilus",  "localFunc":"E", "type":"use", "case":"equation"} }{ {\mathit{v}} }_{ \mathit{i} }\right\|_F^{2}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'nautilus', ['x₆', 'H', 'v', 'x₅', 'x₉', 'x₈', 'λ', 'P', 'S', 'E'], true, 'E', ['x']);"} }{}
+\end{align*}
+\tag{4}\label{4}$$</div>
+<br />
+The first term of (10) enforces $\proselabel{nautilus}{S}$ to be as close to a similarity as possible, and the second term ensures that the decomposition is close to the input homography $\proselabel{nautilus}{H}$ (measured using the re-projection error of the four image corners $v_{1...4}$).</p>
+<p>Minimizing $\proselabel{nautilus}{E}(x)$ is feasible only when the rotation angle of the underlying similarity is away from 0◦ and 180◦. This can be verified by finding the closest similarity $S^′$ to the input homography $\proselabel{nautilus}{H}$ and computing $α = arctan(x8/x5)$. When $α ∈ (10◦, 170◦)$ we initialize $\proselabel{nautilus}{P}$ with the identity matrix, $\proselabel{nautilus}{S} = S^′$ and then run a non-linear optimization using the L-BFGS algorithm [Liu and Nocedal 1989; Nocedal 1980] where exact partial derivatives of $\proselabel{nautilus}{E}(x)$ are computed using dual numbers [Piponi 2004]. To avoid getting stuck in an inappropriate local minima, we allow for greater freedom at the beginning of the optimization. We start with $λ = 1$ to let the algorithm explore a fruitful direction, and gradually increase it until it reaches $λ = 109$ which allows us to strictly enforce $\proselabel{nautilus}{S}$ to be a similarity transform. To ensure that the resulting decomposition is meaningful we use the value of $\proselabel{nautilus}{E}(x)$. In practice, we observed $\proselabel{nautilus}{E}(x) < 1$ indicates a good rectification (see Fig. 8).</p>
+</body>
+</html>

@@ -38,19 +38,19 @@ struct second {
         // t̃ = t/cos(θ)
         t̃ = t / double(cos(θ));
         double sum_0 = 0;
-        for(int i=1; i<=p.size(); i++){
+        for(int i=1; i<=q.size(); i++){
             sum_0 += (R * p.at(i-1) + t - q.at(i-1)).lpNorm<2>();
         }
         // reverse_solidus_varepsilon_left_curly_bracket_point_right_curly_bracket = ∑_i ||R p_i + t - q_i||
         reverse_solidus_varepsilon_left_curly_bracket_point_right_curly_bracket = sum_0;
         double sum_1 = 0;
-        for(int i=1; i<=p.size(); i++){
+        for(int i=1; i<=q.size(); i++){
             sum_1 += pow((((R * p.at(i-1) + t - q.at(i-1))).dot(n_q.at(i-1))), 2);
         }
         // reverse_solidus_varepsilon_left_curly_bracket_plane_right_curly_bracket = ∑_i ((R p_i + t - q_i) ⋅ n_q_i)^2
         reverse_solidus_varepsilon_left_curly_bracket_plane_right_curly_bracket = sum_1;
         double sum_2 = 0;
-        for(int i=1; i<=p.size(); i++){
+        for(int i=1; i<=q.size(); i++){
             sum_2 += pow((((R * p.at(i-1) + R.colPivHouseholderQr().solve(q.at(i-1)) + t)).dot((R * n_p.at(i-1) + R.colPivHouseholderQr().solve(n_q.at(i-1))))), 2);
         }
         // reverse_solidus_varepsilon_left_curly_bracket_symm_hyphen_minus_RN_right_curly_bracket = ∑_i ((R p_i + R⁻¹ q_i + t) ⋅ (Rn_p_i + R⁻¹n_q_i))^2

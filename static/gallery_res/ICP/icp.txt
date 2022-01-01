@@ -32,7 +32,7 @@ In this paper, we derive an objective that is closest in spirit to simple point-
 
 # METHOD
 ## Background and Motivation
-Consider the problem of aligning surfaces $P$ and $Q$. This involves finding a rigid-body transformation $(\proselabel{second}{R}|\proselabel{second}{t})$ such that applying the transformation to $P$ causes it to lie on top of $Q$. The original ICP algorithm of [Besl and McKay [1992]](#ref1) may be thought of as an instance of Expectation Maximization: the problem is solved by alternately computing pairs of corresponding points $(\prosedeflabel{second}{p}_i, \prosedeflabel{second}{q}_i)$, where $\proselabel{second}{q}_i$ is the closest point to $\proselabel{second}{p}_i$ given the current transformation, and finding the transformation minimizing the point-to-point objective:
+Consider the problem of aligning surfaces $P$ and $Q$. This involves finding<span class="def:second:R"> a rigid-body transformation $(\prosedeflabel{second}{R}|\proselabel{second}{t})$ such that applying the transformation to $P$ causes it to lie on top of $Q$</span>. The original ICP algorithm of [Besl and McKay [1992]](#ref1) may be thought of as an instance of Expectation Maximization: the problem is solved by alternately computing pairs of corresponding points $(\prosedeflabel{second}{p}_i, \prosedeflabel{second}{q}_i)$, where $\proselabel{second}{q}_i$ is the closest point to $\proselabel{second}{p}_i$ given the current transformation, and finding the transformation minimizing the point-to-point objective:
 
 ``` iheartla(second)
 `$\varepsilon_{point}$` = ∑_i ||R p_i + t - q_i||
