@@ -5,7 +5,7 @@
 #include <iostream>
 #include <set>
 
-struct first {
+struct siere {
     Eigen::MatrixXd G_left_parenthesis_u_right_parenthesis;
     Eigen::MatrixXd H_left_parenthesis_u_right_parenthesis;
     Eigen::VectorXd v_G;
@@ -14,12 +14,18 @@ struct first {
     Eigen::VectorXd f_H;
     Eigen::MatrixXd J_G;
     Eigen::MatrixXd J_H;
-    first(
+    Eigen::MatrixXd u_plus_sign;
+    Eigen::MatrixXd J_G_circumflex_accent_r;
+    Eigen::MatrixXd G_circumflex_accent_r_left_parenthesis_u_right_parenthesis;
+    siere(
         const Eigen::MatrixXd & U_s,
         const Eigen::MatrixXd & M,
         const Eigen::VectorXd & v,
         const Eigen::VectorXd & f,
-        const Eigen::MatrixXd & K)
+        const Eigen::MatrixXd & K,
+        const double & h,
+        const std::function<Eigen::MatrixXd(Eigen::MatrixXd)> & φ_1,
+        const Eigen::MatrixXd & u)
     {
         const long n = U_s.rows();
         const long s = U_s.cols();
@@ -30,6 +36,9 @@ struct first {
         assert( f.size() == n );
         assert( K.rows() == n );
         assert( K.cols() == n );
+        assert( u.rows() == 2*n );
+        assert( u.cols() == 1 );
+        assert( fmod(2*n, 1) == 0.0 );
         // v_G = U_sU_s^T Mv
         v_G = U_s * U_s.transpose() * M * v;
         // v_H =  v - v_G
@@ -62,6 +71,24 @@ struct first {
         // J_H =  [0     I_n
         //             -M⁻¹K 0] - J_G 
         J_H = J_H_0 - J_G;
+        Eigen::MatrixXd J_G_circumflex_accent_r_0(2*s, 2*s);
+        J_G_circumflex_accent_r_0 << Eigen::MatrixXd::Zero(s, s), Eigen::MatrixXd::Identity(s, s),
+        -U_s.transpose() * K * U_s, Eigen::MatrixXd::Zero(s, s);
+        // J_G_circumflex_accent_r = [0     I_s
+        //             -U_s^TKU_s 0]
+        J_G_circumflex_accent_r = J_G_circumflex_accent_r_0;
+        Eigen::MatrixXd G_circumflex_accent_r_left_parenthesis_u_right_parenthesis_0(2*s, 1);
+        G_circumflex_accent_r_left_parenthesis_u_right_parenthesis_0 << U_s.transpose() * M * v,
+        U_s.transpose() * f;
+        // G_circumflex_accent_r_left_parenthesis_u_right_parenthesis = [U_s^TMv
+        //             U_s^Tf]
+        G_circumflex_accent_r_left_parenthesis_u_right_parenthesis = G_circumflex_accent_r_left_parenthesis_u_right_parenthesis_0;
+        Eigen::MatrixXd u_plus_sign_2(2*n, 2*s);
+        u_plus_sign_2 << U_s, Eigen::MatrixXd::Zero(n, s),
+        Eigen::MatrixXd::Zero(n, s), U_s;
+        // u_plus_sign =  u + ( -hJ_H)⁻¹(h H_left_parenthesis_u_right_parenthesis + h[U_s 0
+        //                                                0   U_s] φ_1(hJ_G_circumflex_accent_r) G_circumflex_accent_r_left_parenthesis_u_right_parenthesis)
+        u_plus_sign = u + (-h * J_H).colPivHouseholderQr().solve((h * H_left_parenthesis_u_right_parenthesis + h * u_plus_sign_2 * φ_1(h * J_G_circumflex_accent_r) * G_circumflex_accent_r_left_parenthesis_u_right_parenthesis));
     }
 };
 

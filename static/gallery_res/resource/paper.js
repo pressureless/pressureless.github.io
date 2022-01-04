@@ -346,10 +346,10 @@ function highlightSymInProseAndEquation(symbol, func_name, isLocalParam=false, l
   for (var i = spanMatches.length - 1; i >= 0; i--) {
     var curClass = spanMatches[i].getAttribute('class');
     if (curClass !== '') {
-      curClass = `highlight_prose` + ' ' + curClass;
+      curClass = `highlight_${color}` + ' ' + curClass;
     }
     else{
-      curClass = `highlight_prose`;
+      curClass = `highlight_${color}`;
     }
     spanMatches[i].setAttribute('class', curClass);
   }
@@ -367,7 +367,8 @@ function highlightSymInProseAndEquation(symbol, func_name, isLocalParam=false, l
   }
 }
 function onClickProse(tag, symbol, func_name, type='def') {
-  console.log(`onClickProse, ${tag}, symbol is ${symbol}, ${func_name}`);
+  resetState();
+  // console.log(`onClickProse, ${tag}, symbol is ${symbol}, ${func_name}`);
   highlightSym(symbol, func_name);
   if (type !== 'def') {
     showSymArrow(tag, symbol, func_name, 'use', color='red');
@@ -407,7 +408,7 @@ function onClickProse(tag, symbol, func_name, type='def') {
 function onClickSymbol(tag, symbol, func_name, type='def', isLocalParam=false, localFuncName='', color='red') {
   console.log(`the type is ${type}, sym is ${symbol}`)
   resetState();
-  closeOtherTips();
+  // closeOtherTips();
   highlightSym(symbol, func_name, isLocalParam, localFuncName, color);
   showSymArrow(tag, symbol, func_name, type, color);
     // d3.selectAll("mjx-mi[sym='" + symbol + "']").style("class", "highlight");
@@ -457,7 +458,7 @@ function getEquationContent(func_name, sym_list, isLocalFunc=false, localFunc=''
  * @return 
  */
 function onClickEq(tag, func_name, sym_list, isLocalFunc=false, localFunc='', localParams=[]) { 
-  closeOtherTips();
+  // closeOtherTips();
   resetState();
   content = getEquationContent(func_name, sym_list, isLocalFunc, localFunc, localParams);
   // Scale equation and append new div
@@ -511,7 +512,7 @@ function onClickEq(tag, func_name, sym_list, isLocalFunc=false, localFunc='', lo
     symDiv.classList.add("eqInfo");
     MathJax.typeset();
     // console.log(`div is ${div.innerHTML}`);
-    setTimeout(showAllArrows, 1000);
+    setTimeout(showAllArrows, 500);
   }
   else{
     showAllArrows();
@@ -539,11 +540,13 @@ function onClickEq(tag, func_name, sym_list, isLocalFunc=false, localFunc='', lo
   }
 };
 function resetState(){
+  // console.log(`reset all`);
   document.body.classList.remove("opShallow");
   removeArrows();
   removeSymHighlight();
   removeAddedDiv();
   resetEqScale();
+  closeOtherTips();
 }
 function resetEqScale(argument) {
   const matches = document.querySelectorAll(".eqHighlight");
@@ -572,15 +575,22 @@ function removeArrows(){
   }
 }
 function removeSymHighlight(){
-  const matches = document.querySelectorAll("[class^=highlight]");
+  // ^= matches "start with", *= matches "contains"
+  const matches = document.querySelectorAll("[class*=highlight]");
   for (var i = matches.length - 1; i >= 0; i--) {
     var cur = matches[i].getAttribute('class');
     const classArray = cur.split(' ');
-    matches[i].setAttribute('class', cur.replace(classArray[0], ''));
+    let new_classes = [];
+    for (var j = classArray.length - 1; j >= 0; j--) {
+      if (classArray[j] !== ' ' && ! classArray[j].includes('highlight')) {
+        new_classes.push(classArray[j]);
+      }
+    }
+    matches[i].setAttribute('class', new_classes.join(' '));
   }
 }
 function closeOtherTips(){
-  const matches = document.querySelectorAll("[class^=highlight]");
+  const matches = document.querySelectorAll("[class*=highlight]");
   for (var i = matches.length - 1; i >= 0; i--) {
     if (typeof matches[i]._tippy !== 'undefined'){
       matches[i]._tippy.hide();

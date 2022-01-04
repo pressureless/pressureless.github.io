@@ -1,4 +1,4 @@
-# PHYSICAL SIMULATION'
+# PHYSICAL SIMULATION
 ❤: elastic
 To simulate the physical behavior of the deployed grid, we use a simulation based on discrete elastic rods [Bergou et al. 2010] and build upon the solution of [Vekhter et al. 2019]. We refer the reader to those papers for the details. Note, that the associated material frames of the rods do not need to be isotropic, which allows us also to model the exact cross sections of lamellas with a ratio of 1 : 10.
 
@@ -30,7 +30,7 @@ t ∈ ℝ
 ```
 with $m_g$ and $m_h$ denoting the material vectors of $g$ and $h$ at $q$ respectively. The term $tm$ accounts for the thickness of the rods, while $λ_{q,1}$ and $λ_{q,2}$ are the constraint weights for the position and direction terms.
 
-<span class="def:E_a">The anchor constraint energy $E_a$ </span>ensures that both the position $q$ and material vector $m$ of the given connection do not deviate from the position $q_a$ and material vector $m_a$ of the corresponding anchor. It is given by
+The anchor constraint energy $\proselabel{E_a}$ensures that both the position $q$ and material vector $m$ of the given connection do not deviate from the position $q_a$ and material vector $m_a$ of the corresponding anchor. It is given by
 
 ``` iheartla
 `$E_a$` = `$λ_{a,1}$`||q-`$q_a$`||^2 + `$λ_{a,2}$`||`$\angle$`(m,`$m_a$`)||^2 
@@ -59,7 +59,7 @@ where
 ```
 
 
-with $\proselabel{ β^{(−)} }$ and $\proselabel{β^{(+)}}$ denoting the barycentric coordinates of the notch bounds on their corresponding edges. The term is only active when the connection lies on the same rod-edge as one of the notch bounds, so $\proselabel{δ^{(−)}} = 1$ or $\proselabel{δ^{(+)}} = 1$ when the connection lies on one of these edges, and 0 otherwise.
+with $\proselabel{elastic}{β^{(−)}}$ and $\proselabel{elastic}{β^{(+)}}$ denoting the barycentric coordinates of the notch bounds on their corresponding edges. The term is only active when the connection lies on the same rod-edge as one of the notch bounds, so $\proselabel{elastic}{δ^{(−)}} = 1$ or $\proselabel{elastic}{δ^{(+)}} = 1$ when the connection lies on one of these edges, and 0 otherwise.
 
 The additional notch penalty term $\proselabel{E_p}$ controls the movement of a connection q between two adjacent edges. If $q$ switches edges, it needs to be reprojected to the neighboring edge at the next iteration of the simulation. Within an iteration, $\proselabel{E_p}$ prevents $q$ from moving too far beyond the end of the current edge:
 

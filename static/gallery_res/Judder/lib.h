@@ -5,7 +5,7 @@
 #include <iostream>
 #include <set>
 
-struct first {
+struct judder {
     double J;
     double F_a;
     double F_b;
@@ -36,7 +36,7 @@ struct first {
     
         return log10(L);    
     }
-    first(
+    judder(
         const double & F,
         const double & L,
         const double & S,

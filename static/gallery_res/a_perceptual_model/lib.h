@@ -5,7 +5,7 @@
 #include <iostream>
 #include <set>
 
-struct first {
+struct perceptual {
     double increment_Q_P;
     double increment_Q_O;
     double m(
@@ -36,11 +36,11 @@ struct first {
 
         double sum_0 = 0;
         for(int i=1; i<=ω.size(); i++){
-            sum_0 += pow((`m̃`(ω.at(i-1), σ) / double(m_combining_tilde_left_curly_bracket_t_comma_b_right_curly_bracket)), β_b);
+            sum_0 += pow(((m̃(ω.at(i-1), σ)) / double(m_combining_tilde_left_curly_bracket_t_comma_b_right_curly_bracket)), β_b);
         }
         return sum_0;    
     }
-    first(
+    perceptual(
         const std::function<double(double)> & CSF,
         const std::vector<double> & ω,
         const double & m_combining_tilde_left_curly_bracket_t_comma_b_right_curly_bracket,

@@ -87,7 +87,7 @@ function getProseArg(parser, name, type='def'){
     let modulelabel = parser.GetArgument(); 
     // get the real tex string in \prose*{context}{real}
     let remain = parser.string.slice(parser.i)
-    console.log(`remain is ${remain}`);
+    // console.log(`remain is ${remain}`);
     var endIndex = 0;
     var leftBrace = 0;
     for (var i = 1; i <= remain.length; i++) {
@@ -110,7 +110,7 @@ function getProseArg(parser, name, type='def'){
     // let param = arg.coreMO().childNodes[0].getText();
     let param = `${raw}`;
     // let param = `$${raw}$`;
-    console.log(`param is ${param}, string is ${parser.string}, raw is ${raw}`);
+    // console.log(`param is ${param}, string is ${parser.string}, raw is ${raw}`);
     param = param.replace("\\","\\\\");
     NodeUtil.setAttribute(arg, "module", modulelabel);
     NodeUtil.setAttribute(arg, "sym", param);

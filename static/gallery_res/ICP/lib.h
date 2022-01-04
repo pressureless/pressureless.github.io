@@ -38,7 +38,7 @@ struct second {
         // t̃ = t/cos(θ)
         t̃ = t / double(cos(θ));
         double sum_0 = 0;
-        for(int i=1; i<=q.size(); i++){
+        for(int i=1; i<=p.size(); i++){
             sum_0 += (R * p.at(i-1) + t - q.at(i-1)).lpNorm<2>();
         }
         // reverse_solidus_varepsilon_left_curly_bracket_point_right_curly_bracket = ∑_i ||R p_i + t - q_i||
