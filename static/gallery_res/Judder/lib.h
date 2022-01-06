@@ -53,7 +53,7 @@ struct second {
         const long dim_0 = O.size();
         assert( M.size() == dim_0 );
         double sum_0 = 0;
-        for(int i=1; i<=M.size(); i++){
+        for(int i=1; i<=O.size(); i++){
             sum_0 += abs(log(O.at(i-1)) - log(M.at(i-1))) / double(log(O.at(i-1)));
         }
         // E = sum_i |log(O_i) - log(M_i)|/log(O_i) 

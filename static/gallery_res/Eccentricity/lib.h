@@ -5,7 +5,7 @@
 #include <iostream>
 #include <set>
 
-struct first {
+struct eccentricity {
 
     Eigen::MatrixXd 𝑔(
         const Eigen::VectorXd & x,
@@ -53,7 +53,7 @@ struct first {
     {
         return 𝜁(`$𝑓_𝑠$`) * (q[0-1] * pow(𝑒, 2) + q[1-1] * 𝑒) + q[2-1];    
     }
-    first(
+    eccentricity(
         const std::function<double(double, double)> & m,
         const Eigen::Matrix<double, 10, 1> & 𝑝,
         const double & 𝑓_left_curly_bracket_𝑠0_right_curly_bracket,
