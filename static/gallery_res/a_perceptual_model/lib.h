@@ -12,28 +12,17 @@ struct perceptual {
         const double & ω,
         const double & σ)
     {
-    
-    
-
-    
         return exp(-2 * pow(M_PI, 2) * pow(ω, 2) * pow(σ, 2));    
     }
     double m̃(
         const double & ω,
         const double & σ)
     {
-    
-    
-
-    
         return CSF(ω) * m(ω, σ);    
     }
     double E_b(
         const double & σ)
     {
-    
-    
-
         double sum_0 = 0;
         for(int i=1; i<=ω.size(); i++){
             sum_0 += pow(((m̃(ω.at(i-1), σ)) / double(m_combining_tilde_left_curly_bracket_t_comma_b_right_curly_bracket)), β_b);

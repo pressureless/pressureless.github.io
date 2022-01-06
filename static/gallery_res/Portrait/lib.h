@@ -15,9 +15,6 @@ struct first {
     double L_left_curly_bracket_feat_right_curly_bracket(
         const double & θ)
     {
-    
-    
-
         double sum_2 = 0;
         for(int d=1; d<=λ.size(); d++){
             sum_2 += λ.at(d-1) * (Φ.at(d-1)(I_asterisk_operator) - Φ.at(d-1)(f(I_left_curly_bracket_in_right_curly_bracket, θ))).norm();
@@ -27,19 +24,11 @@ struct first {
     double L_left_curly_bracket_pix_right_curly_bracket(
         const double & θ)
     {
-    
-    
-
-    
         return (I_asterisk_operator - f(I_left_curly_bracket_in_right_curly_bracket, θ)).norm();    
     }
     double L(
         const double & θ)
     {
-    
-    
-
-    
         return 0.01 * L_left_curly_bracket_feat_right_curly_bracket(θ) + L_left_curly_bracket_pix_right_curly_bracket(θ);    
     }
     first(

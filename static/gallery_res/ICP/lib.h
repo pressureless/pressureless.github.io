@@ -38,7 +38,7 @@ struct icp {
         // t̃ = t/cos(θ)
         t̃ = t / double(cos(θ));
         double sum_0 = 0;
-        for(int i=1; i<=p.size(); i++){
+        for(int i=1; i<=q.size(); i++){
             sum_0 += (R * p.at(i-1) + t - q.at(i-1)).lpNorm<2>();
         }
         // reverse_solidus_varepsilon_left_curly_bracket_point_right_curly_bracket = ∑_i ||R p_i + t - q_i||
@@ -56,7 +56,7 @@ struct icp {
         // reverse_solidus_varepsilon_left_curly_bracket_symm_hyphen_minus_RN_right_curly_bracket = ∑_i ((R p_i + R⁻¹ q_i + t) ⋅ (Rn_p_i + R⁻¹n_q_i))^2
         reverse_solidus_varepsilon_left_curly_bracket_symm_hyphen_minus_RN_right_curly_bracket = sum_2;
         double sum_3 = 0;
-        for(int i=1; i<=n.size(); i++){
+        for(int i=1; i<=q.size(); i++){
             sum_3 += pow(cos(θ), 2) * pow((((p.at(i-1) - q.at(i-1))).dot(n.at(i-1)) + ((((p.at(i-1) + q.at(i-1))).cross(n.at(i-1)))).dot(ã) + (n.at(i-1)).dot(t̃)), 2);
         }
         // reverse_solidus_varepsilon_left_curly_bracket_symm_right_curly_bracket = ∑_i cos²(θ)((p_i - q_i)⋅n_i +((p_i+q_i)×n_i)⋅ã+n_i⋅t̃)² 

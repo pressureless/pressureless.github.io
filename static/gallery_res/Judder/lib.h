@@ -12,28 +12,16 @@ struct judder {
     double CFF(
         const double & L)
     {
-    
-    
-
-    
         return a * log(L) + b;    
     }
     double α(
         const double & F)
     {
-    
-    
-
-    
         return 1 / double(F);    
     }
     double β(
         const double & L)
     {
-    
-    
-
-    
         return log10(L);    
     }
     judder(
@@ -59,11 +47,17 @@ struct judder {
 struct second {
     double E;
     second(
-        const std::function<double(double)> & O,
-        const std::function<double(double)> & M)
+        const std::vector<double> & O,
+        const std::vector<double> & M)
     {
-        // E = |log(O(1)) - log(M(1))|/log(O(1)) 
-        E = abs(log(O(1)) - log(M(1))) / double(log(O(1)));
+        const long dim_0 = O.size();
+        assert( M.size() == dim_0 );
+        double sum_0 = 0;
+        for(int i=1; i<=M.size(); i++){
+            sum_0 += abs(log(O.at(i-1)) - log(M.at(i-1))) / double(log(O.at(i-1)));
+        }
+        // E = sum_i |log(O_i) - log(M_i)|/log(O_i) 
+        E = sum_0;
     }
 };
 

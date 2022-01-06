@@ -19,27 +19,16 @@ struct first {
     double ω(
         const double & x)
     {
-    
-    
-
-    
         return atan((x - c_x) / double(f_x));    
     }
     double s(
         const double & x)
     {
-    
-    
-
-    
         return (y - c_y) * cos(ω(x));    
     }
     Eigen::Matrix<double, 3, 3> R(
         const double & α)
     {
-    
-    
-
         Eigen::Matrix<double, 3, 3> R_0;
         R_0 << -sin(α), 0, -cos(α),
         0, 1, 0,
@@ -49,9 +38,6 @@ struct first {
     Eigen::MatrixXd P(
         const double & α)
     {
-    
-    
-
         Eigen::MatrixXd P_0(3, 4);
         P_0 << R(α), ŧ;
         return K * P_0;    
@@ -59,27 +45,16 @@ struct first {
     double t(
         const double & α)
     {
-    
-    
-
-    
         return (α - α_i) / double((α_j - α_i));    
     }
     Eigen::Matrix<double, 2, 1> x(
         const double & α)
     {
-    
-    
-
-    
         return φ_circumflex_accent_left_curly_bracket_hyphen_minus_1_right_curly_bracket_d((1 - t(α)) * φ_d(x_i) + t(α) * φ_d(x_j));    
     }
     Eigen::VectorXd φ(
         const double & x)
     {
-    
-    
-
         Eigen::VectorXd φ_0(2);
         φ_0 << ω(x), s(x);
         return φ_0;    

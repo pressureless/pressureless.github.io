@@ -13,8 +13,6 @@ struct nautilus {
         const Eigen::VectorXd & x)
     {
         const long n = x.size();
-    
-
         Eigen::VectorXd E_0(2);
         E_0 << x[5-1], x[8-1];
         Eigen::VectorXd E_1(2);
