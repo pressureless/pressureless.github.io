@@ -8,6 +8,8 @@ abstract: |
  The perceived discrepancy between continuous motion as seen in nature and frame-by-frame exhibition on a display, sometimes termed judder, is an integral part of video presentation. Over time, content creators have developed a set of rules and guidelines for maintaining a desirable cinematic look under the restrictions placed by display technology without incurring prohibitive judder. With the advent of novel displays capable of high brightness, contrast, and frame rates, these guidelines are no longer sufficient to present audiences with a uniform viewing experience. In this work, we analyze the main factors for perceptual motion artifacts in digital presentation and gather psychophysical data to generate a model of judder perception. Our model enables applications like matching perceived motion artifacts to a traditionally desirable level and maintain a cinematic motion look.
 ---
 
+❤: judder
+
 # INTRODUCTION
 In this work, we pursue a practical examination of motion artifacts in the modern display landscape. In vision science such artifacts can be classified in various ways based on distinct features of the perceivable error (Section 2.2)—we will simplify this discussion and refer to these effects collectively as judder. When excessive, it ruins the quality of motion in a video and makes the content difficult or unpleasant to watch. Details of moving objects may be lost completely, and certain scenes can become disturbing or even entirely un-watchable. This is especially true for camera pans, which are the focus of this work. Pans are characterized by a swivel motion, generally horizontal, such that the majority of the filmed scene appears to move in the direction opposite to the camera rotation.
 
@@ -31,7 +33,7 @@ The differences between the natural continuous motion of an object and its discr
 ## Motion Perception
 Motion perception has been widely studied [@nishida2011advancement], from the basics such as Fourier motion and the aperture problem to more advanced topics such as transparent motion [@mulligan1992motion], motion aftereffects [@derrington1985separate], and biological motion [@johansson1973visual]. Other vision science work directed to distortions of practical interest include the motion sharpening effect, whereby blur levels of static frames are substantially less visible when the frames are displayed in motion [@bex1995sharpening; @takeuchi2005sharpening; @westerink1995perceived]. The smoothness of sampled motion without specifically referring to the common term, judder, has been investigated including the effects of intermittent occlusion [@scherzer2009intermittent], which can be applied to projector shutter designs.
 
-Perceptual image difference metrics such as HDR-VDP [@mantiuk2011hdr] compare two images by employing a pipeline modeling the human visual system. Video difference metrics are much less common. Work from Watson and Malo on the Standard Spatial Observer [@watson2002video] contains a video quality metric based on their existing model but does not provide implementation strategies. [aydin2010video] extend their previous work on HDR image comparison to videos by employing a spatiotemporal contrast sensitivity function (STCSF) and a three-dimensional cortex transform. The window of visibility [@watson2013high; @watson1986temporal] has been developed to model the interactions of the visual system with spatiotemporal aliasing distortions due to frame rate designs and more recently this work has been extended to a pyramid of visibility by showing that the STCSF is well approximated as a linearly separable function of its factors, including the log of adapting lumi- nance [@watson2016pyramid].
+Perceptual image difference metrics such as HDR-VDP [@mantiuk2011hdr] compare two images by employing a pipeline modeling the human visual system. Video difference metrics are much less common. Work from Watson and Malo on the Standard Spatial Observer [@watson2002video] contains a video quality metric based on their existing model but does not provide implementation strategies. [aydin2010video] extend their previous work on HDR image comparison to videos by employing a spatiotemporal contrast sensitivity function (STCSF) and a three-dimensional cortex transform. The window of visibility [@watson2013high; @watson1986temporal] has been developed to model the interactions of the visual system with spatiotemporal aliasing distortions due to frame rate designs and more recently this work has been extended to a pyramid of visibility by showing that the STCSF is well approximated as a linearly separable function of its factors, including the log of adapting luminance [@watson2016pyramid].
 
 Most of these works have been geared toward threshold detection of temporal artifacts as modeled by the STCSF. By contrast, our work focuses on suprathreshold appearance and aims to provide a practical model that can be used to predict and compare distortions relevant to display applications.
 
@@ -81,7 +83,7 @@ Additional factors are explored in some of our experiments:
 
 Contrast. The STCSF operates on contrast, which is expected to be a factor. In this work, we used Michelson contrast, defined as (Imax − Imin )/(Imax + Imin ) to describe this factor, where I is the luminance image being used. Higher contrast is expected to lead to more perceived judder. We probed contrast values of 0.95, 0.75, and 0.5. Cinematic content traditionally strives to use as much of the available contrast as possible, and as such reducing contrast is usually not a feasible form of judder control.
 
-Shutter Angle. More generally, motion blur reduces the retinal- image contrast of high spatial frequencies, potentially reducing judder. Shutter angles are traditionally described in degrees of arc with 360◦ representing a shutter that is open for the entire duration between frame captures. Smaller values represent fractional exposures: A 180◦ shutter means the sensor is exposed for half the available time. We explored shutter angle values of 360◦, 180◦, and 0◦ (the latter taken by convention when using an unaltered still image to simulate a camera pan). Blur is often used to control judder by content creators when no other options are available, but blurring strongly alters the scene leading to lost information.
+Shutter Angle. More generally, motion blur reduces the retinal-image contrast of high spatial frequencies, potentially reducing judder. Shutter angles are traditionally described in degrees of arc with 360◦ representing a shutter that is open for the entire duration between frame captures. Smaller values represent fractional exposures: A 180◦ shutter means the sensor is exposed for half the available time. We explored shutter angle values of 360◦, 180◦, and 0◦ (the latter taken by convention when using an unaltered still image to simulate a camera pan). Blur is often used to control judder by content creators when no other options are available, but blurring strongly alters the scene leading to lost information.
 
 Motion Direction. Previous research on judder [@7306410] hypothesized that horizontal motions may produce more judder than vertical for some stimuli due to the better performance of horizontal smooth pursuit over vertical [@ke2013directional], but no data are provided to compare these results quantitatively.
 
@@ -161,13 +163,13 @@ The results can be seen in Figure 5, averaged out over the three different image
 
 Experiment 3. Ten participants took part. Significant factors included mean luminance (F = 249.77, p ≪ 0.01), frame rate (F = 1017.50, p ≪ 0.01), and speed (F = 154.92, p ≪ 0.01). Shutter angle was not found to be a significant factor (F = 0.23, p = 0.63).
 
-The results can be seen in Figure 6, averaged out over shutter angle and users, for simplicity. In this experiment, we introduced a lower-frame-rate condition, 24Hz, and removed the highest frame rate from previous cases, as its results contained almost no information (120Hz). As this results in a different scaling of the re- sponses, data were normalized such that the blocks overlapping with experiments 1 and 2 have matching means before generating the model described in Section 6. Note that, as previously, little judder is experienced at 60Hz, while results for 30Hz look similar to earlier studies. At 24Hz, a stronger difference between the lowest luminance level (targeting standard dynamic range cinema) and the higher luminances is seen.
+The results can be seen in Figure 6, averaged out over shutter angle and users, for simplicity. In this experiment, we introduced a lower-frame-rate condition, 24Hz, and removed the highest frame rate from previous cases, as its results contained almost no information (120Hz). As this results in a different scaling of the responses, data were normalized such that the blocks overlapping with experiments 1 and 2 have matching means before generating the model described in Section 6. Note that, as previously, little judder is experienced at 60Hz, while results for 30Hz look similar to earlier studies. At 24Hz, a stronger difference between the lowest luminance level (targeting standard dynamic range cinema) and the higher luminances is seen.
 
 Variables that were not found to be significant were not included in our perceptual model of judder, although this result does not necessarily indicate that contrast, shutter angle, or type of image will never affect judder. It is possible, for example, that stronger distortions such as non-photorealistic blurring above 360◦ could significantly affect judder perception, but such values were not tested in this work, as they would strongly alter the look of the scene and thus do not lead to a satisfactory solution to mitigate judder.
 
 # JUDDER MODEL
-To obtain an easily expressible model of judder $J$ based on the most important factors, mean luminance $L$, frame rate $F$, and speed $S$, we combine the results of experiments 1–3 to design a single empirical model. We fit the perceptual data provided by user study participants into a second degree polynomial model:
-❤: judder
+To obtain <span class='def:J'>an easily expressible model of judder $J$</span> based on the most important factors,<span class='def:L'> mean luminance $L$</span>, <span class='def:F'>frame rate $F$</span>, and <span class='def:S'>speed $S$</span>, we combine the results of experiments 1–3 to design a single empirical model. We fit the perceptual data provided by user study participants into a second degree polynomial model:
+
 ``` iheartla
 
 J = P(α(F), β(L), S)
@@ -177,16 +179,16 @@ S ∈ ℝ
 P ∈ ℝ, ℝ, ℝ -> ℝ
 
 ``` 
-where $α$ and $β$ are nonlinearities employed in perceptual modeling; specifically, for luminance we employ $α$ the logarithm function and for frame rate β is the multiplicative inverse, i.e., we model on frame duration. For details on the resulting function, please see Section A.3.
+where<span class='def:α β'> $α$ and $β$ are nonlinearities employed in perceptual modeling; specifically, for luminance we employ $α$ the logarithm function and for frame rate β is the multiplicative inverse</span>, i.e., we model on frame duration. For details on the resulting function, please see Section A.3.
+❤: error
+This is an excellent fit to the psychophysical data, with a mean absolute error of 0.24 (equivalent to 9.4%) between measured and predicted judder at the probed points. To present the reader with an error metric that relates to physical quantities, we also computed the mean error in the log-luminance domain (to avoid under representing errors in low-luminance conditions). Given $N$ as the number of measured conditions, <span class='def:O'>$O (i)$ being the observed means for each condition </span>and <span class='def:M'>$M (i)$ values predicted by our model</span>, we calculate <span class='def:E'>the error $E$ </span>as
 
-This is an excellent fit to the psychophysical data, with a mean absolute error of 0.24 (equivalent to 9.4%) between measured and predicted judder at the probed points. To present the reader with an error metric that relates to physical quantities, we also computed the mean error in the log-luminance domain (to avoid under representing errors in low-luminance conditions). Given $N$ as the number of measured conditions, $O(i)$ being the observed means for each condition and $M(i)$ values predicted by our model, we calculate the error $E$ as
-
-``` iheartla(second)
+``` iheartla
 
 E = sum_i |log(O_i) - log(M_i)|/log(O_i) 
 
-O_i ∈ ℝ  
-M_i ∈ ℝ 
+O ∈ ℝ^N
+M ∈ ℝ^N
 
 ``` 
 
@@ -208,7 +210,7 @@ Finally, our model allows us to compute iso-lines over which perceived judder is
 To test the validity of our model with more complex stimuli, we ran a Validation experiment. Using the same setup as the experiments described in Section 3, 15 participants were shown short reference videos at a lower frame rate and brightness. They were then presented with another version of the same video, but at a higher frame rate. The experimental task was to find the best match in terms of judder by controlling the mean luminance of the test stimulus through logmean offsets. Five stimuli were employed, two shots from Nocturne,2 dubbed Ballet and Kids, and one shot from Big Buck Bunny. All stimuli contained camera pans and were likely to generate some perceivable judder and can be seen in the accompanying video. The details for each of the five tested cases can be seen in Table 1, with additional details presented in Appendix A.4.
 
 We computed luminance predictions to match judder between test and reference using our metric as described in Equation (1). Although no other judder metric exists, we adapted the wellknown Ferry-Porter law for flicker fusion thresholds [@tyler1990analysis] to predict temporal artifact sensitivity. It is normally expressed as
-
+❤: judder
 ``` iheartla
 
 CFF(L) = a ⋅ log(L) + b where L ∈ ℝ
@@ -219,7 +221,7 @@ b ∈ ℝ
 ``` 
 
 
-where a and b are known constants and L is the mean luminance. If we introduce the simplifying assumption that the critical flicker fusion rate ($CFF$) is linearly correlated through a factor M with judder-sensitivity, then we can obtain a log-luminance equivalence like the one queried in this experiment. Denoting $F_a$ and $F_b$ as the two frame rates and $L_a$ , $L_b$ as the luminances:
+where a and b are known constants and L is the mean luminance. If we introduce the simplifying assumption that<span class='def:CFF'> the critical flicker fusion rate ($CFF$)</span> is linearly correlated through <span class='def:M'>a factor $M$</span> with judder-sensitivity, then we can obtain a log-luminance equivalence like the one queried in this experiment. <span class='def:F_a F_b'>Denoting $F_a$ and $F_b$ as the two frame rates</span> and <span class='def:L_a L_b'>$L_a$ , $L_b$ as the luminances</span>:
 
 
 ``` iheartla

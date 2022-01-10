@@ -6,7 +6,8 @@
 #include <set>
 
 struct eccentricity {
-
+    int 𝑙_0;
+    Eigen::VectorXd q;
     Eigen::MatrixXd 𝑔(
         const Eigen::VectorXd & x,
         const Eigen::VectorXd & `$x_0$`,
@@ -24,7 +25,7 @@ struct eccentricity {
     double 𝜏(
         const double & `$𝑓_𝑠$`)
     {
-        return m(log(`$𝑓_𝑠$`) - log(𝑓_left_curly_bracket_𝑠0_right_curly_bracket), 0);    
+        return m(log(`$𝑓_𝑠$`) - log(𝑓_𝑠0), 0);    
     }
     double 𝜁(
         const double & `$𝑓_𝑠$`)
@@ -37,15 +38,20 @@ struct eccentricity {
     {
         return m(0, 𝑝[0-1] * 𝜏(`$𝑓_𝑠$`) + 𝑝[1-1] * 𝜏(`$𝑓_𝑠$`) + 𝑝[2-1] + (𝑝[3-1] * pow(𝜏(`$𝑓_𝑠$`), 2) + 𝑝[4-1] * 𝜏(`$𝑓_𝑠$`) + 𝑝[5-1]) * 𝜁(`$𝑓_𝑠$`) * 𝑒 + (𝑝[6-1] * pow(𝜏(`$𝑓_𝑠$`), 2) + 𝑝[7-1] * 𝜏(`$𝑓_𝑠$`) + 𝑝[8-1]) * 𝜁(`$𝑓_𝑠$`) * pow(𝑒, 2));    
     }
-    double A(
+    double 𝐴(
         const double & 𝑒)
     {
         return log(64) * 2.3 / double((0.106 * (𝑒 + 2.3)));    
     }
-    double d(
-        const double & L)
+    double 𝑑(
+        const double & 𝐿)
     {
-        return 7.75 - 5.75 * (pow((L * a / double(846)), 0.41) / double((pow((L * a / double(846)), 0.41) + 2)));    
+        return 7.75 - 5.75 * (pow((𝐿 * a / double(846)), 0.41) / double((pow((𝐿 * a / double(846)), 0.41) + 2)));    
+    }
+    double 𝑙(
+        const double & 𝐿)
+    {
+        return M_PI * pow(𝑑(𝐿), 2) / double(4) * 𝐿;    
     }
     double 𝑠(
         const double & 𝑒,
@@ -53,14 +59,25 @@ struct eccentricity {
     {
         return 𝜁(`$𝑓_𝑠$`) * (q[0-1] * pow(𝑒, 2) + q[1-1] * 𝑒) + q[2-1];    
     }
+    double hatΨ(
+        const double & 𝑒,
+        const double & `$𝑓_𝑠$`,
+        const double & 𝐿)
+    {
+        return (𝑠(𝑒, `$𝑓_𝑠$`) * (log10(𝑙(𝐿) / double(𝑙_0))) + 1) * Ψ(𝑒, `$𝑓_𝑠$`);    
+    }
     eccentricity(
         const std::function<double(double, double)> & m,
         const Eigen::Matrix<double, 10, 1> & 𝑝,
-        const double & 𝑓_left_curly_bracket_𝑠0_right_curly_bracket,
-        const double & a,
-        const Eigen::Matrix<double, 3, 1> & q)
+        const double & 𝑓_𝑠0,
+        const double & a)
     {
-    
+        // `$𝑙_0$` = 1488
+        𝑙_0 = 1488;
+        Eigen::VectorXd q_0(3);
+        q_0 << 5.71 * pow(10, (-6)), -1.78 * pow(10, (-4)), 0.204;
+        // q = (5.71 ⋅ 10^(-6), -1.78 ⋅ 10^(-4), 0.204)
+        q = q_0;
     }
 };
 

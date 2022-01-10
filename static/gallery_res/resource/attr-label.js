@@ -87,7 +87,6 @@ function getProseArg(parser, name, type='def'){
     let modulelabel = parser.GetArgument(); 
     // get the real tex string in \prose*{context}{real}
     let remain = parser.string.slice(parser.i)
-    // console.log(`remain is ${remain}`);
     var endIndex = 0;
     var leftBrace = 0;
     for (var i = 1; i <= remain.length; i++) {

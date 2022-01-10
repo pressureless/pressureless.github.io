@@ -287,6 +287,10 @@ function showArrow(tag, symbol, func_name, type='def', color='blue',
       // const prose = document.querySelectorAll("mjx-mi[sym='" + symbol + "'][module='"+ func_name + "'][type='def']");
       const prose = document.querySelectorAll("[sym='" + symbol + "'][module='"+ func_name + "'][type='def']");
       // console.log(`prose.length is ${prose.length}`);
+      // let new_sym = symbol.replace("\\\\\\\\", "\\"); 
+      // new_sym = symbol;
+      // const prose = document.querySelectorAll("[sym='" + new_sym + "'][module='"+ func_name + "'][type='def']");
+      // console.log(`prose.length is ${prose.length}`);
       if (prose !== 'undefined') {
         for (var i = prose.length - 1; i >= 0; i--) {
           // console.log(`${i} is ${prose[i].innerHTML}, tag is ${prose[i].tagName}, parentElement:${prose[i].parentElement.innerHTML}`)
@@ -356,16 +360,25 @@ function highlightSymInProseAndEquation(symbol, func_name, isLocalParam=false, l
     matches[i].setAttribute('class', curClass);
   }
   // span prose 
-  let spanMatches = document.querySelectorAll("span[sym='" + symbol + "'][context='" + func_name + "']");
+  let new_sym = symbol.replace("\\\\\\\\", "\\"); 
+  let spanMatches = document.querySelectorAll("span[sym*='" + new_sym + "'][context='" + func_name + "']");
   for (var i = spanMatches.length - 1; i >= 0; i--) {
     var curClass = spanMatches[i].getAttribute('class');
-    if (curClass !== '') {
-      curClass = `highlight_${color}` + ' ' + curClass;
+    var curSym = spanMatches[i].getAttribute('sym');
+    const curSymList = curSym.split(' ');
+    // console.log(`i is ${i}, curSymList is ${curSymList} `)
+    for (var j = curSymList.length - 1; j >= 0; j--) {
+      if (curSymList[j] === new_sym) {
+        if (curClass !== '') {
+          curClass = `highlight_${color}` + ' ' + curClass;
+        }
+        else{
+          curClass = `highlight_${color}`;
+        }
+        spanMatches[i].setAttribute('class', curClass);
+        break;
+      }
     }
-    else{
-      curClass = `highlight_${color}`;
-    }
-    spanMatches[i].setAttribute('class', curClass);
   }
   // syms in equation
   let eqMatches = document.querySelectorAll("[case='equation'][sym='" + symbol + "'][func='"+ func_name + "']");

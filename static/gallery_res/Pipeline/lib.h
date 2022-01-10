@@ -5,12 +5,13 @@
 #include <iostream>
 #include <set>
 
-struct first {
+struct pipeline {
+    Eigen::MatrixXd textbfX;
     double ϕ;
     double D;
     double γ;
     Eigen::Matrix<double, 3, 3> K;
-    Eigen::Matrix<double, 3, 1> ŧ;
+    Eigen::Matrix<double, 3, 1> textbft;
     double A;
     double B;
     double C;
@@ -39,7 +40,7 @@ struct first {
         const double & α)
     {
         Eigen::MatrixXd P_0(3, 4);
-        P_0 << R(α), ŧ;
+        P_0 << R(α), textbft;
         return K * P_0;    
     }
     double t(
@@ -47,10 +48,10 @@ struct first {
     {
         return (α - α_i) / double((α_j - α_i));    
     }
-    Eigen::Matrix<double, 2, 1> x(
+    Eigen::Matrix<double, 2, 1> textbfx(
         const double & α)
     {
-        return φ_circumflex_accent_left_curly_bracket_hyphen_minus_1_right_curly_bracket_d((1 - t(α)) * φ_d(x_i) + t(α) * φ_d(x_j));    
+        return φ_circumflex_accent_1_d((1 - t(α)) * φ_d(x_i) + t(α) * φ_d(x_j));    
     }
     Eigen::VectorXd φ(
         const double & x)
@@ -59,13 +60,13 @@ struct first {
         φ_0 << ω(x), s(x);
         return φ_0;    
     }
-    first(
+    pipeline(
         const double & f_x,
         const double & f_y,
         const double & c_x,
         const double & c_y,
         const double & r,
-        const std::function<Eigen::Matrix<double, 2, 1>(Eigen::Matrix<double, 2, 1>)> & φ_circumflex_accent_left_curly_bracket_hyphen_minus_1_right_curly_bracket_d,
+        const std::function<Eigen::Matrix<double, 2, 1>(Eigen::Matrix<double, 2, 1>)> & φ_circumflex_accent_1_d,
         const std::function<Eigen::Matrix<double, 2, 1>(Eigen::Matrix<double, 2, 1>)> & φ_d,
         const Eigen::Matrix<double, 2, 1> & x_i,
         const Eigen::Matrix<double, 2, 1> & x_j,
@@ -75,37 +76,41 @@ struct first {
         const double & X,
         const double & Y,
         const double & Z,
-        const double & χ)
+        const double & x)
     {
+        Eigen::VectorXd textbfX_0(3);
+        textbfX_0 << X, Y, Z;
+        // `$\textbf{X}$` = (X,Y,Z)^T
+        textbfX = textbfX_0.transpose();
         Eigen::Matrix<double, 3, 3> K_0;
         K_0 << f_x, 0, c_x,
         0, f_y, c_y,
         0, 0, 1;
-        // K = [f_x 0 c_x
-        //       0   f_y c_y
-        //       0      0    1]
+        // K = [`$f_x$` 0 `$c_x$`
+    //       0   `$f_y$` `$c_y$`
+    //       0      0    1]
         K = K_0;
-        Eigen::Matrix<double, 3, 1> ŧ_0;
-        ŧ_0 << 0,
+        Eigen::Matrix<double, 3, 1> textbft_0;
+        textbft_0 << 0,
         0,
         -r;
-        // ŧ = [0;0;-r]
-        ŧ = ŧ_0;
-        // A = X ⋅ f_x - Z⋅(χ - c_x )
-        A = X * f_x - Z * (χ - c_x);
-        // B = Z⋅f_x + X⋅(χ -c_x ) 
-        B = Z * f_x + X * (χ - c_x);
+        // `$\textbf{t}$` = [0;0;-r]
+        textbft = textbft_0;
+        // A = X ⋅ `$f_x$` - Z⋅(x - `$c_x$` )
+        A = X * f_x - Z * (x - c_x);
+        // B = Z⋅`$f_x$` + X⋅(x -`$c_x$` ) 
+        B = Z * f_x + X * (x - c_x);
         // D = √(A^2 +B^2)
         D = sqrt((pow(A, 2) + pow(B, 2)));
-        // γ = tan(B/A)
-        γ = tan(B / double(A));
-        // C = -r⋅(χ -c_x )
-        C = -r * (χ - c_x);
-        // ϕ = sin(C/D) 
-        ϕ = sin(C / double(D));
-        // α_1 = ϕ - γ
+        // γ = arctan(B/A)
+        γ = atan(B / double(A));
+        // C = -r⋅(x -`$c_x$` )
+        C = -r * (x - c_x);
+        // ϕ = arcsin(C/D) 
+        ϕ = asin(C / double(D));
+        // `$α_1$` = ϕ - γ
         α_1 = ϕ - γ;
-        // α_2 = π - ϕ - γ  
+        // `$α_2$` = π - ϕ - γ  
         α_2 = M_PI - ϕ - γ;
     }
 };
