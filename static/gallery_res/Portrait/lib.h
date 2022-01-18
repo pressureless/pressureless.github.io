@@ -13,6 +13,9 @@ struct portrait {
     Eigen::MatrixXd D;
     Eigen::MatrixXd w;
     Eigen::VectorXd σ;
+    std::vector<double> λ;
+    Eigen::MatrixXd I_circumflex_accent_asterisk;
+    Eigen::MatrixXd I_in;
     double L_feat(
         const double & θ)
     {
@@ -80,12 +83,15 @@ struct portrait {
         assert( I_circumflex_accent_asterisk.rows() == p );
         assert( I_circumflex_accent_asterisk.cols() == q );
         assert( Φ.size() == dim_3 );
+        this->λ = λ;
+        this->I_circumflex_accent_asterisk = I_circumflex_accent_asterisk;
+        this->I_in = I_in;
         // `$I_{out}$` =`$I_{in}$`∘ A+B
         I_out = (I_in).cwiseProduct(A) + B;
         // I =`$I_l$`∘ (1_p,q - M)+`$I_s$`∘M
         I = (I_l).cwiseProduct((Eigen::MatrixXd::Ones(p, q) - M)) + (I_s).cwiseProduct(M);
         double sum_0 = 0;
-        for(int k=1; k<=w_c_comma.size(); k++){
+        for(int k=1; k<=σ_c_comma.size(); k++){
             sum_0 += M_in * G(σ_c_comma.at(k-1)) * w_c_comma.at(k-1);
         }
         // `$M_c$` =sum_k `$M_{in}$` G(`$σ_{c,}$`_k)`$w_{c,}$`_k

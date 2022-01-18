@@ -8,6 +8,9 @@
 struct perceptual {
     double increment_Q_P;
     double increment_Q_O;
+    std::vector<double> ω;
+    double m_combining_tilde_t_comma_b;
+    double β_b;
     double m(
         const double & ω,
         const double & σ)
@@ -40,6 +43,9 @@ struct perceptual {
         const double & σ_O_circumflex_accent_B)
     {
         const long dim_0 = ω.size();
+        this->ω = ω;
+        this->m_combining_tilde_t_comma_b = m_combining_tilde_t_comma_b;
+        this->β_b = β_b;
         // `$∆Q_P$` = `$E_b$`(`$σ_P^A$`) - `$E_b$`(`$σ_P^B$`)
         increment_Q_P = E_b(σ_P_circumflex_accent_A) - E_b(σ_P_circumflex_accent_B);
         // `$∆Q_O$` = `$E_b$`(`$σ_O^A$`) - `$E_b$`(`$σ_O^B$`)

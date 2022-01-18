@@ -17,6 +17,15 @@ struct pipeline {
     double C;
     double α_1;
     double α_2;
+    double x;
+    double c_x;
+    double f_x;
+    double y;
+    double c_y;
+    double α_i;
+    double α_j;
+    Eigen::Matrix<double, 2, 1> x_i;
+    Eigen::Matrix<double, 2, 1> x_j;
     double ω(
         const double & x)
     {
@@ -78,6 +87,15 @@ struct pipeline {
         const double & Z,
         const double & x)
     {
+        this->x = x;
+        this->c_x = c_x;
+        this->f_x = f_x;
+        this->y = y;
+        this->c_y = c_y;
+        this->α_i = α_i;
+        this->α_j = α_j;
+        this->x_i = x_i;
+        this->x_j = x_j;
         Eigen::VectorXd textbfX_0(3);
         textbfX_0 << X, Y, Z;
         // `$\textbf{X}$` = (X,Y,Z)^T

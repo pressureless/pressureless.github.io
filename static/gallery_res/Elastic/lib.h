@@ -11,6 +11,7 @@ struct elastic {
     double E_a;
     double E_n;
     double E_p;
+
     elastic(
         const double & E_r,
         const Eigen::VectorXd & q_g,

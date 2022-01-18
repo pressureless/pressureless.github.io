@@ -10,6 +10,7 @@ struct computation {
     double E_s;
     double E_c;
     double E_f;
+
     computation(
         const double & λ_s,
         const double & E_a,

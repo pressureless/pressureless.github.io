@@ -17,6 +17,7 @@ struct siere {
     Eigen::MatrixXd u_plus_sign;
     Eigen::MatrixXd J_G_circumflex_accent_r;
     Eigen::MatrixXd G_circumflex_accent_ru;
+
     siere(
         const Eigen::MatrixXd & U_s,
         const Eigen::MatrixXd & M,
@@ -98,6 +99,7 @@ struct second {
     Eigen::MatrixXd Z_1;
     Eigen::MatrixXd Y_2;
     Eigen::MatrixXd Z_2;
+
     second(
         const Eigen::MatrixXd & U_s,
         const Eigen::MatrixXd & M,

@@ -1,0 +1,141 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+    <script>
+MathJax = {
+  loader: {
+    load: ["[attrLabel]/attr-label.js"],
+    paths: { attrLabel: "../resource" },
+  },
+  tex: { packages: { "[+]": ["attr-label"] },
+   inlineMath: [['$', '$']]
+   },
+   options: {
+    enableAssistiveMml: false
+  },
+};
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/svg-arrow.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/border.css" />
+    <script src="../resource/d3.min.js"></script>
+    <script src="../resource/svg.min.js"></script>
+    <script type="text/javascript" src='../resource/paper.js'></script>
+    <link rel="stylesheet" href="../resource/paper.css">
+</head>
+<script>
+const iheartla_data = JSON.parse('{"equations":[{"name":"Generic", "parameters":[{"sym":"J", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"2", "cols":"2"}},{"sym":"x", "type_info":{"type": "scalar"}},{"sym":"y", "type_info":{"type": "scalar"}},{"sym":"u", "type_info":{"type": "scalar"}},{"sym":"v", "type_info":{"type": "scalar"}}], "definition":[{"sym":"$x_p$", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"2"}},{"sym":"$v_p$", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"2"}},{"sym":"M", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"2", "cols":"6"}}], "local_func":[], "source":" `$x_p$` = (-y, x)\\n `$v_p$` = (-v, u)\\nM=[-J`$x_p$`+`$v_p$`  J  `$x_p$`  I_2] \\n\\nwhere\\nJ: ℝ^(2×2)\\nx: ℝ \\ny: ℝ \\nu: ℝ\\nv: ℝ  \\n\\n" }] }');
+const sym_data = JSON.parse('{"J":[{"desc":"None", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"2", "cols":"2"}, "def_module":"Generic", "is_defined":false, "used_equations":[]}],"x":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"Generic", "is_defined":false, "used_equations":[]}],"y":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"Generic", "is_defined":false, "used_equations":[]}],"u":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"Generic", "is_defined":false, "used_equations":[]}],"v":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"Generic", "is_defined":false, "used_equations":[]}],"$x_p$":[{"desc":"None", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"2"}, "def_module":"Generic", "is_defined":true, "used_equations":[]}],"$v_p$":[{"desc":"None", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"2"}, "def_module":"Generic", "is_defined":true, "used_equations":[]}],"M":[{"desc":"None", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"2", "cols":"6"}, "def_module":"Generic", "is_defined":true, "used_equations":[]}]}');
+window.onload = onLoad;
+function reportWindowSize() {
+  var arrows = document.querySelectorAll(".arrow");
+  if (arrows) {
+    for (var i = arrows.length - 1; i >= 0; i--) {
+      var arrow = arrows[i];
+      var body = document.querySelector("body");
+      var style = window.getComputedStyle(body);
+      var curOffset = parseInt(style.marginLeft, 10)
+      var oldOffset = arrow.getAttribute('offset');
+      arrow.setAttribute('offset', curOffset);
+      // console.log(`oldOffset:${oldOffset}, curOffset:${curOffset}`);
+      var arrowStyle = window.getComputedStyle(arrow); 
+      var arrowOffset = parseInt(document.querySelector(".arrow").style.marginLeft, 10)
+      arrow.style.marginLeft = `${arrowOffset+curOffset-oldOffset}px`;
+      var newWidth = parseInt(style.width, 10) + parseInt(style.marginLeft, 10) + parseInt(style.marginRight, 10);
+      arrow.style.width = `${newWidth}px`;
+      arrow.style.height = style.height; 
+      // console.log(`arrow.style.width:${arrow.style.width}, arrow.style.height:${arrow.style.height}`)
+    }
+  }
+  adjsutGlossaryBtn();
+}
+window.onresize = reportWindowSize;
+document.addEventListener("click", function(evt){
+    resetState();
+});
+
+</script>
+<body>
+<img src="../resource/glossary.png" id="glossary" class="glossary" alt="glossary" width="22" height="28"><br>
+<ul><li><a href='#objectivity-by-optimal-reference-frame'>1&nbsp;OBJECTIVITY BY OPTIMAL REFERENCE FRAME</a></li></ul>
+<h1 id='objectivity-by-optimal-reference-frame'>1&nbsp;OBJECTIVITY BY OPTIMAL REFERENCE FRAME</h1><p>The main idea of our approach is to estimate an optimal reference frame locally for every point (x, t ): the local frame (Q, c) is chosen such that the transformed velocity field is as steady as possible in a neighborhoodof(x,t).WelocallyassumethatQandcarespatially- constant. Since we waive the spatial and temporal connection to neighboring points, all derivatives are solved for individually, including $\dot{Q}, \ddot{Q}, \dot{\mathbf{c}}, \ddot{\mathbf{c}}^{1}$ 1. For every point (x,t), we define a spatial neighbor- hood U around it to which we fit the reference frame transformation. To compute the optimal reference frame in U , we set Q = I, c = 02, and find the unknowns Q􏰙 , Q , c, c, which contain 6 scalars (angles and offsets) in 2D and 12 in 3D, that minimize</p>
+<p>$$
+\int_{U}\left\|\mathbf{v}_{t}^{*}\right\|^{2} d V \rightarrow \min
+\tag{1}\label{1}$$</p>
+<p>With these locally optimal $\dot{Q}, \ddot{Q}, \dot{\mathbf{c}}, \ddot{\mathbf{c}}^{1}$, we obtain the new local optimal fields v, J, vt , a by applying Eqs. (4)–(7). With these, existing vortex measures can be made objective simply by replacing v, J, vt , a with v, J, vt , a, respectively. Note that although Eq. (13) is minimized for every point (x,t), in practice it is computed only at discrete grid points; usually the same grid on which v is given.</p>
+<p>Minimizing Eq. (13) is not straightforward, since vt∗ is non-linear in Q􏰙 , Q􏰚 , c􏰙, c􏰚. However, vt∗ can be equivalently rephrased and thereby linearized by substitution. Instead of solving for Q􏰙 , Q􏰚 , c􏰙, c􏰚 directly3, we solve for a suitable combination of these unknowns, stored in u:</p>
+<p>$$
+\mathbf{v}_{t}^{*}=\mathbf{Q}\left(\mathbf{v}_{t}-\mathbf{M} \mathbf{u}\right)
+\tag{2}\label{2}$$</p>
+<p>In 3D, M is a 3 × 12 matrix</p>
+<p>$$
+\mathbf{M}=(-\mathbf{J} \mathbf{X}+\mathbf{V}, \mathbf{J}, \mathbf{X}, \mathbf{I})
+\tag{3}\label{3}$$</p>
+<p>with X = sk(x), V = sk(v), and u is a 12-vector</p>
+<p>$$
+\mathbf{u}=\left(\begin{array}{l}
+\mathbf{u}_{1} \\
+\mathbf{u}_{2} \\
+\mathbf{u}_{3} \\
+\mathbf{u}_{4}
+\end{array}\right)=\left(\begin{array}{c}
+a p\left(\mathbf{Q}^{\mathrm{T}} \dot{\mathbf{Q}}\right) \\
+\mathbf{Q}^{\mathrm{T}} \dot{\mathbf{c}} \\
+a p\left(\mathbf{Q}^{\mathrm{T}} \ddot{\mathbf{Q}}-\left(\mathbf{Q}^{\mathrm{T}} \dot{\mathbf{Q}}\right)^{2}\right) \\
+-\left(\mathbf{Q}^{\mathrm{T}} \ddot{\mathbf{c}}-\mathbf{Q}^{\mathrm{T}} \dot{\mathbf{Q}} \mathbf{Q}^{\mathrm{T}} \dot{\mathbf{c}}\right)
+\end{array}\right)
+\tag{4}\label{4}$$</p>
+<p>In 2D, M and u have a slightly different form. M is a 2 × 6 matrix</p>
+<p>
+        <div class='equation' code_block="Generic">
+        $$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'M', 'Generic', 'def', false, '')", "id":"Generic-M", "sym":"M", "func":"Generic",  "localFunc":"", "type":"def", "case":"equation"} }{ {\mathit{M}} } & = \begin{bmatrix}
+-\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'J', 'Generic', 'use', false, '')", "id":"Generic-J", "sym":"J", "func":"Generic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{J}} }\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$x_p$', 'Generic', 'use', false, '')", "id":"Generic-$x_p$", "sym":"$x_p$", "func":"Generic",  "localFunc":"", "type":"use", "case":"equation"} }{ {x_p} } + \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$v_p$', 'Generic', 'use', false, '')", "id":"Generic-$v_p$", "sym":"$v_p$", "func":"Generic",  "localFunc":"", "type":"use", "case":"equation"} }{ {v_p} } & \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'J', 'Generic', 'use', false, '')", "id":"Generic-J", "sym":"J", "func":"Generic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{J}} } & \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$x_p$', 'Generic', 'use', false, '')", "id":"Generic-$x_p$", "sym":"$x_p$", "func":"Generic",  "localFunc":"", "type":"use", "case":"equation"} }{ {x_p} } & I_{ 2 }\\
+\end{bmatrix}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'Generic', ['J', '$x_p$', '$v_p$', 'M'], false, []);"} }{}
+\end{align*}
+\tag{5}\label{5}$$</div>
+        </p>
+<p>with <span class='equation' code_block="Generic">$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$x_p$', 'Generic', 'def', false, '')", "id":"Generic-$x_p$", "sym":"$x_p$", "func":"Generic",  "localFunc":"", "type":"def", "case":"equation"} }{ {x_p} } & = \begin{pmatrix}
+-\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'y', 'Generic', 'use', false, '')", "id":"Generic-y", "sym":"y", "func":"Generic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{y}} }\\\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'x', 'Generic', 'use', false, '')", "id":"Generic-x", "sym":"x", "func":"Generic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{x}} }\end{pmatrix}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'Generic', ['x', 'y', '$x_p$'], false, []);"} }{}
+\end{align*}
+$</span>, <span class='equation' code_block="Generic">$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$v_p$', 'Generic', 'def', false, '')", "id":"Generic-$v_p$", "sym":"$v_p$", "func":"Generic",  "localFunc":"", "type":"def", "case":"equation"} }{ {v_p} } & = \begin{pmatrix}
+-\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'v', 'Generic', 'use', false, '')", "id":"Generic-v", "sym":"v", "func":"Generic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{v}} }\\\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'u', 'Generic', 'use', false, '')", "id":"Generic-u", "sym":"u", "func":"Generic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{u}} }\end{pmatrix}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'Generic', ['v', 'u', '$v_p$'], false, []);"} }{}
+\end{align*}
+$</span>, and u is a 6-vector. Note that u1 and u3 are scalars in 2D, namely the first-order and second- order derivative of the angular velocity of the rotation of the frame. The reformulation of Eq. (7) into Eq. (14)–(17) is a straightforward exercise in algebra. Eq. (14) shows that the vector field and the reference frame are completely separated: M contains only v and its derivatives, while all information of the frame is stored in u.</p>
+<p>Eq. (13) is minimized using Eq. (14), which can be written as the solution of the linear system</p>
+<p>$$
+\begin{gathered}
+\widehat{\mathbf{M}} \mathbf{u}=\widehat{\mathbf{y}} \\
+\text { with } \widehat{\mathbf{M}}=\int_{U} \mathbf{M}^{\mathrm{T}} \mathbf{M} d V \quad, \quad \widehat{\mathbf{y}}=\int_{U} \mathbf{M}^{\mathrm{T}} \mathbf{v}_{t} d V .
+\end{gathered}
+\tag{6}\label{6}$$</p>
+<p>T −1<br />
+the new fields in the locally optimal reference frame are</p>
+<p>$$
+\begin{aligned}
+\overline{\mathbf{v}} &=\mathbf{v}+s k\left(\overline{\mathbf{u}}_{1}\right) \mathbf{x}+\overline{\mathbf{u}}_{2} \\
+\overline{\mathbf{J}} &=\mathbf{J}+s k\left(\overline{\mathbf{u}}_{1}\right) \\
+\overline{\mathbf{v}}_{t} &=\mathbf{v}_{t}-\mathbf{M} \overline{\mathbf{u}} \\
+\overline{\mathbf{a}} &=\overline{\mathbf{J}} \overline{\mathbf{v}}+\overline{\mathbf{v}}_{t}
+\end{aligned}
+\tag{7}\label{7}$$</p>
+<p>whichfollowsdirectlyfrominsertionofu ,u ,u ,u intotheEqs.(4)–<br />
+1234 (7), using the operator sk from Eq. (1) to remove ap.</p>
+<p>Theorem 4.1 (Objectivity in Optimal Frames). Given an at least C1 continuous vector field v, let v be its observation in the most- steady reference frame and let J, vt , a be its observed derivatives. Any scalar measure s that is computed from v, J, a, vt remains unchanged under any smooth rotation and translation of the reference frame of v as in Eq. (3). A vector r that is computed in the optimal frame from v, J, a, vt is objective, i.e., a transformation of v via Eq. (3) transforms r to r∗ = Q(t ) r. A second-order tensor T computed from v, J, a, vt is objective, since a transformation of v via Eq. (3) transforms T to T∗ =Q(t)TQ(t)T.</p>
+<p>See Appendix B for a proof that v, J, vt , a are objective. Theorem 4.2 (Continuity of Solution). If the input vector field<br />
+visC1continuous,thenv,J,a,v areatleastC0continuous. t<br />
+All v, J, a, vt are computed by integrating only first-order deriva- tives in a region U . If both v and its first-order partials are continuous (i.e., v is C1 continuous), then v is at least C0 continuous.</p>
+<div class="references"></div>
+</body>
+</html>

@@ -8,6 +8,9 @@
 struct eccentricity {
     int 𝑙_0;
     Eigen::VectorXd q;
+    double 𝑓_𝑠0;
+    Eigen::Matrix<double, 10, 1> 𝑝;
+    double a;
     Eigen::MatrixXd 𝑔(
         const Eigen::VectorXd & x,
         const Eigen::VectorXd & `$x_0$`,
@@ -72,6 +75,9 @@ struct eccentricity {
         const double & 𝑓_𝑠0,
         const double & a)
     {
+        this->𝑓_𝑠0 = 𝑓_𝑠0;
+        this->𝑝 = 𝑝;
+        this->a = a;
         // `$𝑙_0$` = 1488
         𝑙_0 = 1488;
         Eigen::VectorXd q_0(3);

@@ -9,6 +9,9 @@ struct nautilus {
     Eigen::Matrix<double, 3, 3> H;
     Eigen::Matrix<double, 3, 3> P;
     Eigen::Matrix<double, 3, 3> S;
+    Eigen::VectorXd x;
+    double λ;
+    std::vector<Eigen::Matrix<double, 3, 3>> v;
     double E(
         const Eigen::VectorXd & x)
     {
@@ -30,6 +33,9 @@ struct nautilus {
     {
         const long n = x.size();
         const long dim_0 = v.size();
+        this->x = x;
+        this->λ = λ;
+        this->v = v;
         Eigen::Matrix<double, 3, 3> P_0;
         P_0 << 1, x[1-1], 0,
         0, x[2-1], 0,

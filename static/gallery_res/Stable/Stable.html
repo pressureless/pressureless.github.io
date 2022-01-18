@@ -1,0 +1,99 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+    <script>
+MathJax = {
+  loader: {
+    load: ["[attrLabel]/attr-label.js"],
+    paths: { attrLabel: "../resource" },
+  },
+  tex: { packages: { "[+]": ["attr-label"] },
+   inlineMath: [['$', '$']]
+   },
+   options: {
+    enableAssistiveMml: false
+  },
+};
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/svg-arrow.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/border.css" />
+    <script src="../resource/d3.min.js"></script>
+    <script src="../resource/svg.min.js"></script>
+    <script type="text/javascript" src='../resource/paper.js'></script>
+    <link rel="stylesheet" href="../resource/paper.css">
+</head>
+<script>
+const iheartla_data = JSON.parse('{"equations":[{"name":"Stable", "parameters":[{"sym":"F", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}},{"sym":"μ", "type_info":{"type": "scalar"}},{"sym":"$I_C$", "type_info":{"type": "scalar"}},{"sym":"λ", "type_info":{"type": "scalar"}},{"sym":"$f_0$", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"3"}},{"sym":"$f_1$", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"3"}},{"sym":"$f_2$", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"3"}}], "definition":[{"sym":"α", "type_info":{"type": "scalar"}},{"sym":"J", "type_info":{"type": "scalar"}},{"sym":"$P(F)$", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}},{"sym":"$\\\\frac{\\\\partial J}{\\\\partial F}$", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}}], "local_func":[], "source":"α = 1 + μ/λ - μ/(4λ)\\nJ =`$f_0$`⋅(`$f_1$`×`$f_2$`)\\n`$P(F)$` = μ(1-1/(`$I_C$`+1))F + λ(J- α)`$\\\\frac{\\\\partial J}{\\\\partial F}$`\\n\\nwhere \\nF: ℝ^(3×3)\\nμ: ℝ \\n`$I_C$`: ℝ \\nλ: ℝ  \\n\\n`$\\\\frac{\\\\partial J}{\\\\partial F}$` = [`$f_1$`×`$f_2$` `$f_2$`×`$f_0$` `$f_0$`×`$f_1$`]\\n\\nwhere \\n`$f_0$`: ℝ^3 \\n`$f_1$`: ℝ^3 \\n`$f_2$`: ℝ^3 \\n\\n" }] }');
+const sym_data = JSON.parse('{"F":[{"desc":"None", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}, "def_module":"Stable", "is_defined":false, "used_equations":[]}],"μ":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"Stable", "is_defined":false, "used_equations":[]}],"$I_C$":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"Stable", "is_defined":false, "used_equations":[]}],"λ":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"Stable", "is_defined":false, "used_equations":[]}],"$f_0$":[{"desc":"None", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"3"}, "def_module":"Stable", "is_defined":false, "used_equations":[]}],"$f_1$":[{"desc":"None", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"3"}, "def_module":"Stable", "is_defined":false, "used_equations":[]}],"$f_2$":[{"desc":"None", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"3"}, "def_module":"Stable", "is_defined":false, "used_equations":[]}],"α":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"Stable", "is_defined":true, "used_equations":[]}],"J":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"Stable", "is_defined":true, "used_equations":[]}],"$P(F)$":[{"desc":"None", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}, "def_module":"Stable", "is_defined":true, "used_equations":[]}],"$\\\\frac{\\\\partial J}{\\\\partial F}$":[{"desc":"None", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}, "def_module":"Stable", "is_defined":true, "used_equations":[]}]}');
+window.onload = onLoad;
+function reportWindowSize() {
+  var arrows = document.querySelectorAll(".arrow");
+  if (arrows) {
+    for (var i = arrows.length - 1; i >= 0; i--) {
+      var arrow = arrows[i];
+      var body = document.querySelector("body");
+      var style = window.getComputedStyle(body);
+      var curOffset = parseInt(style.marginLeft, 10)
+      var oldOffset = arrow.getAttribute('offset');
+      arrow.setAttribute('offset', curOffset);
+      // console.log(`oldOffset:${oldOffset}, curOffset:${curOffset}`);
+      var arrowStyle = window.getComputedStyle(arrow); 
+      var arrowOffset = parseInt(document.querySelector(".arrow").style.marginLeft, 10)
+      arrow.style.marginLeft = `${arrowOffset+curOffset-oldOffset}px`;
+      var newWidth = parseInt(style.width, 10) + parseInt(style.marginLeft, 10) + parseInt(style.marginRight, 10);
+      arrow.style.width = `${newWidth}px`;
+      arrow.style.height = style.height; 
+      // console.log(`arrow.style.width:${arrow.style.width}, arrow.style.height:${arrow.style.height}`)
+    }
+  }
+  adjsutGlossaryBtn();
+}
+window.onresize = reportWindowSize;
+document.addEventListener("click", function(evt){
+    resetState();
+});
+
+</script>
+<body>
+<img src="../resource/glossary.png" id="glossary" class="glossary" alt="glossary" width="22" height="28"><br>
+<ul><li><a href='#first-piola-kirchhoff-stress-pk1'>1&nbsp;First Piola-Kirchhoff Stress (PK1)</a></li></ul>
+<h1 id='first-piola-kirchhoff-stress-pk1'>1&nbsp;First Piola-Kirchhoff Stress (PK1)</h1><p>We sart from the PK1 for Eqn. 14,</p>
+<p>
+        <div class='equation' code_block="Stable">
+        $$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$P(F)$', 'Stable', 'def', false, '')", "id":"Stable-$P(F)$", "sym":"$P(F)$", "func":"Stable",  "localFunc":"", "type":"def", "case":"equation"} }{ {P(F)} } & = \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'μ', 'Stable', 'use', false, '')", "id":"Stable-μ", "sym":"μ", "func":"Stable",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{μ}} }\left( 1 - \frac{1}{\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$I_C$', 'Stable', 'use', false, '')", "id":"Stable-$I_C$", "sym":"$I_C$", "func":"Stable",  "localFunc":"", "type":"use", "case":"equation"} }{ {I_C} } + 1} \right)\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'F', 'Stable', 'use', false, '')", "id":"Stable-F", "sym":"F", "func":"Stable",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{F}} } + \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'λ', 'Stable', 'use', false, '')", "id":"Stable-λ", "sym":"λ", "func":"Stable",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{λ}} }\left( \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'J', 'Stable', 'use', false, '')", "id":"Stable-J", "sym":"J", "func":"Stable",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{J}} } - \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'α', 'Stable', 'use', false, '')", "id":"Stable-α", "sym":"α", "func":"Stable",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{α}} } \right)\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$\\\\frac{\\\\partial J}{\\\\partial F}$', 'Stable', 'use', false, '')", "id":"Stable-$\\\\frac{\\\\partial J}{\\\\partial F}$", "sym":"$\\\\frac{\\\\partial J}{\\\\partial F}$", "func":"Stable",  "localFunc":"", "type":"use", "case":"equation"} }{ {\frac{\partial J}{\partial F}} }\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'Stable', ['$I_C$', '$\\\\frac{\\\\partial J}{\\\\partial F}$', 'λ', 'α', 'J', 'μ', 'F', '$P(F)$'], false, []);"} }{}
+\end{align*}
+\tag{1}\label{1}$$</div>
+        </p>
+<p>where <span class='equation' code_block="Stable">$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'α', 'Stable', 'def', false, '')", "id":"Stable-α", "sym":"α", "func":"Stable",  "localFunc":"", "type":"def", "case":"equation"} }{ {\mathit{α}} } & = 1 + \frac{\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'μ', 'Stable', 'use', false, '')", "id":"Stable-μ", "sym":"μ", "func":"Stable",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{μ}} }}{\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'λ', 'Stable', 'use', false, '')", "id":"Stable-λ", "sym":"λ", "func":"Stable",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{λ}} }} - \frac{\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'μ', 'Stable', 'use', false, '')", "id":"Stable-μ", "sym":"μ", "func":"Stable",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{μ}} }}{4\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'λ', 'Stable', 'use', false, '')", "id":"Stable-λ", "sym":"λ", "func":"Stable",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{λ}} }}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'Stable', ['λ', 'μ', 'α'], false, []);"} }{}
+\end{align*}
+$</span>. We omit the subscript, as we only consider one model in this section. Using the column-wise notation for F (Eqn.1) and the identity <span class='equation' code_block="Stable">$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'J', 'Stable', 'def', false, '')", "id":"Stable-J", "sym":"J", "func":"Stable",  "localFunc":"", "type":"def", "case":"equation"} }{ {\mathit{J}} } & = \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$f_0$', 'Stable', 'use', false, '')", "id":"Stable-$f_0$", "sym":"$f_0$", "func":"Stable",  "localFunc":"", "type":"use", "case":"equation"} }{ {f_0} } \cdot \left( \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$f_1$', 'Stable', 'use', false, '')", "id":"Stable-$f_1$", "sym":"$f_1$", "func":"Stable",  "localFunc":"", "type":"use", "case":"equation"} }{ {f_1} } × \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$f_2$', 'Stable', 'use', false, '')", "id":"Stable-$f_2$", "sym":"$f_2$", "func":"Stable",  "localFunc":"", "type":"use", "case":"equation"} }{ {f_2} } \right)\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'Stable', ['$f_1$', '$f_2$', '$f_0$', 'J'], false, []);"} }{}
+\end{align*}
+$</span>, we write $\frac{\partial J}{\partial F}$ (a.k.a.the cofactor matrix) as cross products:</p>
+<p>
+        <div class='equation' code_block="Stable">
+        $$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$\\\\frac{\\\\partial J}{\\\\partial F}$', 'Stable', 'def', false, '')", "id":"Stable-$\\\\frac{\\\\partial J}{\\\\partial F}$", "sym":"$\\\\frac{\\\\partial J}{\\\\partial F}$", "func":"Stable",  "localFunc":"", "type":"def", "case":"equation"} }{ {\frac{\partial J}{\partial F}} } & = \begin{bmatrix}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$f_1$', 'Stable', 'use', false, '')", "id":"Stable-$f_1$", "sym":"$f_1$", "func":"Stable",  "localFunc":"", "type":"use", "case":"equation"} }{ {f_1} } × \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$f_2$', 'Stable', 'use', false, '')", "id":"Stable-$f_2$", "sym":"$f_2$", "func":"Stable",  "localFunc":"", "type":"use", "case":"equation"} }{ {f_2} } & \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$f_2$', 'Stable', 'use', false, '')", "id":"Stable-$f_2$", "sym":"$f_2$", "func":"Stable",  "localFunc":"", "type":"use", "case":"equation"} }{ {f_2} } × \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$f_0$', 'Stable', 'use', false, '')", "id":"Stable-$f_0$", "sym":"$f_0$", "func":"Stable",  "localFunc":"", "type":"use", "case":"equation"} }{ {f_0} } & \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$f_0$', 'Stable', 'use', false, '')", "id":"Stable-$f_0$", "sym":"$f_0$", "func":"Stable",  "localFunc":"", "type":"use", "case":"equation"} }{ {f_0} } × \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$f_1$', 'Stable', 'use', false, '')", "id":"Stable-$f_1$", "sym":"$f_1$", "func":"Stable",  "localFunc":"", "type":"use", "case":"equation"} }{ {f_1} }\\
+\end{bmatrix}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'Stable', ['$f_1$', '$f_2$', '$f_0$', '$\\\\frac{\\\\partial J}{\\\\partial F}$'], false, []);"} }{}
+\end{align*}
+\tag{2}\label{2}$$</div>
+        </p>
+<p>This is a convenient shorthand for computing $\frac{\partial J}{\partial F}$, and will be useful when analyzing $\frac{\partial^2 J}{\partial F^2}$.</p>
+<div class="references"></div>
+</body>
+</html>

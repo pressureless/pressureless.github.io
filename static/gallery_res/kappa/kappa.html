@@ -1,0 +1,154 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+    <script>
+MathJax = {
+  loader: {
+    load: ["[attrLabel]/attr-label.js"],
+    paths: { attrLabel: "../resource" },
+  },
+  tex: { packages: { "[+]": ["attr-label"] },
+   inlineMath: [['$', '$']]
+   },
+   options: {
+    enableAssistiveMml: false
+  },
+};
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/svg-arrow.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/border.css" />
+    <script src="../resource/d3.min.js"></script>
+    <script src="../resource/svg.min.js"></script>
+    <script type="text/javascript" src='../resource/paper.js'></script>
+    <link rel="stylesheet" href="../resource/paper.css">
+</head>
+<script>
+const iheartla_data = JSON.parse('{"equations":[{"name":"kappa", "parameters":[{"sym":"a", "type_info":{"type": "scalar"}},{"sym":"t", "type_info":{"type": "scalar"}},{"sym":"θ", "type_info":{"type": "scalar"}}], "definition":[{"sym":"x", "type_info":{"type": "scalar"}},{"sym":"y", "type_info":{"type": "scalar"}},{"sym":"r", "type_info":{"type": "scalar"}},{"sym":"κ", "type_info":{"type": "function", "params":[{"type": "scalar"}], "ret":{"type": "scalar"}}},{"sym":"$\\\\phi$", "type_info":{"type": "function", "params":[{"type": "scalar"}], "ret":{"type": "scalar"}}}], "local_func":[{"name":"κ", "parameters":[{"sym":"θ", "type_info":{"type": "scalar"}}]},{"name":"$\\\\phi$", "parameters":[{"sym":"θ", "type_info":{"type": "scalar"}}]}], "source":"cos, cot, tan, sin, arctan, atan from trigonometry\\nx = a cos(t) cot(t)\\n\\nwhere \\na: ℝ \\nt: ℝ \\n\\ny = a cos(t)\\n\\nr = atan(θ)\\nwhere \\nθ: ℝ \\n\\nκ(θ) = (8(3-sin^2(θ))sin^4(θ))/(a(sin^2(2θ)+4)^(3/2)) where θ: ℝ \\n\\n`$\\\\phi$`(θ) = -arctan(1/2sin(2θ)) where θ: ℝ\\n" }] }');
+const sym_data = JSON.parse('{"a":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"kappa", "is_defined":false, "used_equations":[]}],"t":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"kappa", "is_defined":false, "used_equations":[]}],"θ":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"kappa", "is_defined":false, "used_equations":[]}],"x":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"kappa", "is_defined":true, "used_equations":[]}],"y":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"kappa", "is_defined":true, "used_equations":[]}],"r":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"kappa", "is_defined":true, "used_equations":[]}],"κ":[{"desc":"None", "type_info":{"type": "function", "params":[{"type": "scalar"}], "ret":{"type": "scalar"}}, "def_module":"kappa", "is_defined":true, "used_equations":[]}],"$\\\\phi$":[{"desc":"None", "type_info":{"type": "function", "params":[{"type": "scalar"}], "ret":{"type": "scalar"}}, "def_module":"kappa", "is_defined":true, "used_equations":[]}]}');
+window.onload = onLoad;
+function reportWindowSize() {
+  var arrows = document.querySelectorAll(".arrow");
+  if (arrows) {
+    for (var i = arrows.length - 1; i >= 0; i--) {
+      var arrow = arrows[i];
+      var body = document.querySelector("body");
+      var style = window.getComputedStyle(body);
+      var curOffset = parseInt(style.marginLeft, 10)
+      var oldOffset = arrow.getAttribute('offset');
+      arrow.setAttribute('offset', curOffset);
+      // console.log(`oldOffset:${oldOffset}, curOffset:${curOffset}`);
+      var arrowStyle = window.getComputedStyle(arrow); 
+      var arrowOffset = parseInt(document.querySelector(".arrow").style.marginLeft, 10)
+      arrow.style.marginLeft = `${arrowOffset+curOffset-oldOffset}px`;
+      var newWidth = parseInt(style.width, 10) + parseInt(style.marginLeft, 10) + parseInt(style.marginRight, 10);
+      arrow.style.width = `${newWidth}px`;
+      arrow.style.height = style.height; 
+      // console.log(`arrow.style.width:${arrow.style.width}, arrow.style.height:${arrow.style.height}`)
+    }
+  }
+  adjsutGlossaryBtn();
+}
+window.onresize = reportWindowSize;
+document.addEventListener("click", function(evt){
+    resetState();
+});
+
+</script>
+<body>
+<img src="../resource/glossary.png" id="glossary" class="glossary" alt="glossary" width="22" height="28"><br>
+<ul><li><a href='#kappa-curve'>1&nbsp;Kappa curve</a></li><li><a href='#tangents-via-infinitesimals'>2&nbsp;Tangents via infinitesimals</a></li><li><a href='#derivative'>3&nbsp;Derivative</a></li></ul>
+<h1 id='kappa-curve'>1&nbsp;Kappa curve</h1><p>In geometry, the kappa curve or Gutschoven&rsquo;s curve is a two-dimensional algebraic curve resembling the Greek letter ${\proselabel{kappa}{{κ}}}$ (kappa).</p>
+<figure>
+<img src="./img/teaser.png" alt="Trulli" style="width:40%" class = "center">
+<figcaption align = "center">The kappa curve has two vertical asymptotes</figcaption> 
+</figure>
+
+<p>For <span sym='x y' context='kappa'>  each point $( {\prosedeflabel{kappa}{{x}}} , {\prosedeflabel{kappa}{{y}}} )$  </span>, using the Cartesian coordinate system it can be expressed as:</p>
+<p>$$
+{\proselabel{kappa}{{x}}} ^{2}\left( {\proselabel{kappa}{{x}}} ^{2}+ {\proselabel{kappa}{{y}}} ^{2}\right)= {\proselabel{kappa}{{a}}} ^{2} {\proselabel{kappa}{{y}}} ^{2}
+\tag{1}\label{1}$$</p>
+<p>Or, using parametric equations, for <span sym='t a' context='kappa'>  parameter ${\prosedeflabel{kappa}{{t}}}$ and ${\prosedeflabel{kappa}{{a}}}$  </span>, it can be expressed as:</p>
+<p>
+        <div class='equation' code_block="kappa">
+        $$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'x', 'kappa', 'def', false, '')", "id":"kappa-x", "sym":"x", "func":"kappa",  "localFunc":"", "type":"def", "case":"equation"} }{ {\mathit{x}} } & = \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'a', 'kappa', 'use', false, '')", "id":"kappa-a", "sym":"a", "func":"kappa",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{a}} }cos\left( \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 't', 'kappa', 'use', false, '')", "id":"kappa-t", "sym":"t", "func":"kappa",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{t}} } \right)cot\left( \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 't', 'kappa', 'use', false, '')", "id":"kappa-t", "sym":"t", "func":"kappa",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{t}} } \right)\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'kappa', ['a', 't', 'x'], false, []);"} }{}
+\end{align*}
+\tag{2}\label{2}$$</div>
+        <br />
+
+        <div class='equation' code_block="kappa">
+        $$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'y', 'kappa', 'def', false, '')", "id":"kappa-y", "sym":"y", "func":"kappa",  "localFunc":"", "type":"def", "case":"equation"} }{ {\mathit{y}} } & = \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'a', 'kappa', 'use', false, '')", "id":"kappa-a", "sym":"a", "func":"kappa",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{a}} }cos\left( \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 't', 'kappa', 'use', false, '')", "id":"kappa-t", "sym":"t", "func":"kappa",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{t}} } \right)\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'kappa', ['a', 't', 'y'], false, []);"} }{}
+\end{align*}
+\tag{3}\label{3}$$</div>
+        <br />
+In polar coordinates, given <span sym='θ' context='kappa'>  angle paremter ${\prosedeflabel{kappa}{{θ}}}$  </span>, its equation is even simpler:</p>
+<p>
+        <div class='equation' code_block="kappa">
+        $$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'r', 'kappa', 'def', false, '')", "id":"kappa-r", "sym":"r", "func":"kappa",  "localFunc":"", "type":"def", "case":"equation"} }{ {\mathit{r}} } & = atan\left( \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'θ', 'kappa', 'use', false, '')", "id":"kappa-θ", "sym":"θ", "func":"kappa",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{θ}} } \right)\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'kappa', ['θ', 'r'], false, []);"} }{}
+\end{align*}
+\tag{4}\label{4}$$</div>
+        <br />
+It has two vertical asymptotes at $\displaystyle{ {\proselabel{kappa}{{x}}} =\pm {\proselabel{kappa}{{a}}} }$, they have been denoted as blue dashed lines on the graphic.</p>
+<p><span sym='κ' context='kappa'>  The kappa curve&rsquo;s curvature ${\prosedeflabel{kappa}{{κ}}}$  </span> is defined as follows:</p>
+<p>
+        <div class='equation' code_block="kappa">
+        $$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'κ', 'kappa', 'def', false, '')", "id":"kappa-κ", "sym":"κ", "func":"kappa",  "localFunc":"", "type":"def", "case":"equation"} }{ {\mathit{κ}} }\left( \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'θ', 'kappa', 'use', true, 'κ')", "id":"kappa-θ", "sym":"θ", "func":"kappa",  "localFunc":"κ", "type":"use", "case":"equation"} }{ {\mathit{θ}} } \right) & = \frac{8\left( 3 - {sin\left( \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'θ', 'kappa', 'use', true, 'κ')", "id":"kappa-θ", "sym":"θ", "func":"kappa",  "localFunc":"κ", "type":"use", "case":"equation"} }{ {\mathit{θ}} } \right)}^{2} \right){sin\left( \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'θ', 'kappa', 'use', true, 'κ')", "id":"kappa-θ", "sym":"θ", "func":"kappa",  "localFunc":"κ", "type":"use", "case":"equation"} }{ {\mathit{θ}} } \right)}^{4}}{\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'a', 'kappa', 'use', false, 'κ')", "id":"kappa-a", "sym":"a", "func":"kappa",  "localFunc":"κ", "type":"use", "case":"equation"} }{ {\mathit{a}} }{\left( {sin\left( 2\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'θ', 'kappa', 'use', true, 'κ')", "id":"kappa-θ", "sym":"θ", "func":"kappa",  "localFunc":"κ", "type":"use", "case":"equation"} }{ {\mathit{θ}} } \right)}^{2} + 4 \right)}^{\frac{3}{2}}}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'kappa', ['a', 'θ', 'κ'], true, 'κ', ['θ']);"} }{}
+\end{align*}
+\tag{5}\label{5}$$</div>
+        <br />
+<span sym='\phi' context='kappa'>  Tangential angle ${\prosedeflabel{kappa}{{\phi}}}$   </span>is defined as follows:<br />
+
+        <div class='equation' code_block="kappa">
+        $$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$\\\\phi$', 'kappa', 'def', false, 'κ')", "id":"kappa-$\\\\phi$", "sym":"$\\\\phi$", "func":"kappa",  "localFunc":"κ", "type":"def", "case":"equation"} }{ {\phi} }\left( \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'θ', 'kappa', 'use', true, '$\\\\phi$')", "id":"kappa-θ", "sym":"θ", "func":"kappa",  "localFunc":"$\\\\phi$", "type":"use", "case":"equation"} }{ {\mathit{θ}} } \right) & = -arctan\left( \frac{1}{2}sin\left( 2\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'θ', 'kappa', 'use', true, '$\\\\phi$')", "id":"kappa-θ", "sym":"θ", "func":"kappa",  "localFunc":"$\\\\phi$", "type":"use", "case":"equation"} }{ {\mathit{θ}} } \right) \right)\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'kappa', ['θ', '$\\\\phi$'], true, '$\\\\phi$', ['θ']);"} }{}
+\end{align*}
+\tag{6}\label{6}$$</div>
+        <br />
+The kappa curve was first studied by Gérard van Gutschoven around 1662. Other famous mathematicians who have studied it include Isaac Newton and Johann Bernoulli. Its tangents were first calculated by Isaac Barrow in the 17th century.</p>
+<h1 id='tangents-via-infinitesimals'>2&nbsp;Tangents via infinitesimals</h1><p>The tangent lines of the kappa curve can also be determined geometrically using differentials and the elementary rules of infinitesimal arithmetic. Suppose ${\proselabel{kappa}{{x}}}$ and ${\proselabel{kappa}{{y}}}$ are variables, while ${\proselabel{kappa}{{a}}}$ is taken to be a constant. From the definition of the kappa curve,</p>
+<p>$$
+{\proselabel{kappa}{{x}}} ^{2}\left( {\proselabel{kappa}{{x}}} ^{2}+ {\proselabel{kappa}{{y}}} ^{2}\right)- {\proselabel{kappa}{{a}}} ^{2} {\proselabel{kappa}{{y}}} ^{2}=0
+\tag{7}\label{7}$$</p>
+<p>Now, an infinitesimal change in our location must also change the value of the left hand side, so</p>
+<p>$$
+d\left( {\proselabel{kappa}{{x}}} ^{2}\left( {\proselabel{kappa}{{x}}} ^{2}+ {\proselabel{kappa}{{y}}} ^{2}\right)- {\proselabel{kappa}{{a}}} ^{2} {\proselabel{kappa}{{y}}} ^{2}\right)=0
+\tag{8}\label{8}$$</p>
+<p>Distributing the differential and applying appropriate rules,<br />
+$$
+\begin{aligned}
+&d\left( {\proselabel{kappa}{{x}}} ^{2}\left( {\proselabel{kappa}{{x}}} ^{2}+ {\proselabel{kappa}{{y}}} ^{2}\right)\right)-d\left( {\proselabel{kappa}{{a}}} ^{2} {\proselabel{kappa}{{y}}} ^{2}\right)=0 \\
+&(2 {\proselabel{kappa}{{x}}} d {\proselabel{kappa}{{x}}} )\left( {\proselabel{kappa}{{x}}} ^{2}+ {\proselabel{kappa}{{y}}} ^{2}\right)+ {\proselabel{kappa}{{x}}} ^{2}(2 {\proselabel{kappa}{{x}}} d {\proselabel{kappa}{{x}}} +2 {\proselabel{kappa}{{y}}} d {\proselabel{kappa}{{y}}} )- {\proselabel{kappa}{{a}}} ^{2} 2 {\proselabel{kappa}{{y}}} d {\proselabel{kappa}{{y}}} =0 \\
+&\left(4 {\proselabel{kappa}{{x}}} ^{3}+2 {\proselabel{kappa}{{x}}} {\proselabel{kappa}{{y}}} ^{2}\right) d {\proselabel{kappa}{{x}}} +\left(2 {\proselabel{kappa}{{y}}} {\proselabel{kappa}{{x}}} ^{2}-2 {\proselabel{kappa}{{a}}} ^{2} {\proselabel{kappa}{{y}}} \right) d {\proselabel{kappa}{{y}}} =0 \\
+& {\proselabel{kappa}{{x}}} \left(2 {\proselabel{kappa}{{x}}} ^{2}+ {\proselabel{kappa}{{y}}} ^{2}\right) d {\proselabel{kappa}{{x}}} + {\proselabel{kappa}{{y}}} \left( {\proselabel{kappa}{{x}}} ^{2}- {\proselabel{kappa}{{a}}} ^{2}\right) d {\proselabel{kappa}{{y}}} =0 \\
+&\frac{ {\proselabel{kappa}{{x}}} \left(2 {\proselabel{kappa}{{x}}} ^{2}+ {\proselabel{kappa}{{y}}} ^{2}\right)}{ {\proselabel{kappa}{{y}}} \left( {\proselabel{kappa}{{a}}} ^{2}- {\proselabel{kappa}{{x}}} ^{2}\right)}=\frac{d {\proselabel{kappa}{{y}}} }{d {\proselabel{kappa}{{x}}} }
+\end{aligned}
+\tag{9}\label{9}$$</p>
+<h1 id='derivative'>3&nbsp;Derivative</h1><p>If we use the modern concept of a functional relationship ${\proselabel{kappa}{{y}}} ( {\proselabel{kappa}{{x}}} )$ and apply implicit differentiation, the slope of a tangent line to the kappa curve at a point $( {\proselabel{kappa}{{x}}} , {\proselabel{kappa}{{y}}} )$ is :<br />
+$$
+\begin{aligned}
+&2 {\proselabel{kappa}{{x}}} \left( {\proselabel{kappa}{{x}}} ^{2}+ {\proselabel{kappa}{{y}}} ^{2}\right)+ {\proselabel{kappa}{{x}}} ^{2}\left(2 {\proselabel{kappa}{{x}}} +2 {\proselabel{kappa}{{y}}} \frac{d {\proselabel{kappa}{{y}}} }{d {\proselabel{kappa}{{x}}} }\right)=2 {\proselabel{kappa}{{a}}} ^{2} {\proselabel{kappa}{{y}}} \frac{d {\proselabel{kappa}{{y}}} }{d {\proselabel{kappa}{{x}}} } \\
+&2 {\proselabel{kappa}{{x}}} ^{3}+2 {\proselabel{kappa}{{x}}} {\proselabel{kappa}{{y}}} ^{2}+2 {\proselabel{kappa}{{x}}} ^{3}=2 {\proselabel{kappa}{{a}}} ^{2} {\proselabel{kappa}{{y}}} \frac{d {\proselabel{kappa}{{y}}} }{d {\proselabel{kappa}{{x}}} }-2 {\proselabel{kappa}{{x}}} ^{2} {\proselabel{kappa}{{y}}} \frac{d {\proselabel{kappa}{{y}}} }{d {\proselabel{kappa}{{x}}} } \\
+&4 {\proselabel{kappa}{{x}}} ^{3}+2 {\proselabel{kappa}{{x}}} {\proselabel{kappa}{{y}}} ^{2}=\left(2 {\proselabel{kappa}{{a}}} ^{2} {\proselabel{kappa}{{y}}} -2 {\proselabel{kappa}{{x}}} ^{2} {\proselabel{kappa}{{y}}} \right) \frac{d {\proselabel{kappa}{{y}}} }{d {\proselabel{kappa}{{x}}} } \\
+&\frac{2 {\proselabel{kappa}{{x}}} ^{3}+ {\proselabel{kappa}{{x}}} {\proselabel{kappa}{{y}}} ^{2}}{ {\proselabel{kappa}{{a}}} ^{2} {\proselabel{kappa}{{y}}} - {\proselabel{kappa}{{x}}} ^{2} {\proselabel{kappa}{{y}}} }=\frac{d {\proselabel{kappa}{{y}}} }{d {\proselabel{kappa}{{x}}} }
+\end{aligned}
+\tag{10}\label{10}$$</p>
+<div class="references"></div>
+</body>
+</html>

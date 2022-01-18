@@ -1,5 +1,92 @@
-function drawArrow( startElement, endElement, style='' , color='blue', 
-  offsetVerticalX=0, offsetStartY=0, offsetEndY=0, offsetEndX=20) {
+var colors =['red', 'YellowGreen', 'DeepSkyBlue', 'Gold', 'HotPink', 
+             'Tomato', 'Orange', 'DarkRed', 'LightCoral', 'Khaki'];
+
+var centerXDict = {};
+var centerYDict = {};
+
+function alreadyExist(dict, content){
+  var threshold = 2;   // different symbols from the same line
+  for (const [key, value] of Object.entries(centerYDict)) {
+    if (Math.abs(key - content) < threshold) {
+      // console.log(`Math.abs(key - content): ${Math.abs(key - content)}`)
+      return true;
+    }
+  }
+  return false;
+}
+function getDictValue(dict, content){
+  var threshold = 2;   // different symbols from the same line
+  for (const [key, value] of Object.entries(centerYDict)) {
+    if (Math.abs(key - content) < threshold) { 
+      return value;
+    }
+  }
+  return 0;
+}
+
+function getXOffset(){
+  // vertical left boundary
+  var base = 20; // starting point
+  var res = 0;
+  var distance = 5; 
+  if (base in centerXDict) { 
+    cur_index = centerXDict[base];
+    res = cur_index * distance;
+    centerXDict[base] = cur_index + 1;
+  }
+  else{
+    centerXDict[base] = 1;
+    res = 0;
+  } 
+  // console.log(`getXOffset, res:${res}`);
+  return base + res;
+}
+
+function getYOffset(base){ 
+  var res = 0;
+  var distance = 3; 
+  if (alreadyExist(centerYDict, base)) { 
+    cur_index = getDictValue(centerYDict, base);
+    if (cur_index % 2 == 1) {
+      res = parseInt(cur_index / 2, 10) * distance;
+    }
+    else{
+      res = -parseInt(cur_index / 2, 10) * distance;
+    }
+    centerYDict[base] = cur_index + 1;
+  }
+  else{
+    centerYDict[base] = 2;
+    res = 0;
+  }
+  // for (const [key, value] of Object.entries(centerYDict)) {
+  //   console.log(key, value);
+  // }
+  // console.log(`centerYDict, centerYDict:${centerYDict}`);
+  return res;
+}
+
+
+var offsetEndXDict = {};
+function getOffsetEndX(center){ 
+  var base = 0; // starting point
+  var res = 0;
+  var distance = 5; 
+  if (center in offsetEndXDict) { 
+    cur_index = offsetEndXDict[center];
+    res = cur_index * distance;
+    offsetEndXDict[center] = cur_index + 1;
+  }
+  else{
+    offsetEndXDict[center] = 1;
+    res = 0;
+  } 
+  // console.log(`getOffsetEndX, center:${center}, res:${res}`);
+  return base - res;
+}
+
+function drawArrow(startElement, endElement, style='', color='blue', 
+  isEquation=false, startEq=false, endEq=false) { 
     // This pseudocode creates an SVG element for each "arrow". As an alternative,
     // we could always have one SVG element present in the document
     // with absolute position 0,0 (or along the right side of the window)
@@ -27,6 +114,13 @@ function drawArrow( startElement, endElement, style='' , color='blue',
     var endRect = endElement.getBoundingClientRect();
     var endCenterX = endRect.x + endRect.width/2;
     var endCenterY = endRect.y + endRect.height/2;
+
+    var offsetStartY = getYOffset(startCenterY); 
+    var offsetEndY = getYOffset(endCenterY);
+    var offsetVerticalX = getXOffset(); 
+
+    var offsetEndX = getOffsetEndX(endCenterY);
+
     var marginLeft = parseInt(style.marginLeft, 10)
     var bodyWidth = parseInt(style.width, 10)
     var marginTop = parseInt(style.marginTop, 10)
@@ -35,17 +129,35 @@ function drawArrow( startElement, endElement, style='' , color='blue',
     // var offsetEndX = 20;
     // var endPointX = endCenterX - bodyRect.x + marginLeft;
     // var endPointY = endCenterY - bodyRect.y + marginTop;
-    var endPointX = bodyWidth+marginLeft-offsetEndX;
+    // var endPointX = bodyWidth+marginLeft-offsetEndX;
     var endPointY = endCenterY - bodyRect.y + marginTop;
     // console.log(`marginTop is ${marginTop}`);
     // svg.path(`M${startCenterX - bodyRect.x + marginLeft} ${startCenterY - bodyRect.y + marginTop} 
-    svg.path(`M${bodyWidth+marginLeft-offsetEndX} ${startCenterY - bodyRect.y + marginTop+offsetStartY} 
-      L ${bodyWidth+marginLeft+offsetVerticalX} ${startCenterY - bodyRect.y + marginTop+offsetStartY} 
-      L ${bodyWidth+marginLeft+offsetVerticalX} ${endCenterY - bodyRect.y + marginTop+offsetEndY} 
+    // svg.path(`M${bodyWidth+marginLeft-offsetEndX} ${startCenterY - bodyRect.y + marginTop+offsetStartY} 
+    //   L ${bodyWidth+marginLeft+offsetVerticalX} ${startCenterY - bodyRect.y + marginTop+offsetStartY} 
+    //   L ${bodyWidth+marginLeft+offsetVerticalX} ${endCenterY - bodyRect.y + marginTop+offsetEndY} 
+    //   L ${endPointX} ${endPointY+offsetEndY} 
+    //   L ${endPointX+arrowSize} ${endPointY-arrowSize+offsetEndY} 
+    //   L ${endPointX} ${endPointY+offsetEndY} 
+    //   L ${endPointX+arrowSize} ${endPointY+arrowSize+offsetEndY} 
+    //   `).attr({fill: 'white', 'fill-opacity': 0, stroke: color, 'stroke-width': 2, 'stroke-linejoin': 'bevel', 'stroke-linecap': 'square'})
+    var offsetStartX = 0; 
+    if (startEq) { 
+      offsetStartX = 20; 
+    }
+    if (endEq){ 
+      offsetEndX = 20; 
+    }
+    // console.log(`offsetEndX is ${offsetEndX}`)
+    var endPointX = marginLeft+offsetEndX; 
+    svg.path(`M${(marginLeft+offsetStartX)} ${startCenterY - bodyRect.y + marginTop+offsetStartY} 
+      L ${(marginLeft-offsetVerticalX)} ${startCenterY - bodyRect.y + marginTop+offsetStartY} 
+      L ${(marginLeft-offsetVerticalX)} ${endCenterY - bodyRect.y + marginTop+offsetEndY} 
+
       L ${endPointX} ${endPointY+offsetEndY} 
-      L ${endPointX+arrowSize} ${endPointY-arrowSize+offsetEndY} 
+      L ${endPointX-arrowSize} ${endPointY-arrowSize+offsetEndY} 
       L ${endPointX} ${endPointY+offsetEndY} 
-      L ${endPointX+arrowSize} ${endPointY+arrowSize+offsetEndY} 
+      L ${endPointX-arrowSize} ${endPointY+arrowSize+offsetEndY} 
       `).attr({fill: 'white', 'fill-opacity': 0, stroke: color, 'stroke-width': 2, 'stroke-linejoin': 'bevel', 'stroke-linecap': 'square'})
     svg.attr('offset', parseInt(style.marginLeft, 10))
     document.querySelector(".arrow").style.marginLeft = "0px"
@@ -99,13 +211,14 @@ function parseSym(tag, symbol){
   if (typeof tag._tippy === 'undefined'){
     tippy(tag, {
         content: getGlossarySymInfo(symbol),
-        placement: 'left',
+        placement: 'right',
         animation: 'fade',
         trigger: 'click', 
-        // theme: 'material',
+        theme: 'light',
         showOnCreate: true,
         allowHTML: true,
         interactive: true,
+        arrow: tippy.roundArrow.repeat(2),
         onShow(instance) {
           return true;  
         },
@@ -119,9 +232,10 @@ function parseSym(tag, symbol){
 function adjsutGlossaryBtn(){
   var body = document.querySelector("body");
   var style = window.getComputedStyle(body);
+  var curWidth = parseInt(style.width, 10)
   var curOffset = parseInt(style.marginLeft, 10)
   var glossaryBtn = document.querySelector(".glossary");
-  glossaryBtn.style.left = `${curOffset-30}px`;
+  glossaryBtn.style.left = `${curOffset + curWidth +  30}px`;
 }
 function onLoad(){
   parseAllSyms();
@@ -156,11 +270,13 @@ function parseAllSyms(){
   // console.log(document.querySelector("#glossary"));
   tippy(document.querySelector("#glossary"), {
         content: info,
-        placement: 'bottom',
+        placement: 'right',
         animation: 'fade',
         trigger: 'click', 
+        theme: 'light',
         allowHTML: true,
         interactive: true,
+        arrow: tippy.roundArrow.repeat(2),
         onShown(instance) {
           MathJax.typeset();
           return true;  
@@ -168,8 +284,8 @@ function parseAllSyms(){
       }); 
   MathJax.typeset();
 }
-function getSymInfo(symbol, func_name, isLocalParam=false, localFuncName=''){
-  content = '';
+function getSymInfo(symbol, func_name, isLocalParam=false, localFuncName='', color='red', attrs=''){
+  content = `<span class="highlight_${color}" sym="${symbol}" ${attrs}>`
   var found = false;
   var dollarSym = getDollarSym(symbol);
   var otherSym = getOtherSym(symbol);
@@ -186,7 +302,7 @@ function getSymInfo(symbol, func_name, isLocalParam=false, localFuncName=''){
               if (curParam == symbol || curParam == otherSym) {
                 type_info = iheartla_data.equations[eq].local_func[localFunc].parameters[param].type_info;
                 found = true;
-                content = dollarSym + " is a local parameter as a " + getSymTypeInfo(type_info);
+                content += dollarSym + "</span>"+ " is a local parameter as a " + getSymTypeInfo(type_info);
               }
             }
           }
@@ -203,10 +319,10 @@ function getSymInfo(symbol, func_name, isLocalParam=false, localFuncName=''){
             type_info = iheartla_data.equations[eq].parameters[param].type_info;
             found = true;
             if(iheartla_data.equations[eq].parameters[param].desc){
-              content = dollarSym + " is " + iheartla_data.equations[eq].parameters[param].desc + ", the type is " + getSymTypeInfo(type_info);
+              content += dollarSym + "</span>"+ " is " + iheartla_data.equations[eq].parameters[param].desc + ", the type is " + getSymTypeInfo(type_info);
             }
             else{
-              content = dollarSym + " is a parameter as a " + getSymTypeInfo(type_info);
+              content += dollarSym + "</span>"+ " is a parameter as a " + getSymTypeInfo(type_info);
             }
             break;
           }
@@ -219,7 +335,7 @@ function getSymInfo(symbol, func_name, isLocalParam=false, localFuncName=''){
             iheartla_data.equations[eq].definition[param].sym == otherSym){
             type_info = iheartla_data.equations[eq].definition[param].type_info;
             found = true;
-            content = dollarSym + " is defined as a " + getSymTypeInfo(type_info);
+            content += dollarSym + "</span>"+ " is defined as a " + getSymTypeInfo(type_info);
             break;
           }
         }
@@ -231,30 +347,36 @@ function getSymInfo(symbol, func_name, isLocalParam=false, localFuncName=''){
   }
   if (content == '') {
     content = `${dollarSym} is a parameter in local function`;
-  }
+  } 
   return content;
 }
 function showSymArrow(tag, symbol, func_name, type='def', color='blue', 
-  offsetVerticalX=0, offsetStartY=0, offsetEndY=0, offsetEndX=20){
+  isEquation=false, startEq=false, endEq=false){ 
   symbol = symbol.replace("\\","\\\\\\\\");
   // console.log(`In showSymArrow, symbol:${symbol}`);
-  showArrow(tag, symbol, func_name, type, color, offsetVerticalX, offsetStartY, offsetEndY, offsetEndX);
+  showArrow(tag, symbol, func_name, type, color, isEquation, startEq, endEq);
   let asymbol = getOtherSym(symbol);
-  showArrow(tag, asymbol, func_name, type, color, offsetVerticalX, offsetStartY, offsetEndY, offsetEndX);
+  showArrow(tag, asymbol, func_name, type, color, isEquation, startEq, endEq);
 }
 function showArrow(tag, symbol, func_name, type='def', color='blue', 
-  offsetVerticalX=0, offsetStartY=0, offsetEndY=0, offsetEndX=20){
+  isEquation=false, startEq=false, endEq=false){
   // tag.setAttribute('class', `highlight_${color}`);
-  // console.log(`In showArrow, sym:${symbol}`);
+  // console.log(`In showArrow, sym:${symbol}`); 
   if (type === 'def' ) {
     // Point to usage
     const matches = document.querySelectorAll("[case='equation'][sym='" + symbol + "'][func='"+ func_name + "'][type='use']");
     // console.log(`matches length:${matches.length}`);
+    var cur_list = [];
     for (var i = matches.length - 1; i >= 0; i--) {
       // matches[i].setAttribute('class', `highlight_${color}`);
       // console.log(`${i} is ${matches[i].innerHTML}`)
       if (matches[i] !== tag && matches[i].tagName.startsWith("MJX")) {
-        drawArrow(tag, matches[i],'',color,offsetVerticalX, offsetStartY, offsetEndY, offsetEndX);
+        var curRect = matches[i].getBoundingClientRect();
+        var curCenterY = curRect.y + curRect.height/2;
+        if (!(cur_list.includes(curCenterY))) {
+          cur_list.push(curCenterY);
+          drawArrow(tag, matches[i],'',color, isEquation, startEq, endEq);
+        } 
       }
     }
     // prose label
@@ -274,11 +396,17 @@ function showArrow(tag, symbol, func_name, type='def', color='blue',
     // console.log(`matches.length is ${matches.length}`)
     if (matches !== 'undefined' && matches.length !== 0) {
       // console.log(`${matches.length} prose`)
+      var cur_list = [];
       for (var i = matches.length - 1; i >= 0; i--) {
         // console.log(`${i} is ${matches[i].innerHTML}, tag is ${matches[i].tagName}`)
         // matches[i].setAttribute('class', `highlight_${color}`);
         if (matches[i] !== tag && matches[i].tagName.startsWith("MJX")) {
-          drawArrow(matches[i], tag, '',color,offsetVerticalX, offsetStartY, offsetEndY, offsetEndX);
+          var curRect = matches[i].getBoundingClientRect();
+          var curCenterY = curRect.y + curRect.height/2; 
+          if (!(cur_list.includes(curCenterY))) {
+            cur_list.push(curCenterY);
+            drawArrow(matches[i], tag, '',color, isEquation, startEq, endEq);
+          } 
         }
       }
     }
@@ -292,11 +420,17 @@ function showArrow(tag, symbol, func_name, type='def', color='blue',
       // const prose = document.querySelectorAll("[sym='" + new_sym + "'][module='"+ func_name + "'][type='def']");
       // console.log(`prose.length is ${prose.length}`);
       if (prose !== 'undefined') {
+        var cur_list = [];
         for (var i = prose.length - 1; i >= 0; i--) {
           // console.log(`${i} is ${prose[i].innerHTML}, tag is ${prose[i].tagName}, parentElement:${prose[i].parentElement.innerHTML}`)
           if (prose[i] !== tag ) {
             // prose[i].setAttribute('class', `highlight_${color}`);
-            drawArrow(prose[i], tag, '',color,offsetVerticalX, offsetStartY, offsetEndY, offsetEndX);
+            var curRect = prose[i].getBoundingClientRect();
+            var curCenterY = curRect.y + curRect.height/2; 
+            if (!(cur_list.includes(curCenterY))) {
+                cur_list.push(curCenterY);
+                drawArrow(prose[i], tag, '',color, isEquation, startEq, endEq);
+            } 
           }
         }
       }
@@ -328,24 +462,24 @@ function highlightSym(symbol, func_name, isLocalParam=false, localFuncName='', c
   highlightSymInProseAndEquation(asymbol, func_name, isLocalParam, localFuncName, color);
 }
 function highlightSymInProseAndEquation(symbol, func_name, isLocalParam=false, localFuncName='', color='red'){ 
-  if (isLocalParam) {
-    // console.log(`localFuncName is ${localFuncName}`)
-    var search = "[sym='" + symbol + "'][module='" + func_name + "'][func='" + localFuncName + "']";
-    // console.log(`search str is ${search}`)
-    // only hightlight the same symbols in the local function
-    let matches = document.querySelectorAll("[sym='" + symbol + "'][func='" + func_name + "'][localfunc='" + localFuncName + "']");
-    for (var i = matches.length - 1; i >= 0; i--) {
-      var curClass = matches[i].getAttribute('class');
-      if (curClass !== '') {
-        curClass = `highlight_${color}` + ' ' + curClass;
-      }
-      else{
-        curClass = `highlight_${color}`;
-      }
-      matches[i].setAttribute('class', curClass);
-    }
-    return;
-  }
+  // if (isLocalParam) {
+  //   // console.log(`localFuncName is ${localFuncName}`)
+  //   var search = "[sym='" + symbol + "'][module='" + func_name + "'][func='" + localFuncName + "']";
+  //   // console.log(`search str is ${search}`)
+  //   // only hightlight the same symbols in the local function
+  //   let matches = document.querySelectorAll("[sym='" + symbol + "'][func='" + func_name + "'][localfunc='" + localFuncName + "']");
+  //   for (var i = matches.length - 1; i >= 0; i--) {
+  //     var curClass = matches[i].getAttribute('class');
+  //     if (curClass !== '') {
+  //       curClass = `highlight_${color}` + ' ' + curClass;
+  //     }
+  //     else{
+  //       curClass = `highlight_${color}`;
+  //     }
+  //     matches[i].setAttribute('class', curClass);
+  //   }
+  //   return;
+  // }
   // console.log(`symbol is ${symbol}`);
   // syms in prose and derivations
   let matches = document.querySelectorAll("[sym='" + symbol + "'][module='" + func_name + "']");
@@ -408,6 +542,8 @@ function onClickProse(tag, symbol, func_name, type='def') {
         trigger: 'click', 
         theme: 'light',
         showOnCreate: true,
+        allowHTML: true,
+        arrow: tippy.roundArrow.repeat(2),
         onShow(instance) {
           // closeOtherTips();
           return true;  
@@ -441,12 +577,14 @@ function onClickSymbol(tag, symbol, func_name, type='def', isLocalParam=false, l
     // d3.selectAll("mjx-mi[sym='" + symbol + "']").style("class", "highlight");
   if (typeof tag._tippy === 'undefined'){
     tippy(tag, {
-        content: getSymInfo(symbol, func_name, isLocalParam, localFuncName),
+        content: getSymInfo(symbol, func_name, isLocalParam, localFuncName, color),
         placement: 'bottom',
         animation: 'fade',
         trigger: 'click', 
         theme: 'light',
         showOnCreate: true,
+        allowHTML: true,
+        arrow: tippy.roundArrow.repeat(2),
         onShow(instance) {
           // closeOtherTips();
           return true;  
@@ -461,7 +599,7 @@ function onClickSymbol(tag, symbol, func_name, type='def', isLocalParam=false, l
   // console.log("clicked: " + symbol + " in " + func_name); 
 };
 function getEquationContent(func_name, sym_list, isLocalFunc=false, localFunc='', localParams=[]){
-  content = "This equation has " + sym_list.length + " symbols:<br>";
+  content = `<span class="highlight_grey">This equation has ${sym_list.length} symbols:</span><br>`;
   for (var i = sym_list.length - 1; i >= 0; i--) {
     sym = sym_list[i];
     sym = sym.replace("\\","\\\\\\\\"); 
@@ -469,7 +607,7 @@ function getEquationContent(func_name, sym_list, isLocalFunc=false, localFunc=''
     if (localParams.includes(sym)) {
       isLocalParam = true;
     }
-    content += getSymInfo(sym_list[i], func_name, isLocalParam, localFunc) + '<br>';
+    content += getSymInfo(sym_list[i], func_name, isLocalParam, localFunc, colors[i], `case='equationInfo'`) + '<br>';
   }
   return content;
 }
@@ -490,13 +628,9 @@ function onClickEq(tag, func_name, sym_list, isLocalFunc=false, localFunc='', lo
   content = getEquationContent(func_name, sym_list, isLocalFunc, localFunc, localParams);
   // Scale equation and append new div
   document.body.classList.add("opShallow");
+  var div = tag.closest("div.equation");
   //
   function showAllArrows(){
-    var colors =['red', 'YellowGreen', 'DeepSkyBlue', 'Gold', 'HotPink', 'Tomato', 'Orange', 'DarkRed', 'LightCoral', 'Khaki'];
-    var offsetVerticalX = 0;
-    var offsetStartY = 0;
-    var offsetEndY = 0;
-    var offsetEndX = 30;
     for (var i = sym_list.length - 1; i >= 0; i--) {
       sym = sym_list[i];
       var isLocalParam = false;
@@ -507,25 +641,37 @@ function onClickEq(tag, func_name, sym_list, isLocalFunc=false, localFunc='', lo
       highlightSym(sym, func_name, isLocalParam, localFunc, colors[i]);
       // sym = sym.replace("\\","\\\\");
       sym = sym.replace("\\","\\\\\\\\"); 
-      var symTag = tag.querySelector("[case='equation'][sym='" + sym + "']");
+      var symTag;
+      if (div) {
+        var parentTag = tag.closest("div");
+        symTag = parentTag.querySelector("[case='equationInfo'][sym='" + sym + "']");
+      }
+      else{
+        // inline
+        symTag = tag.querySelector("[case='equation'][sym='" + sym + "']");
+      }
       const matches = document.querySelectorAll("[case='equation'][sym='" + sym + "']");
       // console.log(`tag is ${tag}, sym is ${sym}, symTag is ${symTag}, matches is ${matches}`);
-      offsetVerticalX += 5;
-      offsetStartY += 2;
-      offsetEndY += 2;
-      offsetEndX -= 5;
       if (symTag !== null){
         // console.log(`symTag is ${symTag}`);
         var t = 'use';
+        var startEq = false;
+        var endEq = false;
         if (i === sym_list.length - 1) {
           t = 'def';
+          startEq = true;
         }
-        showSymArrow(symTag, sym_list[i], func_name, t, colors[i], offsetVerticalX, offsetStartY, offsetEndY, offsetEndX);
+        else{
+          endEq = true;
+        } 
+        if (!div) {
+          startEq = false;
+          endEq = false;
+        }
+        showSymArrow(symTag, sym_list[i], func_name, t, colors[i], true, startEq, endEq);
       }
     }
   }
-
-  var div = tag.closest("div");
   if (div) {
     // not inline
     var mjx = tag.closest("mjx-container");
@@ -535,8 +681,14 @@ function onClickEq(tag, func_name, sym_list, isLocalFunc=false, localFunc='', lo
     const symDiv = document.createElement("div");
     symDiv.innerHTML = content
     // content = `<div class='euqation_highlight'> ${content} </div>`
-    div.appendChild(symDiv)
-    symDiv.classList.add("eqInfo");
+    div.appendChild(symDiv);
+    var topLine = document.createElement("HR");
+    div.prepend(topLine)
+    topLine.className = "eqInfo";
+    var bottomLine = document.createElement("HR");
+    bottomLine.className = "eqInfo";
+    div.appendChild(bottomLine)
+    symDiv.classList.add("eqInfoDiv");
     MathJax.typeset();
     // console.log(`div is ${div.innerHTML}`);
     setTimeout(showAllArrows, 500);
@@ -549,8 +701,10 @@ function onClickEq(tag, func_name, sym_list, isLocalFunc=false, localFunc='', lo
           placement: 'bottom',
           animation: 'fade',
           trigger: 'click', 
+          theme: 'light',
           showOnCreate: true,
           allowHTML: true,
+          arrow: tippy.roundArrow.repeat(2),
           // interactive: true,
           onShow(instance) { 
             tag.setAttribute('class', 'highlight_fake');
@@ -567,6 +721,9 @@ function onClickEq(tag, func_name, sym_list, isLocalFunc=false, localFunc='', lo
   }
 };
 function resetState(){
+  centerXDict = {};
+  centerYDict = {};
+  offsetEndXDict = {};
   // console.log(`reset all`);
   document.body.classList.remove("opShallow");
   removeArrows();
@@ -588,7 +745,7 @@ function resetEqScale(argument) {
   }
 }
 function removeAddedDiv() {
-  const matches = document.querySelectorAll(".eqInfo");
+  const matches = document.querySelectorAll("[class*=eqInfo]");
   for (var i = matches.length - 1; i >= 0; i--) {
     matches[i].parentNode.removeChild(matches[i]);
   }
@@ -605,15 +762,18 @@ function removeSymHighlight(){
   // ^= matches "start with", *= matches "contains"
   const matches = document.querySelectorAll("[class*=highlight]");
   for (var i = matches.length - 1; i >= 0; i--) {
-    var cur = matches[i].getAttribute('class');
-    const classArray = cur.split(' ');
-    let new_classes = [];
-    for (var j = classArray.length - 1; j >= 0; j--) {
-      if (classArray[j] !== ' ' && ! classArray[j].includes('highlight')) {
-        new_classes.push(classArray[j]);
+    var spanTag = matches[i].closest("div.tippy-box");
+    if(spanTag == null){
+      var cur = matches[i].getAttribute('class');
+      const classArray = cur.split(' ');
+      let new_classes = [];
+      for (var j = classArray.length - 1; j >= 0; j--) {
+        if (classArray[j] !== ' ' && ! classArray[j].includes('highlight')) {
+          new_classes.push(classArray[j]);
+        }
       }
+      matches[i].setAttribute('class', new_classes.join(' '));
     }
-    matches[i].setAttribute('class', new_classes.join(' '));
   }
 }
 function closeOtherTips(){
