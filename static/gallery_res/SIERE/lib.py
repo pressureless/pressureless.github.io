@@ -7,12 +7,13 @@ from scipy.optimize import minimize
 
 
 class siere:
-    def __init__(self, U_s, M, v, f, K, h, φ_1, u):
+    def __init__(self, U_s, M, v, f, K, boldsymbolI, h, φ_1, u):
         U_s = np.asarray(U_s, dtype=np.float64)
         M = np.asarray(M, dtype=np.float64)
         v = np.asarray(v, dtype=np.float64)
         f = np.asarray(f, dtype=np.float64)
         K = np.asarray(K, dtype=np.float64)
+        boldsymbolI = np.asarray(boldsymbolI, dtype=np.float64)
         u = np.asarray(u, dtype=np.float64)
         n = U_s.shape[0]
         s = U_s.shape[1]
@@ -21,8 +22,11 @@ class siere:
         assert v.shape == (n,)
         assert f.shape == (n,)
         assert K.shape == (n, n)
+        assert boldsymbolI.shape == (2*n, 2*n)
         assert np.ndim(h) == 0
         assert u.shape == (2*n, 1)
+        assert 2*n == int(2*n)
+        assert 2*n == int(2*n)
         assert 2*n == int(2*n)
 
         # `$v_G$` = `$U_s$``$U_s$`^T Mv
@@ -57,10 +61,10 @@ class siere:
     #             `$U_s$`^Tf]
         G_circumflex_accent_ru_0 = np.vstack(((U_s.T @ M @ v).reshape(s, 1), (U_s.T @ f).reshape(s, 1)))
         self.G_circumflex_accent_ru = G_circumflex_accent_ru_0
-        # `$u_+$` =  u + ( -h`$J_H$`)⁻¹(h `$H(u)$` + h[`$U_s$` 0
+        # `$u_+$` =  u + (`$\boldsymbol{I}$` -h`$J_H$`)⁻¹(h `$H(u)$` + h[`$U_s$` 0
     #                                                0   `$U_s$`] `$φ_1$`(h`$J_G^r$`) `$G^r(u)$`)
         u_plus_sign_2 = np.block([[U_s, np.zeros((n, s))], [np.zeros((n, s)), U_s]])
-        self.u_plus_sign = u + np.linalg.solve((-h * self.J_H), (h * self.Hu + h * u_plus_sign_2 @ φ_1(h * self.J_G_circumflex_accent_r) @ self.G_circumflex_accent_ru))
+        self.u_plus_sign = u + np.linalg.solve((boldsymbolI - h * self.J_H), (h * self.Hu + h * u_plus_sign_2 @ φ_1(h * self.J_G_circumflex_accent_r) @ self.G_circumflex_accent_ru))
 
 class second:
     def __init__(self, U_s, M, K):

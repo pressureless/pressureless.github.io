@@ -17,25 +17,17 @@ struct pipeline {
     double C;
     double α_1;
     double α_2;
+    double α_i;
+    double α_j;
+    std::function<Eigen::Matrix<double, 2, 1>(Eigen::Matrix<double, 2, 1>)> φ_circumflex_accent_1_d;
+    std::function<Eigen::Matrix<double, 2, 1>(Eigen::Matrix<double, 2, 1>)> φ_d;
+    Eigen::Matrix<double, 2, 1> x_i;
+    Eigen::Matrix<double, 2, 1> x_j;
     double x;
     double c_x;
     double f_x;
     double y;
     double c_y;
-    double α_i;
-    double α_j;
-    Eigen::Matrix<double, 2, 1> x_i;
-    Eigen::Matrix<double, 2, 1> x_j;
-    double ω(
-        const double & x)
-    {
-        return atan((x - c_x) / double(f_x));    
-    }
-    double s(
-        const double & x)
-    {
-        return (y - c_y) * cos(ω(x));    
-    }
     Eigen::Matrix<double, 3, 3> R(
         const double & α)
     {
@@ -62,6 +54,16 @@ struct pipeline {
     {
         return φ_circumflex_accent_1_d((1 - t(α)) * φ_d(x_i) + t(α) * φ_d(x_j));    
     }
+    double ω(
+        const double & x)
+    {
+        return atan((x - c_x) / double(f_x));    
+    }
+    double s(
+        const double & x)
+    {
+        return (y - c_y) * cos(ω(x));    
+    }
     Eigen::VectorXd φ(
         const double & x)
     {
@@ -87,15 +89,17 @@ struct pipeline {
         const double & Z,
         const double & x)
     {
+        this->α_i = α_i;
+        this->α_j = α_j;
+        this->φ_circumflex_accent_1_d = φ_circumflex_accent_1_d;
+        this->φ_d = φ_d;
+        this->x_i = x_i;
+        this->x_j = x_j;
         this->x = x;
         this->c_x = c_x;
         this->f_x = f_x;
         this->y = y;
         this->c_y = c_y;
-        this->α_i = α_i;
-        this->α_j = α_j;
-        this->x_i = x_i;
-        this->x_j = x_j;
         Eigen::VectorXd textbfX_0(3);
         textbfX_0 << X, Y, Z;
         // `$\textbf{X}$` = (X,Y,Z)^T

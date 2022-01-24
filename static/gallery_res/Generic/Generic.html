@@ -27,8 +27,8 @@ MathJax = {
     <link rel="stylesheet" href="../resource/paper.css">
 </head>
 <script>
-const iheartla_data = JSON.parse('{"equations":[{"name":"Generic", "parameters":[{"sym":"J", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"2", "cols":"2"}},{"sym":"x", "type_info":{"type": "scalar"}},{"sym":"y", "type_info":{"type": "scalar"}},{"sym":"u", "type_info":{"type": "scalar"}},{"sym":"v", "type_info":{"type": "scalar"}}], "definition":[{"sym":"$x_p$", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"2"}},{"sym":"$v_p$", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"2"}},{"sym":"M", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"2", "cols":"6"}}], "local_func":[], "source":" `$x_p$` = (-y, x)\\n `$v_p$` = (-v, u)\\nM=[-J`$x_p$`+`$v_p$`  J  `$x_p$`  I_2] \\n\\nwhere\\nJ: ℝ^(2×2)\\nx: ℝ \\ny: ℝ \\nu: ℝ\\nv: ℝ  \\n\\n" }] }');
-const sym_data = JSON.parse('{"J":[{"desc":"None", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"2", "cols":"2"}, "def_module":"Generic", "is_defined":false, "used_equations":[]}],"x":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"Generic", "is_defined":false, "used_equations":[]}],"y":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"Generic", "is_defined":false, "used_equations":[]}],"u":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"Generic", "is_defined":false, "used_equations":[]}],"v":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"Generic", "is_defined":false, "used_equations":[]}],"$x_p$":[{"desc":"None", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"2"}, "def_module":"Generic", "is_defined":true, "used_equations":[]}],"$v_p$":[{"desc":"None", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"2"}, "def_module":"Generic", "is_defined":true, "used_equations":[]}],"M":[{"desc":"None", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"2", "cols":"6"}, "def_module":"Generic", "is_defined":true, "used_equations":[]}]}');
+const iheartla_data = JSON.parse('{"equations":[{"name":"Generic", "parameters":[{"sym":"J", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"2", "cols":"2"}, "desc":"The Jacobian matrix"},{"sym":"x", "type_info":{"type": "scalar"}, "desc":"point coordinate"},{"sym":"y", "type_info":{"type": "scalar"}, "desc":"point coordinate"},{"sym":"u", "type_info":{"type": "scalar"}, "desc":"vector field coordinate"},{"sym":"v", "type_info":{"type": "scalar"}, "desc":"vector field coordinate"}], "definition":[{"sym":"$x_p$", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"2"}},{"sym":"$v_p$", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"2"}},{"sym":"M", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"2", "cols":"6"}, "desc":" $M$ is a 2 × 6 matrix "}], "local_func":[], "source":" `$x_p$` = (-y, x)\\n `$v_p$` = (-v, u)\\nM=[-J`$x_p$`+`$v_p$`  J  `$x_p$`  I_2] \\n\\nwhere\\nJ: ℝ^(2×2): The Jacobian matrix\\nx: ℝ : point coordinate\\ny: ℝ : point coordinate\\nu: ℝ : vector field coordinate\\nv: ℝ : vector field coordinate\\n\\n" }], "context":["Generic"] }');
+const sym_data = JSON.parse('{"J":[{"desc":"The Jacobian matrix", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"2", "cols":"2"}, "def_module":"Generic", "is_defined":false, "used_equations":[], "color":"red"}],"x":[{"desc":"point coordinate", "type_info":{"type": "scalar"}, "def_module":"Generic", "is_defined":false, "used_equations":[], "color":"red"}],"y":[{"desc":"point coordinate", "type_info":{"type": "scalar"}, "def_module":"Generic", "is_defined":false, "used_equations":[], "color":"YellowGreen"}],"u":[{"desc":"vector field coordinate", "type_info":{"type": "scalar"}, "def_module":"Generic", "is_defined":false, "used_equations":[], "color":"red"}],"v":[{"desc":"vector field coordinate", "type_info":{"type": "scalar"}, "def_module":"Generic", "is_defined":false, "used_equations":[], "color":"YellowGreen"}],"$x_p$":[{"desc":"None", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"2"}, "def_module":"Generic", "is_defined":true, "used_equations":[], "color":"Gold"}],"$v_p$":[{"desc":"None", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"2"}, "def_module":"Generic", "is_defined":true, "used_equations":[], "color":"DeepSkyBlue"}],"M":[{"desc":" $M$ is a 2 × 6 matrix ", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"2", "cols":"6"}, "def_module":"Generic", "is_defined":true, "used_equations":[], "color":"YellowGreen"}]}');
 window.onload = onLoad;
 function reportWindowSize() {
   var arrows = document.querySelectorAll(".arrow");
@@ -59,21 +59,22 @@ document.addEventListener("click", function(evt){
 
 </script>
 <body>
-<img src="../resource/glossary.png" id="glossary" class="glossary" alt="glossary" width="22" height="28"><br>
-<ul><li><a href='#objectivity-by-optimal-reference-frame'>1&nbsp;OBJECTIVITY BY OPTIMAL REFERENCE FRAME</a></li></ul>
-<h1 id='objectivity-by-optimal-reference-frame'>1&nbsp;OBJECTIVITY BY OPTIMAL REFERENCE FRAME</h1><p>The main idea of our approach is to estimate an optimal reference frame locally for every point (x, t ): the local frame (Q, c) is chosen such that the transformed velocity field is as steady as possible in a neighborhoodof(x,t).WelocallyassumethatQandcarespatially- constant. Since we waive the spatial and temporal connection to neighboring points, all derivatives are solved for individually, including $\dot{Q}, \ddot{Q}, \dot{\mathbf{c}}, \ddot{\mathbf{c}}^{1}$ 1. For every point (x,t), we define a spatial neighbor- hood U around it to which we fit the reference frame transformation. To compute the optimal reference frame in U , we set Q = I, c = 02, and find the unknowns Q􏰙 , Q , c, c, which contain 6 scalars (angles and offsets) in 2D and 12 in 3D, that minimize</p>
+<div id="glossary" class="glossary"></div><br>
+<div class='title'>Generic Objective Vortices for Flow Visualization</div><div class='author'>TOBIAS GÜNTHER and MARKUS GROSS, ETH Zürich</div><div class='author'>HOLGER THEISEL, University of Magdeburg</div><ul><li><a href='#objectivity-by-optimal-reference-frame'>4&nbsp;OBJECTIVITY BY OPTIMAL REFERENCE FRAME</a></li></ul>
+<div class='context' id='context-Generic-0' context='Generic'>
+<h1 id='objectivity-by-optimal-reference-frame'>4&nbsp;OBJECTIVITY BY OPTIMAL REFERENCE FRAME</h1><p>The main idea of our approach is to estimate an optimal reference frame locally for every point $(x, t)$: the local frame $(Q, c)$ is chosen such that the transformed velocity field is as steady as possible in a neighborhood of $(x,t)$. We locally assume that $Q$ and $c$ are spatially-constant. Since we waive the spatial and temporal connection to neighboring points, all derivatives are solved for individually, including $\dot{Q}, \ddot{Q}, \dot{\mathbf{c}}, \ddot{\mathbf{c}}$. For every point (x,t), we define a spatial neighborhood U around it to which we fit the reference frame transformation. To compute the optimal reference frame in $U$, we set $Q = I, c = 0^2$, and find the unknowns $\dot{Q}, \ddot{Q}, \dot{\mathbf{c}}, \ddot{\mathbf{c}}$, which contain 6 scalars (angles and offsets) in 2D and 12 in 3D, that minimize</p>
 <p>$$
 \int_{U}\left\|\mathbf{v}_{t}^{*}\right\|^{2} d V \rightarrow \min
-\tag{1}\label{1}$$</p>
-<p>With these locally optimal $\dot{Q}, \ddot{Q}, \dot{\mathbf{c}}, \ddot{\mathbf{c}}^{1}$, we obtain the new local optimal fields v, J, vt , a by applying Eqs. (4)–(7). With these, existing vortex measures can be made objective simply by replacing v, J, vt , a with v, J, vt , a, respectively. Note that although Eq. (13) is minimized for every point (x,t), in practice it is computed only at discrete grid points; usually the same grid on which v is given.</p>
-<p>Minimizing Eq. (13) is not straightforward, since vt∗ is non-linear in Q􏰙 , Q􏰚 , c􏰙, c􏰚. However, vt∗ can be equivalently rephrased and thereby linearized by substitution. Instead of solving for Q􏰙 , Q􏰚 , c􏰙, c􏰚 directly3, we solve for a suitable combination of these unknowns, stored in u:</p>
+\tag{13}\label{13}$$</p>
+<p>With these locally optimal $\dot{Q}, \ddot{Q}, \dot{\mathbf{c}}, \ddot{\mathbf{c}}$, we obtain the new local optimal fields $\overline{\mathbf{v}}, \bar{J}, \overline{\mathbf{v}}_{t}, \overline{\mathbf{a}}$ by applying Eqs. (4)–(7). With these, existing vortex measures can be made objective simply by replacing $ \mathbf{v}, J, \mathbf{v}_{t}, \mathbf{a}$ with $\overline{\mathbf{v}}, \bar{J}, \overline{\mathbf{v}}_{t}, \overline{\mathbf{a}}$, respectively. Note that although Eq. (13) is minimized for every point (x,t), in practice it is computed only at discrete grid points; usually the same grid on which v is given.</p>
+<p>Minimizing Eq. (13) is not straightforward, since $v_t^*$ is non-linear in $\dot{Q}, \ddot{Q}, \dot{\mathbf{c}}, \ddot{\mathbf{c}}$. However, vt∗ can be equivalently rephrased and thereby linearized by substitution. Instead of solving for $\dot{Q}, \ddot{Q}, \dot{\mathbf{c}}, \ddot{\mathbf{c}}$ directly3, we solve for a suitable combination of these unknowns, stored in u:</p>
 <p>$$
 \mathbf{v}_{t}^{*}=\mathbf{Q}\left(\mathbf{v}_{t}-\mathbf{M} \mathbf{u}\right)
-\tag{2}\label{2}$$</p>
+\tag{14}\label{14}$$</p>
 <p>In 3D, M is a 3 × 12 matrix</p>
 <p>$$
 \mathbf{M}=(-\mathbf{J} \mathbf{X}+\mathbf{V}, \mathbf{J}, \mathbf{X}, \mathbf{I})
-\tag{3}\label{3}$$</p>
+\tag{15}\label{15}$$</p>
 <p>with X = sk(x), V = sk(v), and u is a 12-vector</p>
 <p>$$
 \mathbf{u}=\left(\begin{array}{l}
@@ -87,8 +88,8 @@ a p\left(\mathbf{Q}^{\mathrm{T}} \dot{\mathbf{Q}}\right) \\
 a p\left(\mathbf{Q}^{\mathrm{T}} \ddot{\mathbf{Q}}-\left(\mathbf{Q}^{\mathrm{T}} \dot{\mathbf{Q}}\right)^{2}\right) \\
 -\left(\mathbf{Q}^{\mathrm{T}} \ddot{\mathbf{c}}-\mathbf{Q}^{\mathrm{T}} \dot{\mathbf{Q}} \mathbf{Q}^{\mathrm{T}} \dot{\mathbf{c}}\right)
 \end{array}\right)
-\tag{4}\label{4}$$</p>
-<p>In 2D, M and u have a slightly different form. M is a 2 × 6 matrix</p>
+\tag{16}\label{16}$$</p>
+<p>In 2D, ${\proselabel{Generic}{{M}}}$ and ${\proselabel{Generic}{{u}}}$ have a slightly different form. <span sym='M' context='Generic'>  ${\prosedeflabel{Generic}{{M}}}$ is a 2 × 6 matrix  </span></p>
 <p>
         <div class='equation' code_block="Generic">
         $$\DeclareMathOperator*{\argmax}{arg\,max}
@@ -96,15 +97,15 @@ a p\left(\mathbf{Q}^{\mathrm{T}} \ddot{\mathbf{Q}}-\left(\mathbf{Q}^{\mathrm{T}}
 \begin{align*}
 \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'M', 'Generic', 'def', false, '')", "id":"Generic-M", "sym":"M", "func":"Generic",  "localFunc":"", "type":"def", "case":"equation"} }{ {\mathit{M}} } & = \begin{bmatrix}
 -\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'J', 'Generic', 'use', false, '')", "id":"Generic-J", "sym":"J", "func":"Generic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{J}} }\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$x_p$', 'Generic', 'use', false, '')", "id":"Generic-$x_p$", "sym":"$x_p$", "func":"Generic",  "localFunc":"", "type":"use", "case":"equation"} }{ {x_p} } + \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$v_p$', 'Generic', 'use', false, '')", "id":"Generic-$v_p$", "sym":"$v_p$", "func":"Generic",  "localFunc":"", "type":"use", "case":"equation"} }{ {v_p} } & \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'J', 'Generic', 'use', false, '')", "id":"Generic-J", "sym":"J", "func":"Generic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{J}} } & \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$x_p$', 'Generic', 'use', false, '')", "id":"Generic-$x_p$", "sym":"$x_p$", "func":"Generic",  "localFunc":"", "type":"use", "case":"equation"} }{ {x_p} } & I_{ 2 }\\
-\end{bmatrix}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'Generic', ['J', '$x_p$', '$v_p$', 'M'], false, []);"} }{}
+\end{bmatrix}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'Generic', ['$x_p$', '$v_p$', 'J', 'M'], false, []);"} }{}
 \end{align*}
-\tag{5}\label{5}$$</div>
+\tag{17}\label{17}$$</div>
         </p>
 <p>with <span class='equation' code_block="Generic">$\DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
 \begin{align*}
 \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$x_p$', 'Generic', 'def', false, '')", "id":"Generic-$x_p$", "sym":"$x_p$", "func":"Generic",  "localFunc":"", "type":"def", "case":"equation"} }{ {x_p} } & = \begin{pmatrix}
--\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'y', 'Generic', 'use', false, '')", "id":"Generic-y", "sym":"y", "func":"Generic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{y}} }\\\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'x', 'Generic', 'use', false, '')", "id":"Generic-x", "sym":"x", "func":"Generic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{x}} }\end{pmatrix}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'Generic', ['x', 'y', '$x_p$'], false, []);"} }{}
+-\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'y', 'Generic', 'use', false, '')", "id":"Generic-y", "sym":"y", "func":"Generic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{y}} }\\\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'x', 'Generic', 'use', false, '')", "id":"Generic-x", "sym":"x", "func":"Generic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{x}} }\end{pmatrix}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'Generic', ['y', 'x', '$x_p$'], false, []);"} }{}
 \end{align*}
 $</span>, <span class='equation' code_block="Generic">$\DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
@@ -112,30 +113,32 @@ $</span>, <span class='equation' code_block="Generic">$\DeclareMathOperator*{\ar
 \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$v_p$', 'Generic', 'def', false, '')", "id":"Generic-$v_p$", "sym":"$v_p$", "func":"Generic",  "localFunc":"", "type":"def", "case":"equation"} }{ {v_p} } & = \begin{pmatrix}
 -\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'v', 'Generic', 'use', false, '')", "id":"Generic-v", "sym":"v", "func":"Generic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{v}} }\\\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'u', 'Generic', 'use', false, '')", "id":"Generic-u", "sym":"u", "func":"Generic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{u}} }\end{pmatrix}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'Generic', ['v', 'u', '$v_p$'], false, []);"} }{}
 \end{align*}
-$</span>, and u is a 6-vector. Note that u1 and u3 are scalars in 2D, namely the first-order and second- order derivative of the angular velocity of the rotation of the frame. The reformulation of Eq. (7) into Eq. (14)–(17) is a straightforward exercise in algebra. Eq. (14) shows that the vector field and the reference frame are completely separated: M contains only v and its derivatives, while all information of the frame is stored in u.</p>
+$</span>, and u is a 6-vector. Note that $u_1$ and $u_3$ are scalars in 2D, namely the first-order and second-order derivative of the angular velocity of the rotation of the frame. The reformulation of Eq. (7) into Eq. (14)–(17) is a straightforward exercise in algebra. Eq. (14) shows that the vector field and the reference frame are completely separated: M contains only v and its derivatives, while all information of the frame is stored in u.</p>
 <p>Eq. (13) is minimized using Eq. (14), which can be written as the solution of the linear system</p>
 <p>$$
-\begin{gathered}
-\widehat{\mathbf{M}} \mathbf{u}=\widehat{\mathbf{y}} \\
-\text { with } \widehat{\mathbf{M}}=\int_{U} \mathbf{M}^{\mathrm{T}} \mathbf{M} d V \quad, \quad \widehat{\mathbf{y}}=\int_{U} \mathbf{M}^{\mathrm{T}} \mathbf{v}_{t} d V .
-\end{gathered}
-\tag{6}\label{6}$$</p>
-<p>T −1<br />
-the new fields in the locally optimal reference frame are</p>
+\widehat{\mathbf{M}} \mathbf{u}=\widehat{\mathbf{y}} 
+\tag{18}\label{18}$$</p>
 <p>$$
-\begin{aligned}
-\overline{\mathbf{v}} &=\mathbf{v}+s k\left(\overline{\mathbf{u}}_{1}\right) \mathbf{x}+\overline{\mathbf{u}}_{2} \\
-\overline{\mathbf{J}} &=\mathbf{J}+s k\left(\overline{\mathbf{u}}_{1}\right) \\
-\overline{\mathbf{v}}_{t} &=\mathbf{v}_{t}-\mathbf{M} \overline{\mathbf{u}} \\
-\overline{\mathbf{a}} &=\overline{\mathbf{J}} \overline{\mathbf{v}}+\overline{\mathbf{v}}_{t}
-\end{aligned}
-\tag{7}\label{7}$$</p>
-<p>whichfollowsdirectlyfrominsertionofu ,u ,u ,u intotheEqs.(4)–<br />
-1234 (7), using the operator sk from Eq. (1) to remove ap.</p>
-<p>Theorem 4.1 (Objectivity in Optimal Frames). Given an at least C1 continuous vector field v, let v be its observation in the most- steady reference frame and let J, vt , a be its observed derivatives. Any scalar measure s that is computed from v, J, a, vt remains unchanged under any smooth rotation and translation of the reference frame of v as in Eq. (3). A vector r that is computed in the optimal frame from v, J, a, vt is objective, i.e., a transformation of v via Eq. (3) transforms r to r∗ = Q(t ) r. A second-order tensor T computed from v, J, a, vt is objective, since a transformation of v via Eq. (3) transforms T to T∗ =Q(t)TQ(t)T.</p>
-<p>See Appendix B for a proof that v, J, vt , a are objective. Theorem 4.2 (Continuity of Solution). If the input vector field<br />
-visC1continuous,thenv,J,a,v areatleastC0continuous. t<br />
-All v, J, a, vt are computed by integrating only first-order deriva- tives in a region U . If both v and its first-order partials are continuous (i.e., v is C1 continuous), then v is at least C0 continuous.</p>
-<div class="references"></div>
+\text { with } \widehat{\mathbf{M}}=\int_{U} \mathbf{M}^{\mathrm{T}} \mathbf{M} d V \quad, \quad \widehat{\mathbf{y}}=\int_{U} \mathbf{M}^{\mathrm{T}} \mathbf{v}_{t} d V .
+\tag{19}\label{19}$$</p>
+<p>Let $\overline{\mathbf{u}}=\left(\overline{\mathbf{u}}_{1}, \overline{\mathbf{u}}_{2}, \overline{\mathbf{u}}_{3}, \overline{\mathbf{u}}_{4}\right)^{\mathrm{T}}=\widehat{\mathbf{M}}^{-1} \widehat{\mathbf{y}}$ be the solution of Eq. (18). Then, the new fields in the locally optimal reference frame are</p>
+<p>$$ 
+\overline{\mathbf{v}} =\mathbf{v}+s k\left(\overline{\mathbf{u}}_{1}\right) \mathbf{x}+\overline{\mathbf{u}}_{2} 
+\tag{20}\label{20}$$</p>
+<p>$$
+\overline{\mathbf{J}} =\mathbf{J}+s k\left(\overline{\mathbf{u}}_{1}\right) 
+\tag{21}\label{21}$$</p>
+<p>$$
+\overline{\mathbf{v}}_{t} =\mathbf{v}_{t}-\mathbf{M} \overline{\mathbf{u}} 
+\tag{22}\label{22}$$</p>
+<p>$$
+\overline{\mathbf{a}} =\overline{\mathbf{J}} \overline{\mathbf{v}}+\overline{\mathbf{v}}_{t}
+\tag{23}\label{23}$$</p>
+<p>which follows directly from insertion of $\overline{\mathbf{u}}_{1}, \overline{\mathbf{u}}_{2}, \overline{\mathbf{u}}_{3}, \overline{\mathbf{u}}_{4}$ into the Eqs.(4)–(7), using the operator sk from Eq. (1) to remove ap.</p>
+<p>Theorem 4.1 (Objectivity in Optimal Frames). Given an at least C1 continuous vector field v, let v be its observation in the most-steady reference frame and let J, vt , a be its observed derivatives. Any scalar measure s that is computed from $\overline{\mathbf{v}}, \bar{J}, \overline{\mathbf{v}}_{t}, \overline{\mathbf{a}}$ remains unchanged under any smooth rotation and translation of the reference frame of v as in Eq. (3). A vector r that is computed in the optimal frame from $\overline{\mathbf{v}}, \bar{J}, \overline{\mathbf{v}}_{t}, \overline{\mathbf{a}}$ is objective, i.e., a transformation of v via Eq. (3) transforms r to $r^* = Q(t)r$. A second-order tensor T computed from $\overline{\mathbf{v}}, \bar{J}, \overline{\mathbf{v}}_{t}, \overline{\mathbf{a}}$ is objective, since a transformation of v via Eq. (3) transforms T to $\mathrm{T}^{*}=\mathrm{Q}(t) \mathrm{TQ}(t)^{\mathrm{T}}$.</p>
+<p>See Appendix B for a proof that $\overline{\mathbf{v}}, \bar{J}, \overline{\mathbf{v}}_{t}, \overline{\mathbf{a}}$ are objective. </p>
+<p>Theorem 4.2 (Continuity of Solution). If the input vector field ${\proselabel{Generic}{{v}}}$ is $C^1$ continuous,then $\overline{\mathbf{v}}, \bar{J}, \overline{\mathbf{v}}_{t}, \overline{\mathbf{a}}$ are at least $C^0$ continuous. </p>
+<p>All $\overline{\mathbf{v}}, \bar{J}, \overline{\mathbf{v}}_{t}, \overline{\mathbf{a}}$ are computed by integrating only first-order derivatives in a region $U$. If both ${\proselabel{Generic}{{v}}}$ and its first-order partials are continuous (i.e., ${\proselabel{Generic}{{v}}}$ is $C^1$ continuous), then $\overline{v}$ is at least $C^0$ continuous.</p>
+<div class="references"></div></div>
 </body>
 </html>

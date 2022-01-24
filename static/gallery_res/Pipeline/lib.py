@@ -25,17 +25,19 @@ class pipeline:
         assert np.ndim(Z) == 0
         assert np.ndim(x) == 0
 
+        self.α_i = α_i
+        self.α_j = α_j
+        self.φ_circumflex_accent_1_d = φ_circumflex_accent_1_d
+        self.φ_d = φ_d
+        self.x_i = x_i
+        self.x_j = x_j
         self.x = x
         self.c_x = c_x
         self.f_x = f_x
         self.y = y
         self.c_y = c_y
-        self.α_i = α_i
-        self.α_j = α_j
-        self.x_i = x_i
-        self.x_j = x_j
         # `$\textbf{X}$` = (X,Y,Z)^T
-        self.textbfX = np.hstack((X, Y, Z)).T
+        self.textbfX = np.hstack((X, Y, Z)).T.reshape(1, 3)
         # K = [`$f_x$` 0 `$c_x$`
     #       0   `$f_y$` `$c_y$`
     #       0      0    1]
@@ -67,16 +69,6 @@ class pipeline:
         # `$α_2$` = π - ϕ - γ  
         self.α_2 = np.pi - self.ϕ - self.γ
 
-    def ω(self, x):
-        assert np.ndim(x) == 0
-
-        return np.arctan((x - c_x) / f_x)
-
-    def s(self, x):
-        assert np.ndim(x) == 0
-
-        return (y - c_y) * np.cos(self.ω(x))
-
     def R(self, α):
         assert np.ndim(α) == 0
 
@@ -101,6 +93,16 @@ class pipeline:
         assert np.ndim(α) == 0
 
         return φ_circumflex_accent_1_d((1 - self.t(α)) * φ_d(x_i) + self.t(α) * φ_d(x_j))
+
+    def ω(self, x):
+        assert np.ndim(x) == 0
+
+        return np.arctan((x - c_x) / f_x)
+
+    def s(self, x):
+        assert np.ndim(x) == 0
+
+        return (y - c_y) * np.cos(self.ω(x))
 
     def φ(self, x):
         assert np.ndim(x) == 0

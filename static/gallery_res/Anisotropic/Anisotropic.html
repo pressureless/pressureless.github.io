@@ -27,8 +27,8 @@ MathJax = {
     <link rel="stylesheet" href="../resource/paper.css">
 </head>
 <script>
-const iheartla_data = JSON.parse('{"equations":[{"name":"Anisotropic", "parameters":[{"sym":"a", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"3"}},{"sym":"C", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}}], "definition":[{"sym":"A", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}},{"sym":"$I_5$", "type_info":{"type": "scalar"}},{"sym":"$\\\\frac{∂²I₅}{∂f²}$", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"9", "cols":"9"}}], "local_func":[], "source":" A = a a^T \\ntr from linearalgebra\\n`$I_5$` = tr(CA)\\n\\nwhere\\n\\na ∈ ℝ^3\\nC ∈ ℝ^(3×3)\\n\\n`$\\\\frac{∂²I₅}{∂f²}$` = 2[A₁,₁I₃  A₁,₂I₃  A₁,₃I₃\\n               A₂,₁I₃  A₂,₂I₃  A₂,₃I₃\\n               A₃,₁I₃  A₃,₂I₃  A₃,₃I₃] \\n\\n\\n" }] }');
-const sym_data = JSON.parse('{"a":[{"desc":"None", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"3"}, "def_module":"Anisotropic", "is_defined":false, "used_equations":[]}],"C":[{"desc":"None", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}, "def_module":"Anisotropic", "is_defined":false, "used_equations":[]}],"A":[{"desc":"None", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}, "def_module":"Anisotropic", "is_defined":true, "used_equations":[]}],"$I_5$":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"Anisotropic", "is_defined":true, "used_equations":[]}],"$\\\\frac{∂²I₅}{∂f²}$":[{"desc":"None", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"9", "cols":"9"}, "def_module":"Anisotropic", "is_defined":true, "used_equations":[]}]}');
+const iheartla_data = JSON.parse('{"equations":[{"name":"Anisotropic", "parameters":[{"sym":"a", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"3"}},{"sym":"C", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}},{"sym":"F", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}, "desc":"scaling and rotation matrix"}], "definition":[{"sym":"A", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}},{"sym":"$\\\\lambda_{0,1,2}$", "type_info":{"type": "scalar"}, "desc":" non-zero eigenvalues "},{"sym":"$I_5$", "type_info":{"type": "scalar"}},{"sym":"$\\\\frac{∂I₅}{∂F}$", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}, "desc":" PK1 "},{"sym":"$\\\\frac{∂²I₅}{∂f²}$", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"9", "cols":"9"}, "desc":" Hessian in 3D "},{"sym":"$\\\\mathbf{Q}_{0}$", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}, "desc":" the eigenmatrices "},{"sym":"$\\\\mathbf{Q}_{1}$", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}, "desc":" the eigenmatrices "},{"sym":"$\\\\mathbf{Q}_{2}$", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}, "desc":" the eigenmatrices "}], "local_func":[], "source":" A = a a^T \\n`$\\\\lambda_{0,1,2}$`=2||a||_2^2\\ntr from linearalgebra\\n`$I_5$` = tr(CA)\\n\\nwhere\\n\\na ∈ ℝ^3\\nC ∈ ℝ^(3×3)\\n\\n`$\\\\frac{∂I₅}{∂F}$` = 2FA\\nF ∈ ℝ^(3×3): scaling and rotation matrix\\n\\n\\n`$\\\\frac{∂²I₅}{∂f²}$` = 2[A₁,₁I₃  A₁,₂I₃  A₁,₃I₃\\n               A₂,₁I₃  A₂,₂I₃  A₂,₃I₃\\n               A₃,₁I₃  A₃,₂I₃  A₃,₃I₃] \\n\\n\\n\\n`$\\\\mathbf{Q}_{0}$` = [a^T\\n               0\\n               0] \\n`$\\\\mathbf{Q}_{1}$` = [0\\n                    a^T\\n               0] \\n`$\\\\mathbf{Q}_{2}$` = [ 0\\n               0\\n               a^T] \\n\\n\\n" },{"name":"2D Anisotropic", "parameters":[{"sym":"a", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"2"}},{"sym":"A", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"2", "cols":"2"}}], "definition":[{"sym":"$\\\\lambda_{0,1}$", "type_info":{"type": "scalar"}, "desc":" the eigenvalues "},{"sym":"$\\\\frac{∂²I₅}{∂f²}$", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"4", "cols":"4"}, "desc":" The Hessian "},{"sym":"$\\\\mathbf{Q}_{0}$", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"2", "cols":"2"}, "desc":" the eigenmatrices "},{"sym":"$\\\\mathbf{Q}_{1}$", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"2", "cols":"2"}, "desc":" the eigenmatrices "}], "local_func":[], "source":"`$\\\\lambda_{0,1}$`=2||a||_2^2\\ntr from linearalgebra\\n`$\\\\frac{∂²I₅}{∂f²}$` = 2[A₁,₁I_2  A₁,₂I_2\\n               A₂,₁I_2  A₂,₂I_2] \\n\\nwhere\\n\\na ∈ ℝ^2\\nA ∈ ℝ^(2×2)\\n\\n`$\\\\mathbf{Q}_{0}$` = [a^T\\n               0] \\n`$\\\\mathbf{Q}_{1}$` = [0\\n                    a^T] \\n" }], "context":["Anisotropic","2D Anisotropic"] }');
+const sym_data = JSON.parse('{"a":[{"desc":"None", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"3"}, "def_module":"Anisotropic", "is_defined":false, "used_equations":[], "color":"YellowGreen"},{"desc":"None", "type_info":{"type": "vector", "element":{"type": "scalar"}, "rows":"2"}, "def_module":"2D Anisotropic", "is_defined":false, "used_equations":[], "color":"YellowGreen"}],"C":[{"desc":"None", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}, "def_module":"Anisotropic", "is_defined":false, "used_equations":[], "color":"red"}],"F":[{"desc":"scaling and rotation matrix", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}, "def_module":"Anisotropic", "is_defined":false, "used_equations":[], "color":"YellowGreen"}],"A":[{"desc":"None", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}, "def_module":"Anisotropic", "is_defined":true, "used_equations":[], "color":"DeepSkyBlue"},{"desc":"None", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"2", "cols":"2"}, "def_module":"2D Anisotropic", "is_defined":false, "used_equations":[], "color":"DeepSkyBlue"}],"$\\\\lambda_{0,1,2}$":[{"desc":" non-zero eigenvalues ", "type_info":{"type": "scalar"}, "def_module":"Anisotropic", "is_defined":true, "used_equations":[], "color":"red"}],"$I_5$":[{"desc":"None", "type_info":{"type": "scalar"}, "def_module":"Anisotropic", "is_defined":true, "used_equations":[], "color":"YellowGreen"}],"$\\\\frac{∂I₅}{∂F}$":[{"desc":" PK1 ", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}, "def_module":"Anisotropic", "is_defined":true, "used_equations":[], "color":"red"}],"$\\\\frac{∂²I₅}{∂f²}$":[{"desc":" Hessian in 3D ", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"9", "cols":"9"}, "def_module":"Anisotropic", "is_defined":true, "used_equations":[], "color":"red"},{"desc":" The Hessian ", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"4", "cols":"4"}, "def_module":"2D Anisotropic", "is_defined":true, "used_equations":[], "color":"red"}],"$\\\\mathbf{Q}_{0}$":[{"desc":" the eigenmatrices ", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}, "def_module":"Anisotropic", "is_defined":true, "used_equations":[], "color":"red"},{"desc":" the eigenmatrices ", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"2", "cols":"2"}, "def_module":"2D Anisotropic", "is_defined":true, "used_equations":[], "color":"red"}],"$\\\\mathbf{Q}_{1}$":[{"desc":" the eigenmatrices ", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}, "def_module":"Anisotropic", "is_defined":true, "used_equations":[], "color":"red"},{"desc":" the eigenmatrices ", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"2", "cols":"2"}, "def_module":"2D Anisotropic", "is_defined":true, "used_equations":[], "color":"red"}],"$\\\\mathbf{Q}_{2}$":[{"desc":" the eigenmatrices ", "type_info":{"type": "matrix", "element":{"type": "scalar"}, "rows":"3", "cols":"3"}, "def_module":"Anisotropic", "is_defined":true, "used_equations":[], "color":"red"}],"$\\\\lambda_{0,1}$":[{"desc":" the eigenvalues ", "type_info":{"type": "scalar"}, "def_module":"2D Anisotropic", "is_defined":true, "used_equations":[], "color":"red"}]}');
 window.onload = onLoad;
 function reportWindowSize() {
   var arrows = document.querySelectorAll(".arrow");
@@ -59,25 +59,35 @@ document.addEventListener("click", function(evt){
 
 </script>
 <body>
-<img src="../resource/glossary.png" id="glossary" class="glossary" alt="glossary" width="22" height="28"><br>
-<ul><li><a href='#the-eigensystem-of-proselabelanisotropici_5'>1&nbsp;The Eigensystem of ${\proselabel{Anisotropic}{{I_5}}}$</a></li></ul>
-<h1 id='the-eigensystem-of-proselabelanisotropici_5'>1&nbsp;The Eigensystem of ${\proselabel{Anisotropic}{{I_5}}}$</h1><p>We will now show that the eigensystem of any energy expressed solely in terms of ${\proselabel{Anisotropic}{{I_5}}}$ can be written down in closed form. The ${\proselabel{Anisotropic}{{I_5}}}$ invariant can be written in several forms,</p>
+<div id="glossary" class="glossary"></div><br>
+<div class='title'>Anisotropic Elasticity for Inversion-Safety and Element Rehabilitation</div><div class='author'>THEODORE KIM, Pixar Animation Studios</div><div class='author'>FERNANDO DE GOES, Pixar Animation Studios</div><div class='author'>HAYLEY IBEN, Pixar Animation Studios</div><ul><li><a href='#an-eigenanalysis-of-proselabelanisotropici_5'>4&nbsp;AN EIGENANALYSIS OF ${\proselabel{Anisotropic}{{I_5}}}$</a><ul><li><a href='#the-eigensystem-of-proselabelanisotropici_5'>4.1&nbsp;The Eigensystem of ${\proselabel{Anisotropic}{{I_5}}}$</a></li></ul></li></ul>
+<div class='context' id='context-Anisotropic-0' context='Anisotropic'>
+<h1 id='an-eigenanalysis-of-proselabelanisotropici_5'>4&nbsp;AN EIGENANALYSIS OF ${\proselabel{Anisotropic}{{I_5}}}$</h1><h2 id='the-eigensystem-of-proselabelanisotropici_5'>4.1&nbsp;The Eigensystem of ${\proselabel{Anisotropic}{{I_5}}}$</h2><p>We will now show that the eigensystem of any energy expressed solely in terms of ${\proselabel{Anisotropic}{{I_5}}}$ can be written down in closed form. The ${\proselabel{Anisotropic}{{I_5}}}$ invariant can be written in several forms,</p>
 <p>
         <div class='equation' code_block="Anisotropic">
         $$\DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
 \begin{align*}
-\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$I_5$', 'Anisotropic', 'def', false, '')", "id":"Anisotropic-$I_5$", "sym":"$I_5$", "func":"Anisotropic",  "localFunc":"", "type":"def", "case":"equation"} }{ {I_5} } & = tr\left( \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'C', 'Anisotropic', 'use', false, '')", "id":"Anisotropic-C", "sym":"C", "func":"Anisotropic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{C}} }\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'A', 'Anisotropic', 'use', false, '')", "id":"Anisotropic-A", "sym":"A", "func":"Anisotropic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{A}} } \right)\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'Anisotropic', ['C', 'A', '$I_5$'], false, []);"} }{}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$I_5$', 'Anisotropic', 'def', false, '')", "id":"Anisotropic-$I_5$", "sym":"$I_5$", "func":"Anisotropic",  "localFunc":"", "type":"def", "case":"equation"} }{ {I_5} } & = tr\left( \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'C', 'Anisotropic', 'use', false, '')", "id":"Anisotropic-C", "sym":"C", "func":"Anisotropic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{C}} }\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'A', 'Anisotropic', 'use', false, '')", "id":"Anisotropic-A", "sym":"A", "func":"Anisotropic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{A}} } \right)\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'Anisotropic', ['A', 'C', '$I_5$'], false, []);"} }{}
 \end{align*}
-\tag{1}\label{1}$$</div>
+\tag{5}\label{5}$$</div>
         <br />
 where <span class='equation' code_block="Anisotropic">$\DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
 \begin{align*}
 \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'A', 'Anisotropic', 'def', false, '')", "id":"Anisotropic-A", "sym":"A", "func":"Anisotropic",  "localFunc":"", "type":"def", "case":"equation"} }{ {\mathit{A}} } & = \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'a', 'Anisotropic', 'use', false, '')", "id":"Anisotropic-a", "sym":"a", "func":"Anisotropic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{a}} }{\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'a', 'Anisotropic', 'use', false, '')", "id":"Anisotropic-a", "sym":"a", "func":"Anisotropic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{a}} }}^T\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'Anisotropic', ['a', 'A'], false, []);"} }{}
 \end{align*}
-$</span> and $\|\cdot\|_{2}^{2}$ denotes the squared Euclidean norm. The PK1 and Hessian in 3D are</p>
+$</span> and $\|\cdot\|_{2}^{2}$ denotes the squared Euclidean norm. The <span sym='\\frac{∂I₅}{∂F}' context='Anisotropic'>  PK1  </span> and <span sym='\\frac{∂²I₅}{∂f²}' context='Anisotropic'>  Hessian in 3D  </span> are</p>
 <p>
+        <div class='equation' code_block="Anisotropic">
+        $$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$\\\\frac{∂I₅}{∂F}$', 'Anisotropic', 'def', false, '')", "id":"Anisotropic-$\\\\frac{∂I₅}{∂F}$", "sym":"$\\\\frac{∂I₅}{∂F}$", "func":"Anisotropic",  "localFunc":"", "type":"def", "case":"equation"} }{ {\frac{∂I₅}{∂F}} } & = 2\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'F', 'Anisotropic', 'use', false, '')", "id":"Anisotropic-F", "sym":"F", "func":"Anisotropic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{F}} }\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'A', 'Anisotropic', 'use', false, '')", "id":"Anisotropic-A", "sym":"A", "func":"Anisotropic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{A}} }\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'Anisotropic', ['F', 'A', '$\\\\frac{∂I₅}{∂F}$'], false, []);"} }{}
+\end{align*}
+\tag{6}\label{6}$$</div>
+        <br />
+
         <div class='equation' code_block="Anisotropic">
         $$\DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
@@ -88,42 +98,74 @@ $</span> and $\|\cdot\|_{2}^{2}$ denotes the squared Euclidean norm. The PK1 and
 \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'A', 'Anisotropic', 'use', false, '')", "id":"Anisotropic-A", "sym":"A", "func":"Anisotropic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{A}} }_{3, 1}I_{ 3 } & \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'A', 'Anisotropic', 'use', false, '')", "id":"Anisotropic-A", "sym":"A", "func":"Anisotropic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{A}} }_{3, 2}I_{ 3 } & \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'A', 'Anisotropic', 'use', false, '')", "id":"Anisotropic-A", "sym":"A", "func":"Anisotropic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{A}} }_{3, 3}I_{ 3 }\\
 \end{bmatrix}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'Anisotropic', ['A', '$\\\\frac{∂²I₅}{∂f²}$'], false, []);"} }{}
 \end{align*}
-\tag{2}\label{2}$$</div>
+\tag{7}\label{7}$$</div>
         <br />
-where $I _{3×3}$ is a 3×3 identity matrix,and ${\proselabel{Anisotropic}{{A}}} _{ij}$ is the (i,j) scalar entry of ${\proselabel{Anisotropic}{{A}}}$. (Appendix A shows the matrix explicitly.) Since Eqn. 7 is constant in a, it is straightforward to state its eigensystem in closed form. In 3D, it contains three identical non-zero eigenvalues, $\lambda_{0,1,2}=2\|\mathbf{a}\|_{2}^{2}$, and since fiber directions are usually normalized, this simplifies to $\lambda_{0,1,2}=2$. The eigenvalue is repeated, so the eigenmatrices are arbitrary up to rotation, but one convenient phrasing is:</p>
-<p>$$
-\mathbf{Q}_{0}=\left[\begin{array}{ccc} 
-& \mathbf{a}^{T} & \\
-0 & 0 & 0 \\
-0 & 0 & 0
-\end{array}\right] \quad \mathbf{Q}_{1}=\left[\begin{array}{ccc}
-0 & 0 & 0 \\
-& \mathbf{a}^{T} & \\
-0 & 0 & 0
-\end{array}\right] \quad \mathbf{Q}_{2}=\left[\begin{array}{ccc}
-0 & 0 & 0 \\
-0 & 0 & 0 \\
-& \mathbf{a}^{T} &
-\end{array}\right]
-\tag{3}\label{3}$$</p>
+where $I _{3×3}$ is a 3×3 identity matrix,and ${\proselabel{Anisotropic}{{A}}} _{ij}$ is the $(i, j)$ scalar entry of ${\proselabel{Anisotropic}{{A}}}$. (Appendix A shows the matrix explicitly.) Since Eqn. 7 is constant in ${\proselabel{Anisotropic}{{a}}}$, it is straightforward to state its eigensystem in closed form. In 3D, it contains three identical <span sym='\\lambda_{0,1,2}' context='Anisotropic'>  non-zero eigenvalues  </span>, <span class='equation' code_block="Anisotropic">$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$\\\\lambda_{0,1,2}$', 'Anisotropic', 'def', false, '')", "id":"Anisotropic-$\\\\lambda_{0,1,2}$", "sym":"$\\\\lambda_{0,1,2}$", "func":"Anisotropic",  "localFunc":"", "type":"def", "case":"equation"} }{ {\lambda_{0,1,2}} } & = 2\left\|\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'a', 'Anisotropic', 'use', false, '')", "id":"Anisotropic-a", "sym":"a", "func":"Anisotropic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{a}} }\right\|_2^{2}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'Anisotropic', ['a', '$\\\\lambda_{0,1,2}$'], false, []);"} }{}
+\end{align*}
+$</span>, and since fiber directions are usually normalized, this simplifies to $\lambda_{0,1,2}=2$. The eigenvalue is repeated, so <span sym='\\mathbf{Q}_{0};\\mathbf{Q}_{1};\\mathbf{Q}_{2}' context='Anisotropic'>  the eigenmatrices  </span> are arbitrary up to rotation, but one convenient phrasing is:<br />
+
+        <div class='equation' code_block="Anisotropic">
+        $$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$\\\\mathbf{Q}_{0}$', 'Anisotropic', 'def', false, '')", "id":"Anisotropic-$\\\\mathbf{Q}_{0}$", "sym":"$\\\\mathbf{Q}_{0}$", "func":"Anisotropic",  "localFunc":"", "type":"def", "case":"equation"} }{ {\mathbf{Q}_{0}} } & = \begin{bmatrix}
+{\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'a', 'Anisotropic', 'use', false, '')", "id":"Anisotropic-a", "sym":"a", "func":"Anisotropic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{a}} }}^T\\
+0\\
+0\\
+\end{bmatrix}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'Anisotropic', ['a', '$\\\\mathbf{Q}_{0}$'], false, []);"} }{}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$\\\\mathbf{Q}_{1}$', 'Anisotropic', 'def', false, '')", "id":"Anisotropic-$\\\\mathbf{Q}_{1}$", "sym":"$\\\\mathbf{Q}_{1}$", "func":"Anisotropic",  "localFunc":"", "type":"def", "case":"equation"} }{ {\mathbf{Q}_{1}} } & = \begin{bmatrix}
+0\\
+{\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'a', 'Anisotropic', 'use', false, '')", "id":"Anisotropic-a", "sym":"a", "func":"Anisotropic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{a}} }}^T\\
+0\\
+\end{bmatrix}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'Anisotropic', ['a', '$\\\\mathbf{Q}_{1}$'], false, []);"} }{}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$\\\\mathbf{Q}_{2}$', 'Anisotropic', 'def', false, '')", "id":"Anisotropic-$\\\\mathbf{Q}_{2}$", "sym":"$\\\\mathbf{Q}_{2}$", "func":"Anisotropic",  "localFunc":"", "type":"def", "case":"equation"} }{ {\mathbf{Q}_{2}} } & = \begin{bmatrix}
+0\\
+0\\
+{\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'a', 'Anisotropic', 'use', false, '')", "id":"Anisotropic-a", "sym":"a", "func":"Anisotropic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{a}} }}^T\\
+\end{bmatrix}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, 'Anisotropic', ['a', '$\\\\mathbf{Q}_{2}$'], false, []);"} }{}
+\end{align*}
+\notag$$</div>
+        </p>
 <p>This eigenstructure has a straightforward interpretation. ${\proselabel{Anisotropic}{{I_5}}}$ introduces scaling constraints along the anisotropy direction, so the three eigenvectors encode this rank-three phenomenon. The remaining eigenvalues are all zero, so the Hessian contains a rank-six null space. We have provided supplemental Matlab/Octave code that validate these expressions.</p>
-<p>The 2D case follows similarly. The Hessian is<br />
-$$
-\frac{\partial^{2} I _{5}}{\partial \mathbf{f}^{2}}=2\left[\begin{array}{ll}
-\mathbf{A}_{00} \mathbf{I}_{2 \times 2} & \mathbf{A}_{01} \mathbf{I}_{2 \times 2} \\
-\mathbf{A}_{10} \mathbf{I}_{2 \times 2} & \mathbf{A}_{11} \mathbf{I}_{2 \times 2}
-\end{array}\right]=2 \mathbf{H}_{5}
-\tag{4}\label{4}$$</p>
-<p>the eigenvalues are $\lambda_{0,1}=2\|\mathbf{a}\|_{2}^{2}$ and the eigenmatrices become<br />
-$$
-\mathbf{Q}_{0}=\left[\begin{array}{cc}
-\mathbf{a}^{T} \\
-0 & 0
-\end{array}\right] \quad \mathbf{Q}_{1}=\left[\begin{array}{ll}
-0 & 0 \\
-\mathbf{a}^{T} &
-\end{array}\right]
-\tag{5}\label{5}$$</p>
-<div class="references"></div>
+</div><div class='context' id='context-2DAnisotropic-0' context='2D Anisotropic'>
+<p>The 2D case follows similarly. <span sym='\\frac{∂²I₅}{∂f²}' context='2D Anisotropic'>  The Hessian  </span> is</p>
+<p>
+        <div class='equation' code_block="2D Anisotropic">
+        $$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$\\\\frac{∂²I₅}{∂f²}$', '2D Anisotropic', 'def', false, '')", "id":"2D Anisotropic-$\\\\frac{∂²I₅}{∂f²}$", "sym":"$\\\\frac{∂²I₅}{∂f²}$", "func":"2D Anisotropic",  "localFunc":"", "type":"def", "case":"equation"} }{ {\frac{∂²I₅}{∂f²}} } & = 2\begin{bmatrix}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'A', '2D Anisotropic', 'use', false, '')", "id":"2D Anisotropic-A", "sym":"A", "func":"2D Anisotropic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{A}} }_{1, 1}I_{ 2 } & \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'A', '2D Anisotropic', 'use', false, '')", "id":"2D Anisotropic-A", "sym":"A", "func":"2D Anisotropic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{A}} }_{1, 2}I_{ 2 }\\
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'A', '2D Anisotropic', 'use', false, '')", "id":"2D Anisotropic-A", "sym":"A", "func":"2D Anisotropic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{A}} }_{2, 1}I_{ 2 } & \idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'A', '2D Anisotropic', 'use', false, '')", "id":"2D Anisotropic-A", "sym":"A", "func":"2D Anisotropic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{A}} }_{2, 2}I_{ 2 }\\
+\end{bmatrix}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, '2D Anisotropic', ['A', '$\\\\frac{∂²I₅}{∂f²}$'], false, []);"} }{}
+\end{align*}
+\tag{8}\label{8}$$</div>
+        </p>
+<p><span sym='\\lambda_{0,1}' context='2D Anisotropic'>  the eigenvalues  </span> are <span class='equation' code_block="2D Anisotropic">$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$\\\\lambda_{0,1}$', '2D Anisotropic', 'def', false, '')", "id":"2D Anisotropic-$\\\\lambda_{0,1}$", "sym":"$\\\\lambda_{0,1}$", "func":"2D Anisotropic",  "localFunc":"", "type":"def", "case":"equation"} }{ {\lambda_{0,1}} } & = 2\left\|\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'a', '2D Anisotropic', 'use', false, '')", "id":"2D Anisotropic-a", "sym":"a", "func":"2D Anisotropic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{a}} }\right\|_2^{2}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, '2D Anisotropic', ['a', '$\\\\lambda_{0,1}$'], false, []);"} }{}
+\end{align*}
+$</span>, and <span sym='\\mathbf{Q}_{0};\\mathbf{Q}_{1}' context='2D Anisotropic'>  the eigenmatrices  </span> become</p>
+<p>
+        <div class='equation' code_block="2D Anisotropic">
+        $$\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\begin{align*}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$\\\\mathbf{Q}_{0}$', '2D Anisotropic', 'def', false, '')", "id":"2D Anisotropic-$\\\\mathbf{Q}_{0}$", "sym":"$\\\\mathbf{Q}_{0}$", "func":"2D Anisotropic",  "localFunc":"", "type":"def", "case":"equation"} }{ {\mathbf{Q}_{0}} } & = \begin{bmatrix}
+{\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'a', '2D Anisotropic', 'use', false, '')", "id":"2D Anisotropic-a", "sym":"a", "func":"2D Anisotropic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{a}} }}^T\\
+0\\
+\end{bmatrix}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, '2D Anisotropic', ['a', '$\\\\mathbf{Q}_{0}$'], false, []);"} }{}
+\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, '$\\\\mathbf{Q}_{1}$', '2D Anisotropic', 'def', false, '')", "id":"2D Anisotropic-$\\\\mathbf{Q}_{1}$", "sym":"$\\\\mathbf{Q}_{1}$", "func":"2D Anisotropic",  "localFunc":"", "type":"def", "case":"equation"} }{ {\mathbf{Q}_{1}} } & = \begin{bmatrix}
+0\\
+{\idlabel{ {"onclick":"event.stopPropagation(); onClickSymbol(this, 'a', '2D Anisotropic', 'use', false, '')", "id":"2D Anisotropic-a", "sym":"a", "func":"2D Anisotropic",  "localFunc":"", "type":"use", "case":"equation"} }{ {\mathit{a}} }}^T\\
+\end{bmatrix}\\\eqlabel{ {"onclick":"event.stopPropagation(); onClickEq(this, '2D Anisotropic', ['a', '$\\\\mathbf{Q}_{1}$'], false, []);"} }{}
+\end{align*}
+\notag$$</div>
+        </p>
+<div class="references"></div></div>
 </body>
 </html>

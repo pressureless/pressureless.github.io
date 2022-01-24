@@ -6,11 +6,11 @@ function output = Generic(J, x, y, u, v)
 %    M=[-J`$x_p$`+`$v_p$`  J  `$x_p$`  I_2] 
 %    
 %    where
-%    J: ℝ^(2×2)
-%    x: ℝ 
-%    y: ℝ 
-%    u: ℝ
-%    v: ℝ  
+%    J: ℝ^(2×2): The Jacobian matrix
+%    x: ℝ : point coordinate
+%    y: ℝ : point coordinate
+%    u: ℝ : vector field coordinate
+%    v: ℝ : vector field coordinate
 %    
 %    
     if nargin==0

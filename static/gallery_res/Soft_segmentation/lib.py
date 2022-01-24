@@ -17,7 +17,7 @@ class soft:
 
         # `$F_S$` = sum_i α_i D_i(`$\boldsymbol{u}$`_i) + σ((sum_i α_i)/(sum_i α_i^2) - 1)
         sum_0 = 0
-        for i in range(1, len(D)+1):
+        for i in range(1, len(α)+1):
             sum_0 += α[i-1] * D[i-1](boldsymbolu[i-1])
         sum_1 = 0
         for i in range(1, len(α)+1):

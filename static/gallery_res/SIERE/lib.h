@@ -24,6 +24,7 @@ struct siere {
         const Eigen::VectorXd & v,
         const Eigen::VectorXd & f,
         const Eigen::MatrixXd & K,
+        const Eigen::MatrixXd & boldsymbolI,
         const double & h,
         const std::function<Eigen::MatrixXd(Eigen::MatrixXd)> & φ_1,
         const Eigen::MatrixXd & u)
@@ -37,8 +38,12 @@ struct siere {
         assert( f.size() == n );
         assert( K.rows() == n );
         assert( K.cols() == n );
+        assert( boldsymbolI.rows() == 2*n );
+        assert( boldsymbolI.cols() == 2*n );
         assert( u.rows() == 2*n );
         assert( u.cols() == 1 );
+        assert( fmod(2*n, 1) == 0.0 );
+        assert( fmod(2*n, 1) == 0.0 );
         assert( fmod(2*n, 1) == 0.0 );
         // `$v_G$` = `$U_s$``$U_s$`^T Mv
         v_G = U_s * U_s.transpose() * M * v;
@@ -87,9 +92,9 @@ struct siere {
         Eigen::MatrixXd u_plus_sign_2(2*n, 2*s);
         u_plus_sign_2 << U_s, Eigen::MatrixXd::Zero(n, s),
         Eigen::MatrixXd::Zero(n, s), U_s;
-        // `$u_+$` =  u + ( -h`$J_H$`)⁻¹(h `$H(u)$` + h[`$U_s$` 0
+        // `$u_+$` =  u + (`$\boldsymbol{I}$` -h`$J_H$`)⁻¹(h `$H(u)$` + h[`$U_s$` 0
     //                                                0   `$U_s$`] `$φ_1$`(h`$J_G^r$`) `$G^r(u)$`)
-        u_plus_sign = u + (-h * J_H).colPivHouseholderQr().solve((h * Hu + h * u_plus_sign_2 * φ_1(h * J_G_circumflex_accent_r) * G_circumflex_accent_ru));
+        u_plus_sign = u + (boldsymbolI - h * J_H).colPivHouseholderQr().solve((h * Hu + h * u_plus_sign_2 * φ_1(h * J_G_circumflex_accent_r) * G_circumflex_accent_ru));
     }
 };
 

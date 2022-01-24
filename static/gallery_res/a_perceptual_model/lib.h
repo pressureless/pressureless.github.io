@@ -9,6 +9,7 @@ struct perceptual {
     double increment_Q_P;
     double increment_Q_O;
     std::vector<double> ω;
+    std::function<double(double)> CSF;
     double m_combining_tilde_t_comma_b;
     double β_b;
     double m(
@@ -44,6 +45,7 @@ struct perceptual {
     {
         const long dim_0 = ω.size();
         this->ω = ω;
+        this->CSF = CSF;
         this->m_combining_tilde_t_comma_b = m_combining_tilde_t_comma_b;
         this->β_b = β_b;
         // `$∆Q_P$` = `$E_b$`(`$σ_P^A$`) - `$E_b$`(`$σ_P^B$`)

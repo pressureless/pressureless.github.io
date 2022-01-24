@@ -7,7 +7,7 @@ function output = icp(R, a, theta, p, q, n_q, n_p, t, barq, barp, trans, rot)
 %     p̃_i = p_i - `$\bar{p}$` 
 %     q̃_i = q_i - `$\bar{q}$` 
 %    `$\varepsilon_{point}$` = ∑_i ||R p_i + t - q_i||
-%    R ∈ ℝ^(3 × 3)
+%    R ∈ ℝ^(3 × 3): the rigid-body rotation matrix
 %    
 %    `$\varepsilon_{plane}$` = ∑_i ((R p_i + t - q_i) ⋅ `$n_q$`_i)^2
 %    
@@ -20,20 +20,20 @@ function output = icp(R, a, theta, p, q, n_q, n_p, t, barq, barp, trans, rot)
 %    where
 %    a ∈ ℝ³ : axis of rotation
 %    θ ∈ ℝ  : angle of rotation
-%    p_i ∈ ℝ³
-%    q_i ∈ ℝ³
-%    `$n_q$`_i ∈ ℝ³
-%    `$n_p$`_i ∈ ℝ³
-%    t ∈ ℝ³
+%    p_i ∈ ℝ³: a sequence of points
+%    q_i ∈ ℝ³: a sequence of points
+%    `$n_q$`_i ∈ ℝ³: the surface normals
+%    `$n_p$`_i ∈ ℝ³: the surface normals
+%    t ∈ ℝ³: the translation vector
 %    
 %    
 %    S = trans(`$\bar{q}$`) ⋅ rot(θ, ã/||ã||) ⋅trans(t̃ cos(θ)) ⋅rot(θ, ã/||ã||)⋅ trans(-`$\bar{p}$`)
 %    
 %    where 
-%    `$\bar{q}$` ∈ ℝ³
-%    `$\bar{p}$` ∈ ℝ³
-%    trans ∈ ℝ³ -> ℝ^(4 × 4)
-%    rot ∈ ℝ, ℝ³ -> ℝ^(4 × 4)
+%    `$\bar{q}$` ∈ ℝ³: the averaged coordinate of points
+%    `$\bar{p}$` ∈ ℝ³: the averaged coordinate of points
+%    trans ∈ ℝ³ -> ℝ^(4 × 4) : the translation function
+%    rot ∈ ℝ, ℝ³ -> ℝ^(4 × 4): the rotation function
 %    
 %    `$\varepsilon_{two-plane}$` = ∑_i(((R p_i + R⁻¹ q_i + t) ⋅ (R `$n_p$`_i))^2 + ((R p_i + R⁻¹ q_i + t) ⋅ (R⁻¹`$n_q$`_i))^2)
 %    
@@ -133,7 +133,7 @@ function output = icp(R, a, theta, p, q, n_q, n_p, t, barq, barp, trans, rot)
     S = trans(barq) * rot(theta, a_tilde / norm(a_tilde, 2)) * trans(t_tilde * cos(theta)) * rot(theta, a_tilde / norm(a_tilde, 2)) * trans(-barp);
     % `$\varepsilon_{two-plane}$` = ∑_i(((R p_i + R⁻¹ q_i + t) ⋅ (R `$n_p$`_i))^2 + ((R p_i + R⁻¹ q_i + t) ⋅ (R⁻¹`$n_q$`_i))^2)
     sum_4 = 0;
-    for i = 1:size(q, 1)
+    for i = 1:size(p, 1)
         sum_4 = sum_4 + ((dot((R * p(i,:)' + (R\q(i,:)') + t),(R * n_p(i,:)'))).^2 + (dot((R * p(i,:)' + (R\q(i,:)') + t),((R\n_q(i,:)')))).^2);
     end
     varepsilon_twoplane = sum_4;

@@ -34,17 +34,17 @@ class icp:
         # n_i = `$n_q$`_i + `$n_p$`_i
         self.n = np.zeros((dim_0, 3, ))
         for i in range(1, dim_0+1):
-            self.self.n[i-1] = n_q[i-1] + n_p[i-1]
+            self.n[i-1] = n_q[i-1] + n_p[i-1]
         # t̃ = t/cos(θ)
         self.t̃ = t / np.cos(θ)
         # p̃_i = p_i - `$\bar{p}$` 
         self.p̃ = np.zeros((dim_0, 3, ))
         for i in range(1, dim_0+1):
-            self.self.p̃[i-1] = p[i-1] - barp
+            self.p̃[i-1] = p[i-1] - barp
         # q̃_i = q_i - `$\bar{q}$` 
         self.q̃ = np.zeros((dim_0, 3, ))
         for i in range(1, dim_0+1):
-            self.self.q̃[i-1] = q[i-1] - barq
+            self.q̃[i-1] = q[i-1] - barq
         # `$\varepsilon_{point}$` = ∑_i ||R p_i + t - q_i||
         sum_0 = 0
         for i in range(1, len(q)+1):
@@ -69,7 +69,7 @@ class icp:
         self.S = trans(barq) @ rot(θ, self.ã / np.linalg.norm(self.ã, 2)) @ trans(self.t̃ * np.cos(θ)) @ rot(θ, self.ã / np.linalg.norm(self.ã, 2)) @ trans(-barp)
         # `$\varepsilon_{two-plane}$` = ∑_i(((R p_i + R⁻¹ q_i + t) ⋅ (R `$n_p$`_i))^2 + ((R p_i + R⁻¹ q_i + t) ⋅ (R⁻¹`$n_q$`_i))^2)
         sum_4 = 0
-        for i in range(1, len(q)+1):
+        for i in range(1, len(p)+1):
             sum_4 += (np.power((np.dot(((R @ p[i-1] + np.linalg.solve(R, q[i-1]) + t)).ravel(), ((R @ n_p[i-1])).ravel())), 2) + np.power((np.dot(((R @ p[i-1] + np.linalg.solve(R, q[i-1]) + t)).ravel(), ((np.linalg.solve(R, n_q[i-1]))).ravel())), 2))
         self.varepsilon_twoplane = sum_4
 

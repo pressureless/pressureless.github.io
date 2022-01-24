@@ -19,6 +19,7 @@ class perceptual:
         assert np.ndim(σ_O_circumflex_accent_B) == 0
 
         self.ω = ω
+        self.CSF = CSF
         self.m_combining_tilde_t_comma_b = m_combining_tilde_t_comma_b
         self.β_b = β_b
         # `$∆Q_P$` = `$E_b$`(`$σ_P^A$`) - `$E_b$`(`$σ_P^B$`)

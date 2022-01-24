@@ -3,6 +3,8 @@ var colors =['red', 'YellowGreen', 'DeepSkyBlue', 'Gold', 'HotPink',
 
 var centerXDict = {};
 var centerYDict = {};
+var offsetEndXDict = {};
+var visibleDict = {};   // visiability for context div
 
 function alreadyExist(dict, content){
   var threshold = 2;   // different symbols from the same line
@@ -66,12 +68,10 @@ function getYOffset(base){
   return res;
 }
 
-
-var offsetEndXDict = {};
 function getOffsetEndX(center){ 
   var base = 0; // starting point
   var res = 0;
-  var distance = 5; 
+  var distance = 7; 
   if (center in offsetEndXDict) { 
     cur_index = offsetEndXDict[center];
     res = cur_index * distance;
@@ -83,6 +83,17 @@ function getOffsetEndX(center){
   } 
   // console.log(`getOffsetEndX, center:${center}, res:${res}`);
   return base - res;
+}
+
+function getElementCenterY(element){
+  // the height of different mjx-container tags in the same line should be the same
+  var container = element.closest("mjx-container");
+  if (container) {
+    var containerRect = container.getBoundingClientRect();
+    return containerRect.y + containerRect.height/2;
+  }
+  var eleRect = element.getBoundingClientRect();
+  return eleRect.y + eleRect.height/2;
 }
 
 function drawArrow(startElement, endElement, style='', color='blue', 
@@ -110,16 +121,16 @@ function drawArrow(startElement, endElement, style='', color='blue',
     var bodyRect = body.getBoundingClientRect();
     var startRect = startElement.getBoundingClientRect();
     var startCenterX = startRect.x + startRect.width/2;
-    var startCenterY = startRect.y + startRect.height/2;
+    var startCenterY = getElementCenterY(startElement);
     var endRect = endElement.getBoundingClientRect();
     var endCenterX = endRect.x + endRect.width/2;
-    var endCenterY = endRect.y + endRect.height/2;
+    var endCenterY = getElementCenterY(endElement);
 
     var offsetStartY = getYOffset(startCenterY); 
     var offsetEndY = getYOffset(endCenterY);
     var offsetVerticalX = getXOffset(); 
 
-    var offsetEndX = getOffsetEndX(endCenterY);
+    var offsetEndX = getOffsetEndX(endCenterY); 
 
     var marginLeft = parseInt(style.marginLeft, 10)
     var bodyWidth = parseInt(style.width, 10)
@@ -145,11 +156,11 @@ function drawArrow(startElement, endElement, style='', color='blue',
     if (startEq) { 
       offsetStartX = 20; 
     }
+    var extraOffset = 0;
     if (endEq){ 
-      offsetEndX = 20; 
+      extraOffset = 20; 
     }
-    // console.log(`offsetEndX is ${offsetEndX}`)
-    var endPointX = marginLeft+offsetEndX; 
+    var endPointX = marginLeft+offsetEndX+extraOffset;  
     svg.path(`M${(marginLeft+offsetStartX)} ${startCenterY - bodyRect.y + marginTop+offsetStartY} 
       L ${(marginLeft-offsetVerticalX)} ${startCenterY - bodyRect.y + marginTop+offsetStartY} 
       L ${(marginLeft-offsetVerticalX)} ${endCenterY - bodyRect.y + marginTop+offsetEndY} 
@@ -163,37 +174,105 @@ function drawArrow(startElement, endElement, style='', color='blue',
     document.querySelector(".arrow").style.marginLeft = "0px"
 }
 
-function getSymTypeInfo(type_info){
+function getTypeInfo(type_info){
   if(type_info.type == 'matrix'){
-    content = "a matrix, rows: " + type_info.rows + ", cols: " + type_info.cols;
+    content = `\\mathbb{R}^{${type_info.rows}×${type_info.cols}}`;
   }
   else if(type_info.type == 'vector'){
-    content = "a vector, rows: " + type_info.rows;
+    content = `\\mathbb{R}^{${type_info.rows}}`;  
   }
   else if(type_info.type == 'scalar'){
-    content = "a scalar";
+    content = "\\mathbb{R}";
   }
   else if(type_info.type == 'sequence'){
-    content = "a sequence";
+    content = getTypeInfo(type_info.element);
   }
   else if(type_info.type == 'function'){
-    content = "a function";
+    var param_list = [];
+    for (var i = 0; i <= type_info.params.length - 1; i++) {
+      param_list.push(getTypeInfo(type_info.params[i])); 
+    }
+    var ret = getTypeInfo(type_info.ret)
+    content = `${param_list.join()} \\rightarrow ${ret}`;
   }
   else{
-    content = "an invalid type";
+    content = "special type";
+  }
+  return content;
+}
+
+function getSymTypeInfo(type_info){
+  var info = getTypeInfo(type_info);
+  if(type_info.type == 'matrix'){
+    content = `$\\in ${info}$`;
+  }
+  else if(type_info.type == 'vector'){
+    content = `$\\in ${info}$`;
+  }
+  else if(type_info.type == 'scalar'){
+    content =  `$\\in ${info}$`;
+  }
+  else if(type_info.type == 'sequence'){
+    content = `$\\in$ sequence of $${info}$`;
+  }
+  else if(type_info.type == 'function'){
+    content = `$\\in ${info}$`;
+  }
+  else{
+    content = `set type`;
   }
   // console.log("type_info.type: " + type_info.type);
 
   return content;
 };
+
+function getGlossarySymId(symbol, context){
+  // console.log(`getGlossarySymId, symbol:${symbol}, context:${context}`)
+  content = ''
+  data_list = sym_data[symbol];
+  for (var i = 0; i < data_list.length; i++) {
+      var id_tag = symbol.replaceAll("\\","\\\\");
+      var data = data_list[i];
+      if (data.def_module == context) {
+        content = `${data.def_module}-${id_tag}`
+        break;
+      }
+  }
+  return content;
+}
+function getGlossarySymType(symbol, context){
+  // get from sym_data rather than iheartla_data
+  var content = ''
+  var desc = '' 
+  var dollarSym = getDollarSym(symbol);
+  var otherSym = getOtherSym(symbol);
+  for (var k in sym_data) { 
+    if (k == symbol || k == otherSym) {
+      var cur_data = sym_data[k];
+      for (var i = 0; i < cur_data.length; i++) {
+        if (cur_data[i].def_module == context) {
+          keys.push(k);
+          content = cur_data[i].type_info;
+          desc = cur_data[i].desc;
+          break;
+        }
+      }
+      break;
+    }
+  }
+  return [content, desc];
+}
+
 function getGlossarySymInfo(symbol){
   content = ''
   data_list = sym_data[symbol];
-  console.log(`symbol is ${symbol}, length is ${data_list.length}`)
+  var cur_color = `highlight_${getSymColor(symbol)}`;
+  // console.log(`symbol is ${symbol}, cur_color is ${cur_color}, length is ${data_list.length}`)
   for (var i = 0; i < data_list.length; i++) {
+      var id_tag = symbol.replaceAll("\\","\\\\");
       var data = data_list[i];
       content += `<div> In module ${data.def_module}<br>
-      <a class='detail' href="#${data.def_module}-${symbol}">${symbol}</a> is ${getSymTypeInfo(data.type_info)}`
+      <a class='${cur_color}' href="#${data.def_module}-${id_tag}">${symbol}</a> is ${getSymTypeInfo(data.type_info)}`
       content += `` ;
       if (data.used_equations.length > 0) {
         content += `<br>${symbol} is used in ` ;
@@ -205,29 +284,34 @@ function getGlossarySymInfo(symbol){
   }
   return `<span>${content}</span>`;
 }
-function parseSym(tag, symbol){
-  data = sym_data[symbol];
-  console.log(`You clicked ${symbol}`);
-  if (typeof tag._tippy === 'undefined'){
-    tippy(tag, {
-        content: getGlossarySymInfo(symbol),
-        placement: 'right',
-        animation: 'fade',
-        trigger: 'click', 
-        theme: 'light',
-        showOnCreate: true,
-        allowHTML: true,
-        interactive: true,
-        arrow: tippy.roundArrow.repeat(2),
-        onShow(instance) {
-          return true;  
-        },
-        onHide(instance) { 
-          return true;  
-        },
-      });
-    MathJax.typeset();
+function parseSym(tag, symbol, module){
+  var targetId = getGlossarySymId(symbol, module);
+  if (targetId != '') {
+    location.hash = targetId;
+    // document.getElementById(targetId).scrollIntoView();
   }
+  // data = sym_data[symbol];
+  // console.log(`You clicked ${symbol}`);
+  // if (typeof tag._tippy === 'undefined'){
+  //   tippy(tag, {
+  //       content: getGlossarySymInfo(symbol),
+  //       placement: 'right',
+  //       animation: 'fade',
+  //       trigger: 'click', 
+  //       theme: 'light',
+  //       showOnCreate: true,
+  //       allowHTML: true,
+  //       interactive: true,
+  //       arrow: tippy.roundArrow.repeat(2),
+  //       onShow(instance) {
+  //         return true;  
+  //       },
+  //       onHide(instance) { 
+  //         return true;  
+  //       },
+  //     });
+  //   MathJax.typeset();
+  // }
 }
 function adjsutGlossaryBtn(){
   var body = document.querySelector("body");
@@ -237,122 +321,203 @@ function adjsutGlossaryBtn(){
   var glossaryBtn = document.querySelector(".glossary");
   glossaryBtn.style.left = `${curOffset + curWidth +  30}px`;
 }
-function onLoad(){
-  parseAllSyms();
-  adjsutGlossaryBtn();
-}
-function parseAllSyms(){
-  keys = [];
-  for (var k in sym_data) { 
-    keys.push(k);
+function addObversers(){
+  let options = {
+    root: document.body,
+    rootMargin: '0px',
+    threshold: 0.5
   }
-  keys.sort();
-  info = '<p>Glossary of symbols</p>'
-  for (i = 0; i < keys.length; i++) {
-    k = keys[i];
-    diff_list = sym_data[k];
-    diff_length = diff_list.length;
-    ck = k.replace("\\","\\\\");
-    if (diff_length > 1) {
-      content = `<span onclick="parseSym(this, '${ck}');"><span class="clickable_sym">${k}</span>: ${diff_length} different types</span><br>`;
-    }
-    else{
-      if (diff_list[0].is_defined){
-        content = `<span onclick="parseSym(this, '${ck}');"><span class="clickable_sym">${k}</span>: defined </span><br>`;
+  var observer = new IntersectionObserver(changes => {
+    for (const change of changes) {
+      var cur_ = change.target.getAttribute('context');
+      var curId = change.target.getAttribute('id');
+      visibleDict[cur_] = change.isIntersecting;
+      // console.log(`current:${cur_}, curId:${curId}, isVisible:${change.isVisible}, isIntersecting:${change.isIntersecting}`)
+      if (change.isIntersecting) {
+        updateGlossarySyms(cur_);
       }
       else{
-        content = `<span onclick="parseSym(this, '${ck}');"><span class="clickable_sym">${k}</span>: ${diff_list[0].desc}</span><br>`;
+        // find the visible context
+        for (const [key, value] of Object.entries(visibleDict)) {
+          if (value) {
+            updateGlossarySyms(key);
+            break;
+          }
+        }
+      }
+      // console.log(change.time);               // Timestamp when the change occurred
+      // console.log(change.rootBounds);         // Unclipped area of root
+      // console.log(change.boundingClientRect); // target.boundingClientRect()
+      // console.log(change.intersectionRect);   // boundingClientRect, clipped by its containing block ancestors, and intersected with rootBounds
+      // console.log(`${cur_}, change.intersectionRatio:${change.intersectionRatio}`);  // Ratio of intersectionRect area to boundingClientRect area
+      // console.log(change.target);             // the Element target
+      // console.log(`${cur_} isVisible:${change.isVisible}`);
+      // console.log(`${cur_} isIntersecting:${change.isIntersecting}`);
+    }
+  }, {});
+  context_dict = {}
+  for (var index in iheartla_data.context) {
+    var context = iheartla_data.context[index]
+    if(!(context in context_dict)){
+      context_dict[context] = 0
+    }
+    // console.log(`#context-${context}-${context_dict[context]}`)
+    var noSpaceContext = context.replace(/ /g, "");
+    var cur_context = document.querySelector(`#context-${noSpaceContext}-${context_dict[context]}`)
+    context_dict[context] += 1;
+    // console.log(`context is ${context}, cur_context is ${noSpaceContext}, index:${context_dict[context]}`)
+    observer.observe(cur_context, options);
+  } 
+}
+function onLoad(){
+  adjsutGlossaryBtn();
+  addObversers();
+}
+function updateGlossarySyms(cur_context){
+  // console.log(`Current visible context: ${cur_context}`);
+  keys = [];
+  for (var k in sym_data) { 
+    var cur_data = sym_data[k];
+    for (var i = 0; i < cur_data.length; i++) {
+      if (cur_data[i].def_module == cur_context) {
+        keys.push(k);
       }
     }
-    // console.log(content);
+  }
+  keys.sort();
+  info = `<p class='glosary_title'>Glossary of ${cur_context}</p>`
+  for (i = 0; i < keys.length; i++) {
+    k = keys[i];
+    var cur_color = `highlight_${getSymColor(k)}`;
+    diff_list = sym_data[k];
+    ck = k.replaceAll("\\","\\\\");
+    for (var j = 0; j < diff_list.length; j++) {
+      if (diff_list[j].def_module == cur_context) {
+        var cur_info = getSymTypeInfo(diff_list[j].type_info)
+        if(diff_list[j].desc && diff_list[j].desc != 'None' ){
+          content = `<span class='glosary_line' onclick="parseSym(this, '${ck}', '${diff_list[j].def_module}');"><span class="${cur_color} paperSymbol">${k}</span> ${cur_info}: ${diff_list[j].desc} </span><br>`;
+        }
+        else{
+          content = `<span class='glosary_line' onclick="parseSym(this, '${ck}', '${diff_list[j].def_module}');"><span class="${cur_color} paperSymbol">${k}</span> ${cur_info} </span><br>`;
+        }
+        break;
+      }
+    }
     info += content;
   }
-  // console.log(document.querySelector("#glossary"));
-  tippy(document.querySelector("#glossary"), {
-        content: info,
-        placement: 'right',
-        animation: 'fade',
-        trigger: 'click', 
-        theme: 'light',
-        allowHTML: true,
-        interactive: true,
-        arrow: tippy.roundArrow.repeat(2),
-        onShown(instance) {
-          MathJax.typeset();
-          return true;  
-        },
-      }); 
+  // update
+  var glossaryDiv = document.querySelector(".glossary");
+  glossaryDiv.innerHTML = info;
   MathJax.typeset();
 }
+function getSymColor(symbol){
+  color = 'red'
+  if (sym_data.hasOwnProperty(symbol)) { 
+    color = sym_data[symbol][0].color;
+  }
+  else{
+    var dollarSym = getDollarSym(symbol);
+    if (sym_data.hasOwnProperty(dollarSym)) {  
+      color = sym_data[dollarSym][0].color;
+    } 
+  } 
+  // console.log(`symbol is ${symbol}, color is ${color}`)
+  return color;
+}
 function getSymInfo(symbol, func_name, isLocalParam=false, localFuncName='', color='red', attrs=''){
-  content = `<span class="highlight_${color}" sym="${symbol}" ${attrs}>`
-  var found = false;
+  var cur_color = getSymColor(symbol);
+  var symAttr = symbol.replaceAll("\\", "\\\\");
+  content = `<span class="highlight_${cur_color}" sym="${symAttr}" ${attrs}>`
   var dollarSym = getDollarSym(symbol);
   var otherSym = getOtherSym(symbol);
   var otherFuncName = getOtherSym(localFuncName);
-  for(var eq in iheartla_data.equations){
-    if(iheartla_data.equations[eq].name == func_name){
-      if (isLocalParam) {
-        // local parameter
-        for(var localFunc in iheartla_data.equations[eq].local_func){
-          var curLocalFunc = iheartla_data.equations[eq].local_func[localFunc].name;
-          if (curLocalFunc == localFuncName || curLocalFunc == otherFuncName) {
-            for(var param in iheartla_data.equations[eq].local_func[localFunc].parameters){
-              var curParam = iheartla_data.equations[eq].local_func[localFunc].parameters[param].sym;
-              if (curParam == symbol || curParam == otherSym) {
-                type_info = iheartla_data.equations[eq].local_func[localFunc].parameters[param].type_info;
-                found = true;
-                content += dollarSym + "</span>"+ " is a local parameter as a " + getSymTypeInfo(type_info);
-              }
-            }
-          }
-        }
-        if(found){
-          break;
-        }
-      }
-      else{
-        // parameters or definitions
-        for(var param in iheartla_data.equations[eq].parameters){
-          if (iheartla_data.equations[eq].parameters[param].sym == symbol || 
-            iheartla_data.equations[eq].parameters[param].sym == otherSym ){
-            type_info = iheartla_data.equations[eq].parameters[param].type_info;
-            found = true;
-            if(iheartla_data.equations[eq].parameters[param].desc){
-              content += dollarSym + "</span>"+ " is " + iheartla_data.equations[eq].parameters[param].desc + ", the type is " + getSymTypeInfo(type_info);
-            }
-            else{
-              content += dollarSym + "</span>"+ " is a parameter as a " + getSymTypeInfo(type_info);
-            }
-            break;
-          }
-        }
-        if(found){
-          break;
-        }
-        for(var param in iheartla_data.equations[eq].definition){
-          if (iheartla_data.equations[eq].definition[param].sym == symbol || 
-            iheartla_data.equations[eq].definition[param].sym == otherSym){
-            type_info = iheartla_data.equations[eq].definition[param].type_info;
-            found = true;
-            content += dollarSym + "</span>"+ " is defined as a " + getSymTypeInfo(type_info);
-            break;
-          }
-        }
-        if(found){
-          break;
-        }
-      }
-    }
+  const [cur_type, cur_desc] = getGlossarySymType(symbol, func_name);
+  if(cur_desc && cur_desc != 'None'){
+    content += `${dollarSym}</span> ${getSymTypeInfo(cur_type)}: ${cur_desc}`;
   }
-  if (content == '') {
-    content = `${dollarSym} is a parameter in local function`;
-  } 
+  else{
+    content += `${dollarSym}</span> ${getSymTypeInfo(cur_type)}`;
+  }
   return content;
+  // var found = false;
+  // for(var eq in iheartla_data.equations){
+  //   if(iheartla_data.equations[eq].name == func_name){
+  //     if (isLocalParam) {
+  //       // local parameter
+  //       for(var localFunc in iheartla_data.equations[eq].local_func){
+  //         var curLocalFunc = iheartla_data.equations[eq].local_func[localFunc].name;
+  //         if (curLocalFunc == localFuncName || curLocalFunc == otherFuncName) {
+  //           for(var param in iheartla_data.equations[eq].local_func[localFunc].parameters){
+  //             var curParam = iheartla_data.equations[eq].local_func[localFunc].parameters[param].sym;
+  //             if (curParam == symbol || curParam == otherSym) {
+  //               type_info = iheartla_data.equations[eq].local_func[localFunc].parameters[param].type_info;
+  //               found = true;
+  //               // content += dollarSym + "</span>"+ " is a local parameter as a " + getSymTypeInfo(type_info);
+  //               // var glossarySymType = getGlossarySymType(symbol, func_name);
+  //               if(iheartla_data.equations[eq].local_func[localFunc].parameters[param].desc){
+  //                 content += `${dollarSym}</span> ${getSymTypeInfo(type_info)}: ${iheartla_data.equations[eq].local_func[localFunc].parameters[param].desc}`;
+  //               }
+  //               else{
+  //                 content += `${dollarSym}</span> ${getSymTypeInfo(type_info)}`;
+  //               }
+  //             }
+  //           }
+  //         }
+  //       }
+  //       if(found){
+  //         break;
+  //       }
+  //     }
+  //     else{
+  //       // parameters or definitions
+  //       for(var param in iheartla_data.equations[eq].parameters){
+  //         if (iheartla_data.equations[eq].parameters[param].sym == symbol || 
+  //           iheartla_data.equations[eq].parameters[param].sym == otherSym ){
+  //           type_info = iheartla_data.equations[eq].parameters[param].type_info;
+  //           found = true;
+  //           if(iheartla_data.equations[eq].parameters[param].desc){
+  //             // content += dollarSym + "</span>"+ " is " + iheartla_data.equations[eq].parameters[param].desc;
+  //             content += `${dollarSym}</span> ${getSymTypeInfo(type_info)}: ${iheartla_data.equations[eq].parameters[param].desc}`;
+  //           }
+  //           else{
+  //             content += `${dollarSym}</span> ${getSymTypeInfo(type_info)}`
+  //           }
+  //           break;
+  //         }
+  //       }
+  //       if(found){
+  //         break;
+  //       }
+  //       for(var param in iheartla_data.equations[eq].definition){
+  //         if (iheartla_data.equations[eq].definition[param].sym == symbol || 
+  //           iheartla_data.equations[eq].definition[param].sym == otherSym){
+  //           type_info = iheartla_data.equations[eq].definition[param].type_info;
+  //           found = true;
+  //           if(iheartla_data.equations[eq].definition[param].desc){
+  //             // content += dollarSym + "</span>"+ " is " + iheartla_data.equations[eq].definition[param].desc;
+  //             content += `${dollarSym}</span> ${getSymTypeInfo(type_info)}: ${iheartla_data.equations[eq].definition[param].desc}`;
+  //           }
+  //           else{
+  //             // content += dollarSym + "</span>"+ " is defined as " + getSymTypeInfo(type_info);
+  //             content += `${dollarSym}</span> ${getSymTypeInfo(type_info)}`;
+  //           }
+  //           break;
+  //         }
+  //       }
+  //       if(found){
+  //         break;
+  //       }
+  //     }
+  //   }
+  // }
+  // if (content == '') {
+  //   content = `${dollarSym} is a parameter in local function`;
+  // } 
+  // return content;
 }
 function showSymArrow(tag, symbol, func_name, type='def', color='blue', 
   isEquation=false, startEq=false, endEq=false){ 
-  symbol = symbol.replace("\\","\\\\\\\\");
+  symbol = symbol.replaceAll("\\","\\\\\\\\");
   // console.log(`In showSymArrow, symbol:${symbol}`);
   showArrow(tag, symbol, func_name, type, color, isEquation, startEq, endEq);
   let asymbol = getOtherSym(symbol);
@@ -361,7 +526,7 @@ function showSymArrow(tag, symbol, func_name, type='def', color='blue',
 function showArrow(tag, symbol, func_name, type='def', color='blue', 
   isEquation=false, startEq=false, endEq=false){
   // tag.setAttribute('class', `highlight_${color}`);
-  // console.log(`In showArrow, sym:${symbol}`); 
+  // console.log(`In showArrow, sym:${symbol}, color:${color}`); 
   if (type === 'def' ) {
     // Point to usage
     const matches = document.querySelectorAll("[case='equation'][sym='" + symbol + "'][func='"+ func_name + "'][type='use']");
@@ -455,10 +620,10 @@ function getDollarSym(symbol){
   }
 }
 function highlightSym(symbol, func_name, isLocalParam=false, localFuncName='', color='red'){ 
-  symbol = symbol.replace("\\","\\\\\\\\"); 
+  symbol = symbol.replaceAll("\\","\\\\\\\\"); 
   // console.log(`In highlightSym, symbol: ${symbol}`)
   highlightSymInProseAndEquation(symbol, func_name, isLocalParam, localFuncName, color);
-  let asymbol = getOtherSym(symbol);
+  let asymbol = getOtherSym(symbol); 
   highlightSymInProseAndEquation(asymbol, func_name, isLocalParam, localFuncName, color);
 }
 function highlightSymInProseAndEquation(symbol, func_name, isLocalParam=false, localFuncName='', color='red'){ 
@@ -494,12 +659,12 @@ function highlightSymInProseAndEquation(symbol, func_name, isLocalParam=false, l
     matches[i].setAttribute('class', curClass);
   }
   // span prose 
-  let new_sym = symbol.replace("\\\\\\\\", "\\"); 
-  let spanMatches = document.querySelectorAll("span[sym*='" + new_sym + "'][context='" + func_name + "']");
+  let new_sym = symbol.replaceAll("\\\\\\\\", "\\\\"); 
+  let spanMatches = document.querySelectorAll("span[sym*='" + symbol + "'][context='" + func_name + "']"); 
   for (var i = spanMatches.length - 1; i >= 0; i--) {
     var curClass = spanMatches[i].getAttribute('class');
     var curSym = spanMatches[i].getAttribute('sym');
-    const curSymList = curSym.split(' ');
+    const curSymList = curSym.split(';'); 
     // console.log(`i is ${i}, curSymList is ${curSymList} `)
     for (var j = curSymList.length - 1; j >= 0; j--) {
       if (curSymList[j] === new_sym) {
@@ -530,9 +695,11 @@ function highlightSymInProseAndEquation(symbol, func_name, isLocalParam=false, l
 function onClickProse(tag, symbol, func_name, type='def') {
   resetState();
   // console.log(`onClickProse, ${tag}, symbol is ${symbol}, ${func_name}`);
-  highlightSym(symbol, func_name);
+  var cur_color = getSymColor(symbol);
+  highlightSym(symbol, func_name, isLocalParam=false, localFuncName='', color=cur_color);
+  // console.log(`onClickProse, cur_color:${cur_color}, symbol is ${symbol}`);
   if (type !== 'def') {
-    showSymArrow(tag, symbol, func_name, 'use', color='red');
+    showSymArrow(tag, symbol, func_name, 'use', color=cur_color);
   }
   if (typeof tag._tippy === 'undefined'){
     tippy(tag, {
@@ -569,11 +736,12 @@ function onClickProse(tag, symbol, func_name, type='def') {
  * @return 
  */
 function onClickSymbol(tag, symbol, func_name, type='def', isLocalParam=false, localFuncName='', color='red') {
-  console.log(`the type is ${type}, sym is ${symbol}`)
+  // console.log(`the type is ${type}, sym is ${symbol}, color is ${color}`,)
   resetState();
   // closeOtherTips();
-  highlightSym(symbol, func_name, isLocalParam, localFuncName, color);
-  showSymArrow(tag, symbol, func_name, type, color);
+  var cur_color = getSymColor(symbol);
+  highlightSym(symbol, func_name, isLocalParam, localFuncName, cur_color);
+  showSymArrow(tag, symbol, func_name, type, cur_color);
     // d3.selectAll("mjx-mi[sym='" + symbol + "']").style("class", "highlight");
   if (typeof tag._tippy === 'undefined'){
     tippy(tag, {
@@ -602,7 +770,7 @@ function getEquationContent(func_name, sym_list, isLocalFunc=false, localFunc=''
   content = `<span class="highlight_grey">This equation has ${sym_list.length} symbols:</span><br>`;
   for (var i = sym_list.length - 1; i >= 0; i--) {
     sym = sym_list[i];
-    sym = sym.replace("\\","\\\\\\\\"); 
+    sym = sym.replaceAll("\\","\\\\\\\\"); 
     var isLocalParam = false;
     if (localParams.includes(sym)) {
       isLocalParam = true;
@@ -633,14 +801,15 @@ function onClickEq(tag, func_name, sym_list, isLocalFunc=false, localFunc='', lo
   function showAllArrows(){
     for (var i = sym_list.length - 1; i >= 0; i--) {
       sym = sym_list[i];
+      var cur_color = getSymColor(sym);
       var isLocalParam = false;
       if (localParams.includes(sym)) {
         isLocalParam = true;
-        console.log(`sym:${sym}, isLocalParam:${isLocalParam}`)
+        // console.log(`sym:${sym}, isLocalParam:${isLocalParam}`)
       }
-      highlightSym(sym, func_name, isLocalParam, localFunc, colors[i]);
+      highlightSym(sym, func_name, isLocalParam, localFunc, cur_color);
       // sym = sym.replace("\\","\\\\");
-      sym = sym.replace("\\","\\\\\\\\"); 
+      sym = sym.replaceAll("\\","\\\\\\\\"); 
       var symTag;
       if (div) {
         var parentTag = tag.closest("div");
@@ -668,7 +837,7 @@ function onClickEq(tag, func_name, sym_list, isLocalFunc=false, localFunc='', lo
           startEq = false;
           endEq = false;
         }
-        showSymArrow(symTag, sym_list[i], func_name, t, colors[i], true, startEq, endEq);
+        showSymArrow(symTag, sym_list[i], func_name, t, cur_color, true, startEq, endEq);
       }
     }
   }
@@ -763,7 +932,8 @@ function removeSymHighlight(){
   const matches = document.querySelectorAll("[class*=highlight]");
   for (var i = matches.length - 1; i >= 0; i--) {
     var spanTag = matches[i].closest("div.tippy-box");
-    if(spanTag == null){
+    var glossaryTag = matches[i].closest("div.glossary");
+    if(spanTag == null && glossaryTag == null){
       var cur = matches[i].getAttribute('class');
       const classArray = cur.split(' ');
       let new_classes = [];

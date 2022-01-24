@@ -16,6 +16,11 @@ class judder:
         assert np.ndim(M) == 0
         assert np.ndim(L_a) == 0
         assert np.ndim(L_b) == 0
+
+        self.L = L
+        self.a = a
+        self.b = b
+        self.F = F
         # `$F_a$` = M⋅ CFF(`$L_a$`)
         self.F_a = M * self.CFF(L_a)
         # `$F_b$` = M⋅ CFF(`$L_b$`)
@@ -45,9 +50,10 @@ class error:
         N = O.shape[0]
         assert O.shape == (N,)
         assert M.shape == (N,)
+
         # E = sum_i |log(O_i) - log(M_i)|/log(O_i) 
         sum_0 = 0
-        for i in range(1, len(M)+1):
+        for i in range(1, len(O)+1):
             sum_0 += np.absolute(np.log(O[i-1]) - np.log(M[i-1])) / np.log(O[i-1])
         self.E = sum_0
 
@@ -58,6 +64,7 @@ class third:
         assert np.ndim(F_b) == 0
         assert np.ndim(F_a) == 0
         assert np.ndim(L_a) == 0
+
         # `$L_b$` = 10^((a `$F_b$`log((`$L_a$`))+b(`$F_b$`-`$F_a$`))/(a`$F_a$`))
         self.L_b = np.power(10, ((a * F_b * np.log((L_a)) + b * (F_b - F_a)) / (a * F_a)))
 

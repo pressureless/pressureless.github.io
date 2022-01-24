@@ -9,6 +9,10 @@ struct judder {
     double J;
     double F_a;
     double F_b;
+    double L;
+    double a;
+    double b;
+    double F;
     double CFF(
         const double & L)
     {
@@ -35,6 +39,10 @@ struct judder {
         const double & L_a,
         const double & L_b)
     {
+        this->L = L;
+        this->a = a;
+        this->b = b;
+        this->F = F;
         // `$F_a$` = M⋅ CFF(`$L_a$`)
         F_a = M * CFF(L_a);
         // `$F_b$` = M⋅ CFF(`$L_b$`)
@@ -46,6 +54,7 @@ struct judder {
 
 struct error {
     double E;
+
     error(
         const Eigen::VectorXd & O,
         const Eigen::VectorXd & M)
@@ -53,7 +62,7 @@ struct error {
         const long N = O.size();
         assert( M.size() == N );
         double sum_0 = 0;
-        for(int i=1; i<=M.size(); i++){
+        for(int i=1; i<=O.size(); i++){
             sum_0 += abs(log(O[i-1]) - log(M[i-1])) / double(log(O[i-1]));
         }
         // E = sum_i |log(O_i) - log(M_i)|/log(O_i) 
@@ -63,6 +72,7 @@ struct error {
 
 struct third {
     double L_b;
+
     third(
         const double & a,
         const double & b,

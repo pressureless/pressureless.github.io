@@ -1,5 +1,5 @@
-function output = siere(U_s, M, v, f, K, h, phi_1, u)
-% output = siere(`$U_s$`, M, v, f, K, h, `$φ_1$`, u)
+function output = siere(U_s, M, v, f, K, boldsymbolI, h, phi_1, u)
+% output = siere(`$U_s$`, M, v, f, K, `$\boldsymbol{I}$`, h, `$φ_1$`, u)
 %
 %    `$G(u)$` = [`$v_G$`
 %              M⁻¹`$f_G$`]
@@ -25,9 +25,10 @@ function output = siere(U_s, M, v, f, K, h, phi_1, u)
 %    
 %    
 %    
-%    `$u_+$` =  u + ( -h`$J_H$`)⁻¹(h `$H(u)$` + h[`$U_s$` 0
+%    `$u_+$` =  u + (`$\boldsymbol{I}$` -h`$J_H$`)⁻¹(h `$H(u)$` + h[`$U_s$` 0
 %                                                   0   `$U_s$`] `$φ_1$`(h`$J_G^r$`) `$G^r(u)$`)
 %    where 
+%    `$\boldsymbol{I}$` : ℝ^(2n × 2n)
 %    h : ℝ
 %    `$φ_1$` : ℝ^(k×k) -> ℝ^(k×k)
 %    u : ℝ^(2n × 1)
@@ -41,9 +42,9 @@ function output = siere(U_s, M, v, f, K, h, phi_1, u)
 %    
     if nargin==0
         warning('generating random input data');
-        [U_s, M, v, f, K, h, phi_1, u] = generateRandomData();
+        [U_s, M, v, f, K, boldsymbolI, h, phi_1, u] = generateRandomData();
     end
-    function [U_s, M, v, f, K, h, phi_1, u] = generateRandomData()
+    function [U_s, M, v, f, K, boldsymbolI, h, phi_1, u] = generateRandomData()
         h = randn();
         n = randi(10);
         s = randi(10);
@@ -52,11 +53,12 @@ function output = siere(U_s, M, v, f, K, h, phi_1, u)
         v = randn(n,1);
         f = randn(n,1);
         K = randn(n, n);
+        boldsymbolI = randn(2*n, 2*n);
         phi_1 = @phi_1Func;
         rseed = randi(2^32);
         function tmp =  phi_1Func(p0)
             rng(rseed);
-        k = p0.shape[0]
+            k = size(p0, 1);
             tmp = randn(k,k);
         end
 
@@ -73,8 +75,11 @@ function output = siere(U_s, M, v, f, K, h, phi_1, u)
     assert( numel(v) == n );
     assert( numel(f) == n );
     assert( isequal(size(K), [n, n]) );
+    assert( isequal(size(boldsymbolI), [2*n, 2*n]) );
     assert(numel(h) == 1);
     assert( isequal(size(u), [2*n, 1]) );
+    assert( mod(2*n, 1) == 0.0 );
+    assert( mod(2*n, 1) == 0.0 );
     assert( mod(2*n, 1) == 0.0 );
 
     % `$v_G$` = `$U_s$``$U_s$`^T Mv
@@ -109,10 +114,10 @@ function output = siere(U_s, M, v, f, K, h, phi_1, u)
     %             `$U_s$`^Tf]
     G_ru_0 = [[reshape(U_s' * M * v, [s, 1])]; [reshape(U_s' * f, [s, 1])]];
     G_ru = G_ru_0;
-    % `$u_+$` =  u + ( -h`$J_H$`)⁻¹(h `$H(u)$` + h[`$U_s$` 0
+    % `$u_+$` =  u + (`$\boldsymbol{I}$` -h`$J_H$`)⁻¹(h `$H(u)$` + h[`$U_s$` 0
     %                                                0   `$U_s$`] `$φ_1$`(h`$J_G^r$`) `$G^r(u)$`)
     u_plus_sign_2 = [[U_s, zeros(n, s)]; [zeros(n, s), U_s]];
-    u_plus_sign = u + ((-h * J_H)\(h * Hu + h * u_plus_sign_2 * phi_1(h * J_G_r) * G_ru));
+    u_plus_sign = u + ((boldsymbolI - h * J_H)\(h * Hu + h * u_plus_sign_2 * phi_1(h * J_G_r) * G_ru));
     output.Gu = Gu;
     output.Hu = Hu;
     output.v_G = v_G;

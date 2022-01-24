@@ -1,4 +1,4 @@
-function output = nautilus(x, _lambda, v)
+function output = nautilus(x, lambda_, v)
 % output = nautilus(x, λ, v)
 %
 %    H = PSP⁻¹
@@ -6,7 +6,6 @@ function output = nautilus(x, _lambda, v)
 %    P = [1 x₁ 0
 %         0 x₂ 0
 %         x₃ x₄ 1]
-%    
 %    S = [x₅ x₆ x₇
 %         x₈ x₉ x₁₀
 %         0 0 1]
@@ -21,10 +20,10 @@ function output = nautilus(x, _lambda, v)
 %    
     if nargin==0
         warning('generating random input data');
-        [x, _lambda, v] = generateRandomData();
+        [x, lambda_, v] = generateRandomData();
     end
-    function [x, _lambda, v] = generateRandomData()
-        _lambda = randn();
+    function [x, lambda_, v] = generateRandomData()
+        lambda_ = randn();
         n = randi(10);
         dim_0 = randi(10);
         x = randn(n,1);
@@ -36,7 +35,7 @@ function output = nautilus(x, _lambda, v)
     n = size(x, 1);
     dim_0 = size(v, 1);
     assert( numel(x) == n );
-    assert(numel(_lambda) == 1);
+    assert(numel(lambda_) == 1);
     assert( isequal(size(v), [dim_0, 3, 3]) );
 
     % P = [1 x₁ 0
@@ -66,7 +65,7 @@ function output = nautilus(x, _lambda, v)
         for i = 1:size(v, 1)
             sum_0 = sum_0 + norm(H * squeeze(v(i,:,:)) - P * S * (P\squeeze(v(i,:,:))), 'fro').^2;
         end
-        ret = _lambda * norm([x(5); x(8)] - [x(9); x(6)], 2).^2 + sum_0;
+        ret = lambda_ * norm([x(5); x(8)] - [x(9); x(6)], 2).^2 + sum_0;
     end
 
     output.H = H;
@@ -74,7 +73,7 @@ function output = nautilus(x, _lambda, v)
     output.S = S;
     output.E = @E;
 output.x = x;    
-output._lambda = _lambda;    
+output.lambda_ = lambda_;    
 output.v = v;
 end
 
