@@ -1,5 +1,5 @@
-function output = icp(R, a, theta, p, q, n_q, n_p, t, barq, barp, trans, rot)
-% output = icp(R, a, θ, p, q, `$n_q$`, `$n_p$`, t, `$\bar{q}$`, `$\bar{p}$`, trans, rot)
+function output = ICP(R, a, theta, p, q, n_q, n_p, t, barq, barp, trans, rot)
+% output = ICP(R, a, θ, p, q, `$n_q$`, `$n_p$`, t, `$\bar{q}$`, `$\bar{p}$`, trans, rot)
 %
 %    ã = a tan(θ)
 %    n_i = `$n_q$`_i + `$n_p$`_i
@@ -125,7 +125,7 @@ function output = icp(R, a, theta, p, q, n_q, n_p, t, barq, barp, trans, rot)
     varepsilon_symmRN = sum_2;
     % `$\varepsilon_{symm}$` = ∑_i cos²(θ)((p_i - q_i)⋅n_i +((p_i+q_i)×n_i)⋅ã+n_i⋅t̃)² 
     sum_3 = 0;
-    for i = 1:size(p, 1)
+    for i = 1:size(n, 1)
         sum_3 = sum_3 + cos(theta).^2 * (dot((p(i,:)' - q(i,:)'),n(i,:)') + dot((cross((p(i,:)' + q(i,:)'), n(i,:)')),a_tilde) + dot(n(i,:)',t_tilde)).^2;
     end
     varepsilon_symm = sum_3;
@@ -133,7 +133,7 @@ function output = icp(R, a, theta, p, q, n_q, n_p, t, barq, barp, trans, rot)
     S = trans(barq) * rot(theta, a_tilde / norm(a_tilde, 2)) * trans(t_tilde * cos(theta)) * rot(theta, a_tilde / norm(a_tilde, 2)) * trans(-barp);
     % `$\varepsilon_{two-plane}$` = ∑_i(((R p_i + R⁻¹ q_i + t) ⋅ (R `$n_p$`_i))^2 + ((R p_i + R⁻¹ q_i + t) ⋅ (R⁻¹`$n_q$`_i))^2)
     sum_4 = 0;
-    for i = 1:size(p, 1)
+    for i = 1:size(q, 1)
         sum_4 = sum_4 + ((dot((R * p(i,:)' + (R\q(i,:)') + t),(R * n_p(i,:)'))).^2 + (dot((R * p(i,:)' + (R\q(i,:)') + t),((R\n_q(i,:)')))).^2);
     end
     varepsilon_twoplane = sum_4;
