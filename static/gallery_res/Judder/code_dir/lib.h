@@ -66,7 +66,7 @@ struct error {
         for(int i=1; i<=O.size(); i++){
             sum_0 += abs(log(O[i-1]) - log(M[i-1])) / double(log(O[i-1]));
         }
-        // E = sum_i |log(O_i) - log(M_i)|/log(O_i) 
+        // E = sum_i |log(O_i) - log(M_i)|/log(O_i)
         E = sum_0;
     }
 };

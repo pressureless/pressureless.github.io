@@ -14,7 +14,6 @@ class soft:
         assert boldsymbolu.shape == (dim_0, 3, )
         assert np.ndim(σ) == 0
         assert α.shape == (dim_0,)
-
         # `$F_S$` = sum_i α_i D_i(`$\boldsymbol{u}$`_i) + σ((sum_i α_i)/(sum_i α_i^2) - 1)
         sum_0 = 0
         for i in range(1, len(α)+1):
@@ -24,6 +23,6 @@ class soft:
             sum_1 += α[i-1]
         sum_2 = 0
         for i in range(1, len(α)+1):
-            sum_2 += np.power(α[i-1], 2)
+            sum_2 += np.power(float(α[i-1]), 2)
         self.F_S = sum_0 + σ * ((sum_1) / (sum_2) - 1)
 
