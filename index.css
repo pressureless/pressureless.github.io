@@ -40,7 +40,7 @@ img
 figure img
 {
   width: 100%;
-  max-width: none;
+  max-height: none;
   border-radius: 8px;
 }
 
